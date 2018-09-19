@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/aop  
+     http://www.springframework.org/schema/aop/spring-aop.xsd 
+    http://www.springframework.org/schema/tx   
+    http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!-- 引入外部的属性文件 配置文件 -->
+	<context:property-placeholder location="classpath:jdbc.properties"
+		ignore-unresolvable="true" />
+	<!-- 配置连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driverClass}"></property>
+		<property name="jdbcUrl" value="${jdbc.url}"></property>
+		<property name="user" value="${jdbc.username}"></property>
+		<property name="password" value="${jdbc.password}"></property>
+		<!--连接池中保留的最小连接数。 -->
+		<property name="minPoolSize" value="3" />
+		<!--连接池中保留的最大连接数。Default: 15 -->
+		<property name="maxPoolSize" value="300" />
+		<!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
+		<property name="maxIdleTime" value="1800"/>
+		
+		
+		
+
+
+	</bean>
+	<!-- 配置Hibernate相关属性 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<!-- 注入连接池 -->
+		<property name="dataSource" ref="dataSource" />
+		<!--配置hibernate属性 -->
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<!-- <prop key="hibernate.show_sql">true</prop> -->
+				<prop key="hibernate.format_sql">true</prop> 
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.connection.release_model">after_statement</prop>
+			</props>
+		</property>
+		<!-- 加载hibernate中的映射文件 -->
+		<property name="mappingResources">
+			<list>
+				<value>com/pluskynet/domain/Latitude.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule.hbm.xml</value>
+				<value>com/pluskynet/domain/Articleyl.hbm.xml</value>
+				<value>com/pluskynet/domain/Docrule.hbm.xml</value>
+				<value>com/pluskynet/domain/Latitudeaudit.hbm.xml</value>
+				<value>com/pluskynet/domain/Latitudedoc.hbm.xml</value>
+				<value>com/pluskynet/domain/Article01.hbm.xml</value>
+				<value>com/pluskynet/domain/Article02.hbm.xml</value>
+				<value>com/pluskynet/domain/Article03.hbm.xml</value>
+				<value>com/pluskynet/domain/Article04.hbm.xml</value>
+				<value>com/pluskynet/domain/Article05.hbm.xml</value>
+				<value>com/pluskynet/domain/Article06.hbm.xml</value>
+				<value>com/pluskynet/domain/Article07.hbm.xml</value>
+				<value>com/pluskynet/domain/Article08.hbm.xml</value>
+				<value>com/pluskynet/domain/Article09.hbm.xml</value>
+				<value>com/pluskynet/domain/Article10.hbm.xml</value>
+				<value>com/pluskynet/domain/Cause.hbm.xml</value>
+				<value>com/pluskynet/domain/Article.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule01.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule02.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule03.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule04.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule05.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule06.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule07.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule08.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule09.hbm.xml</value>
+				<value>com/pluskynet/domain/Docsectionandrule10.hbm.xml</value>
+				<value>com/pluskynet/domain/ArticleDecode.hbm.xml</value>
+				<value>com/pluskynet/domain/Batchdata.hbm.xml</value>
+				<value>com/pluskynet/domain/Sample.hbm.xml</value>
+				<value>com/pluskynet/domain/Synonymtypetable.hbm.xml</value>
+				<value>com/pluskynet/domain/Synonymwordtable.hbm.xml</value>
+				<value>com/pluskynet/domain/LatitudedocKey.hbm.xml</value>
+				<value>com/pluskynet/domain/LatitudedocTime.hbm.xml</value>
+				<value>com/pluskynet/domain/LatitudedocWord.hbm.xml</value>
+				<value>com/pluskynet/domain/Docidandruleid.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 配置Action类 -->
+	<bean id="latitudeDocAction" class="com.pluskynet.action.LatitudeDocAction"
+		scope="prototype">
+		<property name="latitudeDocService" ref="latitudeDocService" />
+	</bean>
+	<bean id="latitudeAction" class="com.pluskynet.action.LatitudeAction">
+		<property name="latitudeService" ref="latitudeService" />
+	</bean>
+
+	<bean id="docsectionandruleAction" class="com.pluskynet.action.DocsectionandruleAction"
+		scope="prototype">
+		<property name="docSectionAndRuleService" ref="docSectionAndRuleService" />
+	</bean>
+	<bean id="previewAction" class="com.pluskynet.action.PreviewAction"
+		scope="prototype">
+		<property name="previewService" ref="previewService" />
+	</bean>
+	<bean id="docRuleAction" class="com.pluskynet.action.DocRuleAction"
+		scope="prototype">
+		<property name="docRuleService" ref="docRuleService" />
+		<property name="previewService" ref="previewService" />
+	</bean>
+	<bean id="latitudeauditAction" class="com.pluskynet.action.LatitudeauditAction"
+		scope="prototype">
+		<property name="latitudeauditService" ref="latitudeauditService" />
+	</bean>
+	<bean id="articleAction" class="com.pluskynet.action.ArticleAction"
+		scope="prototype">
+		<property name="articleService" ref="articleService" />
+	</bean>
+	<bean id="sampleAction" class="com.pluskynet.action.SampleAction"
+		scope="prototype">
+		<property name="sampleService" ref="sampleService" />
+	</bean>
+	<bean id="synonymAction" class="com.pluskynet.action.SynonymAction"
+		scope="prototype">
+		<property name="synonymService" ref="synonymService" />
+	</bean>
+	<!-- 配置业务层的类 Service -->
+	<bean id="latitudeDocService" class="com.pluskynet.service.impl.LatitudeDocServiceImpl">
+		<property name="latitudeDocDao" ref="latitudeDocDao" />
+		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
+	</bean>
+	<bean id="latitudeService" class="com.pluskynet.service.impl.LatitudeServiceImpl">
+		<property name="latitudeDao" ref="latitudeDao" />
+		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
+		<property name="latitudeauditDao" ref="latitudeauditDao" />
+	</bean>
+	<bean id="articleService" class="com.pluskynet.service.impl.ArticleServiceImpl">
+		<property name="articleDao" ref="articleDao" />
+		<property name="causeDao" ref="causeDao"/>
+	</bean>
+
+	<bean id="docSectionAndRuleService" class="com.pluskynet.service.impl.DocSectionAndRuleServiceImpl">
+		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
+	</bean>
+	<bean id="docRuleService" class="com.pluskynet.service.impl.DocRuleServiceImpl">
+		<property name="docRuleDao" ref="docRuleDao" />
+		<property name="latitudeauditDao" ref="latitudeauditDao" />
+		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
+	</bean>
+	<bean id="previewService" class="com.pluskynet.service.impl.PreviewServiceImpl">
+		<property name="previewDao" ref="previewDao" />
+		<property name="articleylDao" ref="articleylDao" />
+		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
+	</bean>
+	<bean id="latitudeauditService" class="com.pluskynet.service.impl.LatitudeauditServiceImpl">
+		<property name="latitudeauditDao" ref="latitudeauditDao" />
+		<property name="causeDao" ref="causeDao" />
+		
+	</bean>
+	<bean id="sampleService" class="com.pluskynet.service.impl.SampleServiceImpl">
+		<property name="causeDao" ref="causeDao"/>
+		<property name="sampleDao" ref="sampleDao" />
+	</bean>
+	<bean id="synonymService" class="com.pluskynet.service.impl.SynonymServiceImpl">
+		<property name="synonymDao" ref="synonymDao" />
+	</bean>
+	<!-- 配置DAO的类 Dao -->
+	<bean id="latitudeDocDao" class="com.pluskynet.dao.impl.LatitudeDocDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="latitudeDao" class="com.pluskynet.dao.impl.LatitudeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="docRuleDao" class="com.pluskynet.dao.impl.DocRuleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="articleylDao" class="com.pluskynet.dao.impl.ArticleylDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="previewDao" class="com.pluskynet.dao.impl.PreviewDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="docSectionAndRuleDao" class="com.pluskynet.dao.impl.DocSectionAndRuleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="latitudeauditDao" class="com.pluskynet.dao.impl.LatitudeauditDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="articleDao" class="com.pluskynet.dao.impl.ArticleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="causeDao" class="com.pluskynet.dao.impl.CauseDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="batchdataDao" class="com.pluskynet.dao.impl.BatchdataDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="sampleDao" class="com.pluskynet.dao.impl.SampleDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="synonymDao" class="com.pluskynet.dao.impl.SynonymDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="latitudeKeyDao" class="com.pluskynet.dao.impl.LatitudeKeyDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="latitudeTimeDao" class="com.pluskynet.dao.impl.LatitudetimeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="latitudeWordDao" class="com.pluskynet.dao.impl.LatitudewordDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="docidandruleidDao" class="com.pluskynet.dao.impl.DocidandruleidDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 配合事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<!-- 开启注解事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>

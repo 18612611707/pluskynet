@@ -1,0 +1,53 @@
+package com.pluskynet.domain;
+
+/**
+ * Docidandruleid entity. @author MyEclipse Persistence Tools
+ */
+
+public class Docidandruleid implements java.io.Serializable {
+
+	// Fields
+
+	private Integer id;
+	private String docid;
+	private Integer ruleid;
+
+	// Constructors
+
+	/** default constructor */
+	public Docidandruleid() {
+	}
+
+	/** full constructor */
+	public Docidandruleid(String docid, Integer ruleid) {
+		this.docid = docid;
+		this.ruleid = ruleid;
+	}
+
+	// Property accessors
+
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getDocid() {
+		return this.docid;
+	}
+
+	public void setDocid(String docid) {
+		this.docid = docid;
+	}
+
+	public Integer getRuleid() {
+		return this.ruleid;
+	}
+
+	public void setRuleid(Integer ruleid) {
+		this.ruleid = ruleid;
+	}
+
+}

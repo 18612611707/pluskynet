@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Class-Path: lib/ant-1.6.5.jar lib/antlr-2.7.6.jar lib/aopalliance.jar lib/asm-5.0.2.jar lib/asm-commons-5.0.2.jar lib/asm-tree-5.0.2.jar lib/aspectjweaver.jar lib/c3p0-0.9.1.2.jar lib/commons-beanutils-1.7.0.jar 
+  lib/commons-codec-1.9.jar lib/commons-collections-3.1.jar lib/commons-dbcp-1.4.jar lib/commons-fileupload-1.3.1.jar lib/commons-io-2.2.jar lib/commons-lang-2.5.jar lib/commons-lang3-3.2.jar lib/commons-logging.jar 
+  lib/commons-pool-1.5.6.jar lib/cors-filter-1.7.1.jar lib/dom4j-1.6.1.jar lib/ezmorph-1.0.3.jar lib/freemarker-2.3.19.jar lib/hibernate-jpa-2.0-api-1.0.1.Final.jar lib/hibernate3.jar lib/javassist-3.11.0.GA.jar 
+  lib/jodconverter-2.2.2.jar lib/jodconverter-cli-2.2.2.jar lib/jodconverter-core 3.0-beta-4.jar lib/json-lib-2.4-jdk15.jar lib/json.jar lib/jsoup-1.11.3.jar lib/jta-1.1.jar lib/juh-3.0.1.jar lib/jurt-3.0.1.jar 
+  lib/log4j-1.2.17.jar lib/mysql-connector-java-5.1.25-bin.jar lib/mysql-connector-java-5.1.7-bin.jar lib/ognl-3.0.6.jar lib/org.springframework.aop-3.0.7.RELEASE.jar lib/org.springframework.asm-3.0.7.RELEASE.jar 
+  lib/org.springframework.aspects-3.0.7.RELEASE.jar lib/org.springframework.beans-3.0.7.RELEASE.jar lib/org.springframework.context-3.0.7.RELEASE.jar lib/org.springframework.context.support-3.0.7.RELEASE.jar 
+  lib/org.springframework.core-3.0.7.RELEASE.jar lib/org.springframework.expression-3.0.7.RELEASE.jar lib/org.springframework.instrument-3.0.7.RELEASE.jar lib/org.springframework.instrument.tomcat-3.0.7.RELEASE.jar 
+  lib/org.springframework.jdbc-3.0.7.RELEASE.jar lib/org.springframework.jms-3.0.7.RELEASE.jar lib/org.springframework.orm-3.0.7.RELEASE.jar lib/org.springframework.oxm-3.0.7.RELEASE.jar 
+  lib/org.springframework.test-3.0.7.RELEASE.jar lib/org.springframework.transaction-3.0.7.RELEASE.jar lib/org.springframework.web-3.0.7.RELEASE.jar lib/org.springframework.web.portlet-3.0.7.RELEASE.jar 
+  lib/org.springframework.web.servlet-3.0.7.RELEASE.jar lib/org.springframework.web.struts-3.0.7.RELEASE.jar lib/pageoffice3.jar lib/quartz-all-1.8.6.jar lib/ridl-3.0.1.jar lib/shiro-all-1.2.3.jar 
+  lib/shiro-core-1.2.2.jar lib/shiro-ehcache-1.2.2.jar lib/shiro-guice-1.2.1.jar lib/shiro-quartz-1.2.2.jar lib/shiro-spring-1.2.2.jar lib/shiro-web-1.2.2.jar lib/slf4j-api-1.6.1.jar lib/slf4j-log4j12-1.6.3.jar 
+  lib/sqlite-jdbc-3.7.2.jar lib/struts2-core-2.3.20.jar lib/struts2-json-plugin-2.3.20.jar lib/struts2-spring-plugin-2.3.20.jar lib/ueditor-1.1.2.jar lib/unoil-3.0.1.jar lib/xwork-core-2.3.20.jar lib/servlet-api.jar lib/jsp-api.jar
+  lib/annotations-api.jar lib/catalina.jar lib/catalina-ant.jar	lib/catalina-ha.jar lib/catalina-storeconfig.jar lib/catalina-tribes.jar 
+  lib/ecj-4.4.2.jar lib/el-api.jar lib/jasper.jar lib/jasper-el.jar lib/tomcat-api.jar lib/tomcat-coyote.jar lib/tomcat-dbcp.jar 
+  lib/tomcat-i18n-es.jar lib/tomcat-i18n-fr.jar lib/tomcat-i18n-ja.jar lib/tomcat-jdbc.jar lib/tomcat-jni.jar lib/tomcat-util.jar lib/tomcat-util-scan.jar 
+  lib/tomcat-websocket.jar lib/websocket-api.jar
+Main-Class: com.pluskynet.test.Bigdatatest
+
