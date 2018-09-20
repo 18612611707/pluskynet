@@ -47,7 +47,6 @@ public class LatitudeAction extends BaseAction{
 	public void setLatitudeName(String latitudeName) {
 		this.latitudeName = latitudeName;
 	}
-	//	HttpServletRequest http = (HttpServletRequest) getRequest();
 	/*
 	 * 新增纬度
 	 */
@@ -63,8 +62,6 @@ public class LatitudeAction extends BaseAction{
 	public void update(){
 		String msg = latitudeService.update(latitude);
 		outJsonByMsg(msg);
-//		latitu.put("msg", msg);
-//		return "update";
 	}
 	/*
 	 * 获取纬度树
@@ -72,8 +69,6 @@ public class LatitudeAction extends BaseAction{
 	public void getLatitudeList(){
 		List<Map> list = latitudeService.getLatitudeList();
 		outJsonByMsg(list, "成功");
-//		latitudeList = jsonArray;
-//		return "success";
 	}
 	/*
 	 * 根据ID获取纬度详细信息
@@ -81,8 +76,6 @@ public class LatitudeAction extends BaseAction{
 	public void getLatitude(){
 		Latitude latitudes = latitudeService.getLatitude(latitude);
 		outJsonByMsg(latitudes, "成功");
-//		latitu = JSONObject.fromObject(latitudes);
-//		return "getlatitude";
 	}
 	/*
 	 * 模糊查询纬度名称

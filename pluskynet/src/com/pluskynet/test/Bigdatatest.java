@@ -82,7 +82,7 @@ public class Bigdatatest extends Thread {
 			List<Article01> articleList = null;
 			for (int i = 0; i < list.size(); i++) {
 				if (allorre == 1) {
-					articleDao.articleState(list.get(i).getCausetable(), 0);
+		 			articleDao.articleState(list.get(i).getCausetable(), 0);
 				} else if (allorre == 3) {
 					articleDao.articleState(list.get(i).getCausetable(), 3);
 				}
@@ -91,6 +91,7 @@ public class Bigdatatest extends Thread {
 				int rows = 1000;
 				while (runs) {
 					synchronized (ob) {
+						System.out.println("线程名称：" + getName());
 						articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表
 					}
 					try {
@@ -100,6 +101,7 @@ public class Bigdatatest extends Thread {
 						e.printStackTrace();
 					}
 					if (articleList.size() == 0) {
+						System.out.println(list.get(i).getCausetable()+"表无数据！！！");
 						runs = false;
 					} else {
 						System.out.println(articleList.get(0).getDocId());
@@ -236,6 +238,9 @@ public class Bigdatatest extends Thread {
 				}
 			}
 
+		}
+		else {
+			System.out.println("无规则");
 		}
 	}
 

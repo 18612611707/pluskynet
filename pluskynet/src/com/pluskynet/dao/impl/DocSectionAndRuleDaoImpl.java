@@ -11,11 +11,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.test.Bigdatatest;
+import com.sun.star.rdf.QueryException;
 
 @SuppressWarnings("all")
 public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements DocSectionAndRuleDao {
 	@Transactional
-	public boolean save(Docsectionandrule docsectionandrule, String table) {
+	public boolean save(Docsectionandrule docsectionandrule, String table) throws QueryException {
 		if (docsectionandrule.getSectiontext().indexOf("'") > -1) {
 			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\'", "\\\\'"));
 		}
@@ -25,7 +26,9 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
 				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "' and sectiontext = '"+docsectionandrule.getSectiontext()+"'";
-		List<Docsectionandrule> list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+		List<Docsectionandrule> list = null;
+		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+		
 		if (list.size() == 0) {
 			Session s1 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 			String sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("

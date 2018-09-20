@@ -11,6 +11,7 @@ import com.pluskynet.domain.DocidAndDoc;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.StatsDoc;
 import com.pluskynet.service.DocSectionAndRuleService;
+import com.sun.star.rdf.QueryException;
 
 public class DocSectionAndRuleServiceImpl implements DocSectionAndRuleService {
 	private DocSectionAndRuleDao docSectionAndRuleDao;
@@ -37,7 +38,7 @@ public class DocSectionAndRuleServiceImpl implements DocSectionAndRuleService {
 	public void save(Docsectionandrule docsectionandrule,String table) {
 		try {
 			docSectionAndRuleDao.save(docsectionandrule,table);
-		} catch (SQLException e) {
+		} catch (SQLException | QueryException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

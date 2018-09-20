@@ -227,6 +227,11 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 					conn.setAutoCommit(false);
 					conn.commit();
 				}
+				if (i==(list.size()-1) && i % 100 != 0) {
+					stmt.executeBatch();
+					conn.setAutoCommit(false);
+					conn.commit();
+				}
 			}
 			session.flush();
 			session.clear();
