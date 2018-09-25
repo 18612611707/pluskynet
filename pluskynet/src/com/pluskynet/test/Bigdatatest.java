@@ -11,6 +11,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,17 +48,28 @@ public class Bigdatatest extends Thread {
 	static BatchdataDao batchdataDao;
 	// 创建一个静态钥匙
 	static Object ob = "aa";// 值是任意的
+	volatile private int a = 0;
+	static ThreadPoolExecutor executor = null;
 
 	public Bigdatatest(String name) {
 		super(name);// 给线程起名字
 	}
 
 	public static void main(String[] args) {
-		for (int i = 0; i < 5; i++) {
+		executor = new ThreadPoolExecutor(500,Integer.MAX_VALUE, 200, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<Runnable>());
+		System.gc();
+		for (int i = 0; i < 1; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
+			try {
+				// 休息一分钟
+				sleep(60000);
+				System.out.println("休息一分钟");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 
 	public void run() {
@@ -82,154 +96,44 @@ public class Bigdatatest extends Thread {
 			List<Article01> articleList = null;
 			for (int i = 0; i < list.size(); i++) {
 				if (allorre == 1) {
-		 			articleDao.articleState(list.get(i).getCausetable(), 0);
+					articleDao.articleState(list.get(i).getCausetable(), 0);
 				} else if (allorre == 3) {
 					articleDao.articleState(list.get(i).getCausetable(), 3);
 				}
 				doctable = list.get(i).getDoctable();
 				boolean runs = true;
-				int rows = 1000;
+				int rows = 200;
 				while (runs) {
 					synchronized (ob) {
 						System.out.println("线程名称：" + getName());
 						articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表
 					}
-					try {
-						// 休息一秒钟
-						sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 					if (articleList.size() == 0) {
-						System.out.println(list.get(i).getCausetable()+"表无数据！！！");
+						System.out.println(list.get(i).getCausetable() + "表无数据！！！");
 						runs = false;
-					} else {
-						System.out.println(articleList.get(0).getDocId());
+						continue;
 					}
+					Bigdatasave bigdatasave[] = new Bigdatasave[Lalist.size()];
 					for (int j = 0; j < Lalist.size(); j++) {// 循环已审批规则
 						List<Otherdocrule> lists = ruleformat(Lalist.get(j).getRule()); // 规则整理
-						String ruleString = JSONArray.fromObject(lists).toString();
 						int ruleid = Lalist.get(j).getLatitudeid();
 						String latitudename = Lalist.get(j).getLatitudename();
 						String startword = null;
 						String endword = null;
 						String judges = null;
-						for (int k = 0; k < lists.size(); k++) {
-							List<Article01> docList;
-							try {
-								docList = breakup(articleList, ruleString);
-								// 获取符合审判程序的文书
-								JSONArray jsonArray = null;
-								JSONObject ruleJson = null;
-								for (int i1 = 0; i1 < docList.size(); i1++) {
-									String docid = docList.get(i1).getDocId();
-									String docold = getTextFromHtml(docList.get(i1).getDecodeData());
-									String doctitle = docList.get(i1).getTitle();
-									jsonArray = jsonArray.fromObject(lists);
-									String docnew = null;
-									int start = -1;
-									int end = -1;
-									String leftdoc = null;
-									String rightdoc = null;
-									String beginIndex1 = null;
-									String Startword = null; // 匹配到的开始词语
-									String Endword = null; // 匹配到的结束词语
-									for (int a = 0; a < jsonArray.size(); a++) {
-										ruleJson = jsonArray.getJSONObject(a);
-										// System.out.println(ruleJson);
-										String startWord = ruleJson.getString("start");
-										String endWord = ruleJson.getString("end");
-										String judge = ruleJson.getString("judge");
-										String[] startWords = startWord.split(";|；");
-										String[] endWords = endWord.split(";|；");
-										for (int j1 = 0; j1 < startWords.length; j1++) {
-											Pattern patternstart = startRuleFomat(startWords[j1]);
-											Matcher matcher = patternstart.matcher(docold);
-											if (matcher.find()) {
-												Startword = startWords[j1];
-												beginIndex1 = matcher.group();
-												start = docold.indexOf(beginIndex1);
-												leftdoc = docold.substring(0,
-														docold.indexOf(beginIndex1) + beginIndex1.length());
-												rightdoc = docold
-														.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
-												break;
-											}
-										}
-										if (rightdoc != null && start != -1) {
-											for (int x = 0; x < endWords.length; x++) {
-												Endword = endWords[x];
-												Pattern patternend = endRuleFomat(endWords[x]);
-												Matcher matcher = patternend.matcher(rightdoc);
-												if (matcher.find()) {
-													String beginIndex = matcher.group();
-													if (endWords[x].length() > 0) {
-														// System.out.println(endWords.length);
-														if (judge.equals("之前")) {
-															end = start + rightdoc.indexOf(beginIndex)
-																	+ beginIndex1.length();
-														} else {
-															end = start + rightdoc.indexOf(beginIndex)
-																	+ beginIndex.length() + beginIndex1.length();
-														}
-													} else {
-														end = docold.length();
-													}
-													break;
-												}
-											}
-										}
-										Docsectionandrule docsectionandrule = new Docsectionandrule();
-										Batchdata batchdata = new Batchdata();
-										if (end != -1) {
-											docnew = docold.substring(start, end);
-											docsectionandrule.setRuleid(ruleid);
-											docsectionandrule.setSectionname(latitudename);
-											docsectionandrule.setSectiontext(docnew);
-											docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-											docsectionandrule.setTitle(docList.get(i1).getTitle());
-											batchdata.setCause(list.get(i).getCausename());
-											batchdata.setDocumentid(docList.get(i1).getDocId());
-											batchdata.setEndword(Endword);
-											batchdata.setRuleid(ruleid);
-											batchdata.setStartword(Startword);
-											batchdataDao.save(batchdata);
-											articleDao.updateArticleState(docid, list.get(i).getCausetable(), 2);
-											docrule.save(docsectionandrule, doctable);
-											Docidandruleid docidandruleid = new Docidandruleid(
-													docList.get(i1).getDocId(), ruleid);
-											docidandruleidDao.save(docidandruleid);
-											break;
-										} else if (end == 0) {
-											docnew = docold.substring(start, docold.length());
-											docsectionandrule.setRuleid(ruleid);
-											docsectionandrule.setSectionname(latitudename);
-											docsectionandrule.setSectiontext(docnew);
-											docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-											docsectionandrule.setTitle(docList.get(i1).getTitle());
-											batchdata.setCause(list.get(i).getCausename());
-											batchdata.setDocumentid(docList.get(i1).getDocId());
-											batchdata.setEndword(Endword);
-											batchdata.setRuleid(ruleid);
-											batchdata.setStartword(Startword);
-											batchdataDao.save(batchdata);
-											articleDao.updateArticleState(docid, list.get(i).getCausetable(), 2);
-											docrule.save(docsectionandrule, doctable);
-											Docidandruleid docidandruleid = new Docidandruleid(
-													docList.get(i1).getDocId(), ruleid);
-											docidandruleidDao.save(docidandruleid);
-											break;
-										}
-									}
-								}
-							} catch (InvocationTargetException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							} catch (IllegalAccessException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-						}
+						List<Article01> articleLists = articleList;
+						bigdatasave[j] = new Bigdatasave();
+						bigdatasave[j].save(articleLists, articleDao, batchdataDao, docrule, docidandruleidDao,
+								list.get(i).getDoctable(), lists, list.get(i).getCausename(),
+								list.get(i).getCausetable(), ruleid, latitudename);
+						 bigdatasave[j].setName("规则线程：" + i + j);
+//						 System.out.println(bigdatasave[j].getName());
+						 executor.execute(bigdatasave[j]);
+			             if(j==0){
+			            	 System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
+						             executor.getQueue().size()+"，已执行完任务数目："+executor.getCompletedTaskCount());
+			             }
+//						 bigdatasave[j].start();
 						if (i == list.size() - 1) {
 							Lalist.get(j).setBatchstats("3");
 							latitudeauditAction.updatebatchestats(Lalist.get(j));
@@ -238,8 +142,7 @@ public class Bigdatatest extends Thread {
 				}
 			}
 
-		}
-		else {
+		} else {
 			System.out.println("无规则");
 		}
 	}

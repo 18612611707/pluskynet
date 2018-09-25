@@ -131,7 +131,7 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 		Article article = new Article();
 		article.setState(7);
 		String table = null;
-		if (data.equals("")) {
+		if (data==null || data.equals("")) {
 			table = "article_decode";
 		} else {
 			table = "article" + data + "_decode";
@@ -172,7 +172,7 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 	public void articleSave(String table, Article01 article01) {
 		String data = article01.getDate();
 		String tables = null;
-		if (data.equals("")) {
+		if (data==null || data.equals("")) {
 			tables = "article_decode";
 			data = "2017";
 		} else {
@@ -223,11 +223,13 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 				stmt.setString(1, list.get(i).getDocId());
 				stmt.addBatch();
 				if (i % 100 == 0) {
+					System.out.println(list.get(i).getDocId());
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();
 				}
 				if (i==(list.size()-1) && i % 100 != 0) {
+					System.out.println(list.get(i).getDocId());
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();

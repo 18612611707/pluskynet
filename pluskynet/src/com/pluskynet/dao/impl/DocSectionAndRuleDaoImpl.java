@@ -25,7 +25,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		}
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
-				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "' and sectiontext = '"+docsectionandrule.getSectiontext()+"'";
+				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "'";
 		List<Docsectionandrule> list = null;
 		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
 		

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="true"></constant>
+	<constant name="struts.custom.i18n.resources" value="config.message" />
+	<constant name="struts.multipart.maxSize" value="2000000000000" />
+	<constant name="struts.action.extension" value="action"></constant>
+	<constant name="struts.ui.theme" value="simple" />
+	<package name="pluskynet" extends="struts-default,json-default"
+		namespace="/">
+		<!-- 段落纬度规则的添加、修改、查询 -->
+		<action name="DocRuleAction" class="com.pluskynet.action.DocRuleAction">
+			<result name="success" type="json">
+				<param name="root">queryresult</param>
+			</result>
+			<result name="section" type="json">
+				<param name="root">sectionlist</param>
+			</result>
+			<result name="save" type="json">
+				<param name="root">queryresult</param>
+			</result>
+			<result name="update" type="json">
+				<param name="root">queryresult</param>
+			</result>
+		</action>
+		<!-- 段落规则预览 -->
+		<action name="PreviewAction" class="com.pluskynet.action.PreviewAction">
+			<result name="sucess" type="json">
+				<param name="root">doclist</param>
+			</result>
+		</action>
+		<!-- 登录、退出 -->
+		<action name="LoginAction" class="com.pluskynet.action.LoginAction"
+			method="{1}">
+			<!-- <result name="sucess" type="json"> <param name="user">userjson</param> 
+				</result> -->
+		</action>
+		<!-- 获取符合规则段落和内容 -->
+		<action name="DocsectionandruleAction" class="com.pluskynet.action.DocsectionandruleAction"
+			method="{1}">
+			<result name="sucess" type="json">
+				<param name="docsection">doclist</param>
+			</result>
+		</action>
+		<!-- 其他纬度维护 -->
+		<action name="LatitudeAction" class="com.pluskynet.action.LatitudeAction"
+			method="{1}">
+			<result name="sucess" type="json">
+				<param name="latitude">latitudeList</param>
+			</result>
+			<result name="save" type="json">
+				<param name="latitude">latitu</param>
+			</result>
+			<result name="update" type="json">
+				<param name="latitude">latitu</param>
+			</result>
+			<result name="getlatitude" type="json">
+				<param name="latitude">latitu</param>
+			</result>
+		</action>
+		<!-- 获取待审批队列 -->
+		<action name="LatitudeauditAction" class="com.pluskynet.action.LatitudeauditAction">
+		</action>
+		<!-- 用户前台查询 -->
+		<action name="LatitudeDocAction" class="com.pluskynet.action.LatitudeDocAction" 
+			method="{1}">
+			
+		</action>
+		<!-- 预览数据维护 -->
+		<action name="SampleAction" class="com.pluskynet.action.SampleAction" 
+			method="{1}">
+			
+		</action>
+		<!-- 同义词维护 -->
+		<action name="SynonymAction" class="com.pluskynet.action.SynonymAction" 
+			method="{1}">
+			
+		</action>
+	</package>
+
+</struts>

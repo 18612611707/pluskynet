@@ -58,7 +58,7 @@ public class ArticleServiceImpl implements ArticleService {
 		synchronized (ob) {
 		list = articleDao.breakArticle(data, rows);	
 		}
-		if (data.equals("")) {
+		if (data==null || data.equals("")) {
 			tables = "article_decode";
 			datas = "2017";
 		} else {

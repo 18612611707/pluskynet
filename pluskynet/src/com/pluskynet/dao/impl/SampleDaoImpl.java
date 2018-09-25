@@ -21,7 +21,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao{
 	@Override
 	@Transactional
 	public List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype) {
-		String hql = "select * from "+table+" where date='"+year+"'and (title like '%"+trialRound+"%' and title like '%"+doctype+"%') limit "+count;
+		String hql = "select * from "+table+" where date='"+year+"'and (title like '%"+trialRound+"%' and title like '%"+doctype+"%') ORDER BY RAND() limit "+count;
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Article01> list = session.createSQLQuery(hql).addEntity(Article01.class).list();
 		return list;
