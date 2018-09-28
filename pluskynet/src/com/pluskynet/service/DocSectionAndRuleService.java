@@ -14,4 +14,6 @@ public interface DocSectionAndRuleService {
 
 	void update(String doctable, String sectionname);
 
+	void plsave(List<Docsectionandrule> docsectionlist, String doctable);
+
 }

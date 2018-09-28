@@ -61,4 +61,8 @@ public class DocsectionandruleAction extends BaseAction{
 	public void update(String doctable,String sectionname){
 		docSectionAndRuleService.update(doctable,sectionname);
 	}
+	public void plsave(List<Docsectionandrule> docsectionlist, String doctable) {
+		docSectionAndRuleService.plsave(docsectionlist,doctable);
+		
+	}
 }

@@ -51,21 +51,27 @@ public class Bigdatatest extends Thread {
 	volatile private int a = 0;
 	static ThreadPoolExecutor executor = null;
 
+	static List<Latitudeaudit> Lalist = null;
+	static LatitudeauditAction latitudeauditAction;
+
 	public Bigdatatest(String name) {
 		super(name);// 给线程起名字
 	}
-
 	public static void main(String[] args) {
-		executor = new ThreadPoolExecutor(500,Integer.MAX_VALUE, 200, TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<Runnable>());
+		executor = new ThreadPoolExecutor(100, Integer.MAX_VALUE, 200, TimeUnit.MILLISECONDS,
+				new LinkedBlockingQueue<Runnable>());
 		System.gc();
+		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
+		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
+		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
+		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
 		for (int i = 0; i < 1; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {
 				// 休息一分钟
-				sleep(60000);
-				System.out.println("休息一分钟");
+				sleep(6000);
+				// System.out.println("休息一分钟");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -73,16 +79,12 @@ public class Bigdatatest extends Thread {
 	}
 
 	public void run() {
-		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
 		articleDao = (ArticleDao) resource.getBean("articleDao");
-		LatitudeauditAction latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		PreviewAction previewAction = (PreviewAction) resource.getBean("previewAction");
 		docrule = (DocsectionandruleAction) resource.getBean("docsectionandruleAction");
 		batchdataDao = (BatchdataDao) resource.getBean("batchdataDao");
 		DocidandruleidDao docidandruleidDao = (DocidandruleidDao) resource.getBean("docidandruleidDao");
 		int allorre = 0;// 1:全部跑批 3:剩余跑批 0：新增跑批
-		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
-		List<Latitudeaudit> Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
 		if (Lalist.size() > 0) {
 			CauseDao causeDao = (CauseDao) resource.getBean("causeDao");
 			// List<Article01> list = causeDao.getArticleList();
@@ -102,12 +104,10 @@ public class Bigdatatest extends Thread {
 				}
 				doctable = list.get(i).getDoctable();
 				boolean runs = true;
-				int rows = 200;
+				int rows = 10000;
 				while (runs) {
-					synchronized (ob) {
-						System.out.println("线程名称：" + getName());
-						articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表
-					}
+					System.out.println("线程名称：" + getName());
+					articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表
 					if (articleList.size() == 0) {
 						System.out.println(list.get(i).getCausetable() + "表无数据！！！");
 						runs = false;
@@ -126,17 +126,25 @@ public class Bigdatatest extends Thread {
 						bigdatasave[j].save(articleLists, articleDao, batchdataDao, docrule, docidandruleidDao,
 								list.get(i).getDoctable(), lists, list.get(i).getCausename(),
 								list.get(i).getCausetable(), ruleid, latitudename);
-						 bigdatasave[j].setName("规则线程：" + i + j);
-//						 System.out.println(bigdatasave[j].getName());
-						 executor.execute(bigdatasave[j]);
-			             if(j==0){
-			            	 System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
-						             executor.getQueue().size()+"，已执行完任务数目："+executor.getCompletedTaskCount());
-			             }
-//						 bigdatasave[j].start();
+						bigdatasave[j].setName("规则线程：" + i + j);
+						System.out.println(bigdatasave[j].getName());
+						// executor.execute(bigdatasave[j]);
+						// if(j==0){
+						// System.out.println("线程池中线程数目："+executor.getPoolSize()+"，队列中等待执行的任务数目："+
+						// executor.getQueue().size()+"，已执行完任务数目："+executor.getCompletedTaskCount());
+						// }
+						bigdatasave[j].start();
 						if (i == list.size() - 1) {
 							Lalist.get(j).setBatchstats("3");
 							latitudeauditAction.updatebatchestats(Lalist.get(j));
+						}
+					}
+					for (int j = 0; j < bigdatasave.length; j++) {
+						try {
+							bigdatasave[j].join();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}
 					}
 				}

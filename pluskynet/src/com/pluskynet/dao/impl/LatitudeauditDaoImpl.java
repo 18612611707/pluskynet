@@ -177,8 +177,8 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	public List<Latitudeaudit> getLatitude(String batchstats, int latitudetype) {
-		String hql = "from Latitudeaudit where stats = '1' and batchstats = ? and latitudetype=" + latitudetype;
-		List<Latitudeaudit> list = this.getHibernateTemplate().find(hql, batchstats);
+		String hql = "from Latitudeaudit where stats = '1' and latitudetype=" + latitudetype;
+		List<Latitudeaudit> list = this.getHibernateTemplate().find(hql);
 		return list;
 	}
 

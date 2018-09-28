@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +28,7 @@ import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.test.Articletest;
 import com.pluskynet.test.Bigdatatest;
 import com.pluskynet.util.PageNoUtil;
+import com.sun.star.beans.GetDirectPropertyTolerantResult;
 
 @SuppressWarnings("all")
 public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
@@ -146,15 +149,17 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 			PreparedStatement stmt = conn.prepareStatement(sql);
 
 			for (int i = 0; i < list.size(); i++) {
-				System.out.println(list.get(i).getDocId());
+				
 				stmt.setString(1, list.get(i).getDocId());
 				stmt.addBatch();
 				if (i % 100 == 0) {
+					System.out.println(list.get(i).getDocId());
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();
 				}
 				if (i==(list.size()-1) && i % 100 != 0) {
+					System.out.println(list.get(i).getDocId());
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();
@@ -204,16 +209,19 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 	 */
 	@Transactional
 	public List<Article01> getArticle01List(String table, int allorre, int rows) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		String hql = null;
 		if (allorre == 1) {
-			hql = "select * from " + table + " where states = 0 limit " + rows;
+			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 0 order by id limit 0,1) and states=0 order by id limit " + rows;
 		} else if (allorre == 0) {
-			hql = "select * from " + table + " where states = " + allorre + " limit " + rows;
+			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 0 order by id limit 0,1) and states=0 order by id limit " + rows;
 		} else if (allorre == 3) {
-			hql = "select * from " + table + " where states = 0 limit " + rows;
+			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 0 order by id limit 0,1) and states=0 order by id limit " + rows;
 		}
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		List<Article01> list = s.createSQLQuery(hql).addEntity(Article01.class).list();
+		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sql = "update " + table + " set states = 3 where doc_id = ?";
 		Connection conn = session.connection();
@@ -222,13 +230,13 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 			for (int i = 0; i < list.size(); i++) {
 				stmt.setString(1, list.get(i).getDocId());
 				stmt.addBatch();
-				if (i % 100 == 0) {
+				if (i % 1000 == 0) {
 					System.out.println(list.get(i).getDocId());
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();
 				}
-				if (i==(list.size()-1) && i % 100 != 0) {
+				if (i==(list.size()-1) && i % 1000 != 0) {
 					System.out.println(list.get(i).getDocId());
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
@@ -252,7 +260,6 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 		s.createSQLQuery(sql).executeUpdate();
 		s.flush();
 		s.clear();
-
 	}
 
 	@Transactional
@@ -295,7 +302,7 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 						conn.commit();
 					}
 				}
-				System.out.println(i);
+//				System.out.println(i);
 			} catch (SQLException e) {
 				System.out.println("出错了");
 				e.printStackTrace();

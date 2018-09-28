@@ -38,9 +38,11 @@ public class DocSectionAndRuleServiceImpl implements DocSectionAndRuleService {
 	public void save(Docsectionandrule docsectionandrule,String table) {
 		try {
 			docSectionAndRuleDao.save(docsectionandrule,table);
-		} catch (SQLException | QueryException e) {
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch(QueryException a){
+			
 		}
 	}
 
@@ -84,4 +86,9 @@ public class DocSectionAndRuleServiceImpl implements DocSectionAndRuleService {
 		
 	}
 
+	@Override
+	public void plsave(List<Docsectionandrule> docsectionlist, String doctable) {
+		docSectionAndRuleDao.plsave(docsectionlist,doctable);
+		
+	}
 }

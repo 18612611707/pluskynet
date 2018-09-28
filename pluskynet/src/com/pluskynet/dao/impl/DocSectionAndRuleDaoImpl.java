@@ -20,7 +20,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		if (docsectionandrule.getSectiontext().indexOf("'") > -1) {
 			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\'", "\\\\'"));
 		}
-		if(docsectionandrule.getSectiontext().indexOf(":") > -1){
+		if (docsectionandrule.getSectiontext().indexOf(":") > -1) {
 			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\:", "\\\\:"));
 		}
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
@@ -28,7 +28,6 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "'";
 		List<Docsectionandrule> list = null;
 		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
-		
 		if (list.size() == 0) {
 			Session s1 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 			String sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
@@ -42,7 +41,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		} else {
 			Session s2 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 			String sectiontext = docsectionandrule.getSectiontext();
-			String querysql = "update " + table + " set sectiontext = '" + sectiontext + "' where id= " +list.get(0).getId();
+			String querysql = "update " + table + " set sectiontext = '" + sectiontext + "' where id= "
+					+ list.get(0).getId();
 			s2.createSQLQuery(querysql).executeUpdate();
 			s2.flush();
 			s2.clear();
@@ -93,7 +93,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	@Override
 	@Transactional
 	public List<Docsectionandrule> listdoc(String doctable, int rows, String sectionname) {
-		String sql = "select * from " + doctable + " where sectionname = '" + sectionname + "' and state = 0 limit 10000";
+		String sql = "select * from " + doctable + " where sectionname = '" + sectionname
+				+ "' and state = 0 limit 10000";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Docsectionandrule> doclist = session.createSQLQuery(sql).addEntity(Docsectionandrule.class).list();
 		String hql = "update " + doctable + " set state = 1 where id = ?";
@@ -114,18 +115,59 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	return doclist;
+		return doclist;
 
 	}
 
 	@Override
 	@Transactional
-	public void update(String doctable,String sectionname) {
+	public void update(String doctable, String sectionname) {
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		String sql = "update " + doctable + " set state = 0 where sectionname = '"+sectionname+"'";
+		String sql = "update " + doctable + " set state = 0 where sectionname = '" + sectionname + "'";
 		session.createSQLQuery(sql).executeUpdate();
 		session.flush();
 		session.clear();
+	}
+
+	@Override
+	@Transactional
+	public void plsave(List<Docsectionandrule> docsectionlist, String doctable) {
+		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		String sql = "";
+		Connection conn = s.connection();
+		for (int i = 0; i < docsectionlist.size(); i++) {
+			if (docsectionlist.get(i).getSectiontext().indexOf("'") > -1) {
+				docsectionlist.get(i).setSectiontext(docsectionlist.get(i).getSectiontext().replaceAll("\\'", "\\\\'"));
+			}
+			if (docsectionlist.get(i).getSectiontext().indexOf(":") > -1) {
+				docsectionlist.get(i).setSectiontext(docsectionlist.get(i).getSectiontext().replaceAll("\\:", "\\\\:"));
+			}
+			String hql = "select * from " + doctable + " where documentsid = '" + docsectionlist.get(i).getDocumentsid()
+					+ "' and sectionName = '" + docsectionlist.get(i).getSectionname() + "'";
+			List<Docsectionandrule> list = null;
+			list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+			if (list.size() == 0) {
+				sql = "insert into " + doctable + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
+						+ docsectionlist.get(i).getRuleid() + ",'" + docsectionlist.get(i).getDocumentsid() + "','"
+						+ docsectionlist.get(i).getSectionname() + "', ? ,'" + docsectionlist.get(i).getTitle() + "')";
+			} else {
+				sql = "update " + doctable + " set sectiontext = ? where id= " + list.get(0).getId();
+			}
+			try {
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setString(1, docsectionlist.get(i).getSectiontext());
+				stmt.addBatch();
+				if (i % 1000 == 0 || i == (docsectionlist.size() - 1)) {
+					stmt.executeBatch();
+					conn.setAutoCommit(false);
+					conn.commit();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 	// public boolean update(Docsectionandrule docsectionandrule) {
