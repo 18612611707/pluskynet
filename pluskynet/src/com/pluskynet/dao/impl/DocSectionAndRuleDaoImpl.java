@@ -28,24 +28,25 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "'";
 		List<Docsectionandrule> list = null;
 		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+		Connection conn = s.connection();
+		String sql = null;
 		if (list.size() == 0) {
-			Session s1 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-			String sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
+			sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
 					+ docsectionandrule.getRuleid() + ",'" + docsectionandrule.getDocumentsid() + "','"
-					+ docsectionandrule.getSectionname() + "','" + docsectionandrule.getSectiontext() + "','"
+					+ docsectionandrule.getSectionname() + "',?,'"
 					+ docsectionandrule.getTitle() + "')";
-			Query query = s1.createSQLQuery(sql);
-			query.executeUpdate();
-			s1.flush();
-			s1.clear();
 		} else {
-			Session s2 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-			String sectiontext = docsectionandrule.getSectiontext();
-			String querysql = "update " + table + " set sectiontext = '" + sectiontext + "' where id= "
+			sql = "update " + table + " set sectiontext = ? where id= "
 					+ list.get(0).getId();
-			s2.createSQLQuery(querysql).executeUpdate();
-			s2.flush();
-			s2.clear();
+		}
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, docsectionandrule.getSectiontext());
+			stmt.addBatch();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -131,7 +132,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 
 	@Override
 	@Transactional
-	public void plsave(List<Docsectionandrule> docsectionlist, String doctable) {
+	public Boolean plsave(List<Docsectionandrule> docsectionlist, String doctable) {
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sql = "";
 		Connection conn = s.connection();
@@ -167,6 +168,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 				e.printStackTrace();
 			}
 		}
+		return true;
 
 	}
 

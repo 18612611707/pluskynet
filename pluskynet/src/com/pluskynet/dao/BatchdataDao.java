@@ -7,6 +7,7 @@ import com.pluskynet.domain.Batchdata;
 public interface BatchdataDao {
 	void save(Batchdata batchdata);
 
-	void plsave(List<Batchdata> batchlist);
+	Boolean plsave(List<Batchdata> batchlist);
+	
 
 }

@@ -30,7 +30,7 @@ public class BatchdataDaoImpl extends HibernateDaoSupport implements BatchdataDa
 
 	@Override
 	@Transactional
-	public void plsave(List<Batchdata> batchlist) {
+	public Boolean plsave(List<Batchdata> batchlist) {
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sql = null;
 		Connection conn = s.connection();
@@ -42,9 +42,10 @@ public class BatchdataDaoImpl extends HibernateDaoSupport implements BatchdataDa
 			}else{
 				sql = "insert into batchdata (cause,documentid,ruleid,startword,endword)values ('"+batchlist.get(i).getCause()+"','"+batchlist.get(i).getDocumentid()+"',"+batchlist.get(i).getRuleid()+" ,'"+batchlist.get(i).getStartword()+"' ,'"+batchlist.get(i).getEndword()+"')";
 			}
-			if(sql!=null && i%1000==0){
+			if(sql!=null && i==batchlist.size()-1){
 				try {
 					PreparedStatement stmt = conn.prepareStatement(sql);
+					stmt.addBatch();
 					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();
@@ -52,19 +53,9 @@ public class BatchdataDaoImpl extends HibernateDaoSupport implements BatchdataDa
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				}else if (i%1000!=0 && i==batchlist.size()-1){
-					try {
-						PreparedStatement stmt = conn.prepareStatement(sql);
-						stmt.executeBatch();
-						conn.setAutoCommit(false);
-						conn.commit();
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
 		}
+		return true;
 		
 	}
-
 }

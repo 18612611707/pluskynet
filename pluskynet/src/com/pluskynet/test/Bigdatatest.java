@@ -104,7 +104,7 @@ public class Bigdatatest extends Thread {
 				}
 				doctable = list.get(i).getDoctable();
 				boolean runs = true;
-				int rows = 10000;
+				int rows = 2000;
 				while (runs) {
 					System.out.println("线程名称：" + getName());
 					articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表
@@ -142,6 +142,7 @@ public class Bigdatatest extends Thread {
 					for (int j = 0; j < bigdatasave.length; j++) {
 						try {
 							bigdatasave[j].join();
+							System.out.println(bigdatasave[j]+"结束");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

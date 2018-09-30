@@ -3,6 +3,7 @@ package com.pluskynet.test;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,147 +33,149 @@ public class Bigdatasave extends Thread {
 	private String causename;
 	private String causetable;
 	private int ruleid;
-	private String latitudename; 
-	/*public Bigdatasave(String name){
-		super(name);
-	}*/
+	private String latitudename;
 	
-	public void run(){
+	volatile int a = 1;
+	
+	/*
+	 * public Bigdatasave(String name){ super(name); }
+	 */
+	List<Docsectionandrule> docsectionlist = new Vector<Docsectionandrule>();
+	List<Batchdata> batchlist = new Vector<Batchdata>();
+	List<Docidandruleid> docidlist = new Vector<Docidandruleid>();
+	public void run() {
 		String ruleString = JSONArray.fromObject(lists).toString();
-		if (lists==null) {
-			System.out.println("111111111");
-		}
-		List<Docsectionandrule> docsectionlist = new ArrayList<Docsectionandrule>();
-		List<Batchdata> batchlist = new ArrayList<Batchdata>();
-		List<Docidandruleid> docidlist = new ArrayList<Docidandruleid>();
-			List<Article01> docList;
-			docList = articleList;
-			// 获取符合审判程序的文书
-			JSONArray jsonArray = JSONArray.fromObject(lists);
-			JSONObject ruleJson = null;
-			for (int i1 = 0; i1 < docList.size(); i1++) {
-				JSONObject jsonObject = new JSONObject().fromObject(docList.get(i1).getDecodeData());
-				JSONObject jsonObject2 = jsonObject.getJSONObject("htmlData");
-				JSONObject jsonObject3 = jsonObject.getJSONObject("caseinfo");
-				String title = jsonObject2.getString("Title");
-				String spcx = jsonObject3.getString("审判程序");
-				String docid = docList.get(i1).getDocId();
-				String docold = getTextFromHtml(docList.get(i1).getDecodeData());
-				String docnew = null;
-				int start = -1;
-				int end = -1;
-				String leftdoc = null;
-				String rightdoc = null;
-				String beginIndex1 = null;
-				String Startword = null; // 匹配到的开始词语
-				String Endword = null; // 匹配到的结束词语
-				for (int a = 0; a < jsonArray.size(); a++) {
-					JSONObject js = new JSONObject();
-					js = jsonArray.getJSONObject(a);
-					String trialRound = js.getString("spcx");
-					String doctype = js.getString("doctype");
-					ruleJson = jsonArray.getJSONObject(a);
-					// System.out.println(ruleJson);
-					String startWord = ruleJson.getString("start");
-					String endWord = ruleJson.getString("end");
-					String judge = ruleJson.getString("judge");
-					String[] startWords = startWord.split(";|；");
-					String[] endWords = endWord.split(";|；");
-					if (title.indexOf(doctype) != -1 && spcx.equals(trialRound)) {
+		List<Article01> docList;
+		docList = articleList;
+		// 获取符合审判程序的文书
+		JSONArray jsonArray = JSONArray.fromObject(lists);
+		JSONObject ruleJson = null;
+		for (int i1 = 0; i1 < docList.size(); i1++) {
+			JSONObject jsonObject = new JSONObject().fromObject(docList.get(i1).getDecodeData());
+			JSONObject jsonObject2 = jsonObject.getJSONObject("htmlData");
+			JSONObject jsonObject3 = jsonObject.getJSONObject("caseinfo");
+			String title = jsonObject2.getString("Title");
+			String spcx = jsonObject3.getString("审判程序");
+			String docid = docList.get(i1).getDocId();
+			String docold = getTextFromHtml(jsonObject2.getString("Html"));
+			String docnew = null;
+			int start = -1;
+			int end = -1;
+			String leftdoc = null;
+			String rightdoc = null;
+			String beginIndex1 = null;
+			String Startword = null; // 匹配到的开始词语
+			String Endword = null; // 匹配到的结束词语
+			for (int a = 0; a < jsonArray.size(); a++) {
+				JSONObject js = new JSONObject();
+				js = jsonArray.getJSONObject(a);
+				String trialRound = js.getString("spcx");
+				String doctype = js.getString("doctype");
+				ruleJson = jsonArray.getJSONObject(a);
+				// System.out.println(ruleJson);
+				String startWord = ruleJson.getString("start");
+				String endWord = ruleJson.getString("end");
+				String judge = ruleJson.getString("judge");
+				String[] startWords = startWord.split(";|；");
+				String[] endWords = endWord.split(";|；");
+//				System.out.println(title.indexOf(doctype));
+				if (title.indexOf(doctype) == -1) {
 						continue;
-					}
-					for (int j1 = 0; j1 < startWords.length; j1++) {
-						Pattern patternstart = startRuleFomat(startWords[j1]);
-						Matcher matcher = patternstart.matcher(docold);
-						if (matcher.find()) {
-							Startword = startWords[j1];
-							beginIndex1 = matcher.group();
-							start = docold.indexOf(beginIndex1);
-							leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-							rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
-							break;
-						}
-					}
-					if (rightdoc != null && start != -1) {
-						for (int x = 0; x < endWords.length; x++) {
-							Endword = endWords[x];
-							Pattern patternend = endRuleFomat(endWords[x]);
-							Matcher matcher = patternend.matcher(rightdoc);
-							if (matcher.find()) {
-								String beginIndex = matcher.group();
-								if (endWords[x].length() > 0) {
-									// System.out.println(endWords.length);
-									if (judge.equals("之前")) {
-										end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
-									} else {
-										end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()
-												+ beginIndex1.length();
-									}
-								} else {
-									end = docold.length();
-								}
-								break;
-							}
-						}
-					}
-					Docsectionandrule docsectionandrule = new Docsectionandrule();
-					Batchdata batchdata = new Batchdata();
-					if (end != -1) {
-						docnew = docold.substring(start, end);
-						docsectionandrule.setRuleid(ruleid);
-						docsectionandrule.setSectionname(latitudename);
-						docsectionandrule.setSectiontext(docnew);
-						docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-						docsectionandrule.setTitle(docList.get(i1).getTitle());
-						batchdata.setCause(causename);
-						batchdata.setDocumentid(docList.get(i1).getDocId());
-						batchdata.setEndword(Endword);
-						batchdata.setRuleid(ruleid);
-						batchdata.setStartword(Startword);
-//							batchdataDao.save(batchdata);
-//							articleDao.updateArticleState(docid, causetable, 2);
-//							docrule.save(docsectionandrule, doctable);
-						Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
-//							docidandruleidDao.save(docidandruleid);
-						docidlist.add(docidandruleid);
-						docsectionlist.add(docsectionandrule);
-						batchlist.add(batchdata);
-						
-						break;
-					} else if (end == 0) {
-						docnew = docold.substring(start, docold.length());
-						docsectionandrule.setRuleid(ruleid);
-						docsectionandrule.setSectionname(latitudename);
-						docsectionandrule.setSectiontext(docnew);
-						docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-						docsectionandrule.setTitle(docList.get(i1).getTitle());
-						batchdata.setCause(causename);
-						batchdata.setDocumentid(docList.get(i1).getDocId());
-						batchdata.setEndword(Endword);
-						batchdata.setRuleid(ruleid);
-						batchdata.setStartword(Startword);
-//							batchdataDao.save(batchdata);
-//							articleDao.updateArticleState(docid, causetable, 2);
-//							docrule.save(docsectionandrule, doctable);
-						Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
-//							docidandruleidDao.save(docidandruleid);
-						docidlist.add(docidandruleid);
-						docsectionlist.add(docsectionandrule);
-						batchlist.add(batchdata);
+				}else if (!spcx.equals(trialRound)){
+						continue;
+				}
+				for (int j1 = 0; j1 < startWords.length; j1++) {
+					Pattern patternstart = startRuleFomat(startWords[j1]);
+					Matcher matcher = patternstart.matcher(docold);
+					if (matcher.find()) {
+						Startword = startWords[j1];
+						beginIndex1 = matcher.group();
+						start = docold.indexOf(beginIndex1);
+						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
+						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
 						break;
 					}
 				}
+				if (rightdoc != null && start != -1) {
+					for (int x = 0; x < endWords.length; x++) {
+						Endword = endWords[x];
+						Pattern patternend = endRuleFomat(endWords[x]);
+						Matcher matcher = patternend.matcher(rightdoc);
+						if (matcher.find()) {
+							String beginIndex = matcher.group();
+							if (endWords[x].length() > 0) {
+								// System.out.println(endWords.length);
+								if (judge.equals("之前")) {
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
+								} else {
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()
+											+ beginIndex1.length();
+								}
+							} else {
+								end = docold.length();
+							}
+							break;
+						}
+					}
+				}
+				Docsectionandrule docsectionandrule = new Docsectionandrule();
+				Batchdata batchdata = new Batchdata();
+				if (end != -1) {
+					docnew = docold.substring(start, end);
+					docsectionandrule.setRuleid(ruleid);
+					docsectionandrule.setSectionname(latitudename);
+					docsectionandrule.setSectiontext(docnew);
+					docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
+					docsectionandrule.setTitle(docList.get(i1).getTitle());
+					batchdata.setCause(causename);
+					batchdata.setDocumentid(docList.get(i1).getDocId());
+					batchdata.setEndword(Endword);
+					batchdata.setRuleid(ruleid);
+					batchdata.setStartword(Startword);
+					 batchdataDao.save(batchdata);
+					// articleDao.updateArticleState(docid, causetable, 2);
+					docrule.save(docsectionandrule, doctable);
+					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
+					docidandruleidDao.save(docidandruleid);
+					docidlist.add(docidandruleid);
+					docsectionlist.add(docsectionandrule);
+					batchlist.add(batchdata);
+
+					break;
+				} else if (end == 0) {
+					docnew = docold.substring(start, docold.length());
+					docsectionandrule.setRuleid(ruleid);
+					docsectionandrule.setSectionname(latitudename);
+					docsectionandrule.setSectiontext(docnew);
+					docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
+					docsectionandrule.setTitle(docList.get(i1).getTitle());
+					batchdata.setCause(causename);
+					batchdata.setDocumentid(docList.get(i1).getDocId());
+					batchdata.setEndword(Endword);
+					batchdata.setRuleid(ruleid);
+					batchdata.setStartword(Startword);
+					 batchdataDao.save(batchdata);
+					// articleDao.updateArticleState(docid, causetable, 2);
+					 docrule.save(docsectionandrule, doctable);
+					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
+					 docidandruleidDao.save(docidandruleid);
+					docidlist.add(docidandruleid);
+					docsectionlist.add(docsectionandrule);
+					batchlist.add(batchdata);
+					break;
+				}
 			}
-		
-		docrule.plsave(docsectionlist, doctable);
-		batchdataDao.plsave(batchlist);
-		docidandruleidDao.plsave(docidlist);
+//			if (i1 ==  - 1){
+//				docrule.plsave(docsectionlist, doctable);
+//				batchdataDao.plsave(batchlist);
+//				docidandruleidDao.plsave(docidlist);
+//			}
+		}
 	}
 
-	
-	public boolean save(List<Article01> articleList, ArticleDao articleDao,
-			BatchdataDao batchdataDao, DocsectionandruleAction docrule, DocidandruleidDao docidandruleidDao,
-			String doctable,List<Otherdocrule> lists,String causename,String causetable,int ruleid,String latitudename) {
+	public boolean save(List<Article01> articleList, ArticleDao articleDao, BatchdataDao batchdataDao,
+			DocsectionandruleAction docrule, DocidandruleidDao docidandruleidDao, String doctable,
+			List<Otherdocrule> lists, String causename, String causetable, int ruleid, String latitudename) {
 		this.articleList = articleList;
 		this.articleDao = articleDao;
 		this.batchdataDao = batchdataDao;
@@ -184,125 +187,82 @@ public class Bigdatasave extends Thread {
 		this.ruleid = ruleid;
 		this.causetable = causetable;
 		this.latitudename = latitudename;
-		/*String ruleString = JSONArray.fromObject(lists).toString();
-		if (lists==null) {
-			System.out.println("111111111");
-		}
-		for (int k = 0; k < lists.size(); k++) {
-			List<Article01> docList;
-			try {
-				docList = breakup(articleList, ruleString);
-				// 获取符合审判程序的文书
-				JSONArray jsonArray = JSONArray.fromObject(lists);;
-				JSONObject ruleJson = null;
-				for (int i1 = 0; i1 < docList.size(); i1++) {
-					String docid = docList.get(i1).getDocId();
-					String docold = getTextFromHtml(docList.get(i1).getDecodeData());
-					String docnew = null;
-					int start = -1;
-					int end = -1;
-					String leftdoc = null;
-					String rightdoc = null;
-					String beginIndex1 = null;
-					String Startword = null; // 匹配到的开始词语
-					String Endword = null; // 匹配到的结束词语
-					for (int a = 0; a < jsonArray.size(); a++) {
-						ruleJson = jsonArray.getJSONObject(a);
-						// System.out.println(ruleJson);
-						String startWord = ruleJson.getString("start");
-						String endWord = ruleJson.getString("end");
-						String judge = ruleJson.getString("judge");
-						String[] startWords = startWord.split(";|；");
-						String[] endWords = endWord.split(";|；");
-						for (int j1 = 0; j1 < startWords.length; j1++) {
-							Pattern patternstart = startRuleFomat(startWords[j1]);
-							Matcher matcher = patternstart.matcher(docold);
-							if (matcher.find()) {
-								Startword = startWords[j1];
-								beginIndex1 = matcher.group();
-								start = docold.indexOf(beginIndex1);
-								leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-								rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
-								break;
-							}
-						}
-						if (rightdoc != null && start != -1) {
-							for (int x = 0; x < endWords.length; x++) {
-								Endword = endWords[x];
-								Pattern patternend = endRuleFomat(endWords[x]);
-								Matcher matcher = patternend.matcher(rightdoc);
-								if (matcher.find()) {
-									String beginIndex = matcher.group();
-									if (endWords[x].length() > 0) {
-										// System.out.println(endWords.length);
-										if (judge.equals("之前")) {
-											end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
-										} else {
-											end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()
-													+ beginIndex1.length();
-										}
-									} else {
-										end = docold.length();
-									}
-									break;
-								}
-							}
-						}
-						Docsectionandrule docsectionandrule = new Docsectionandrule();
-						Batchdata batchdata = new Batchdata();
-						if (end != -1) {
-							docnew = docold.substring(start, end);
-							docsectionandrule.setRuleid(ruleid);
-							docsectionandrule.setSectionname(latitudename);
-							docsectionandrule.setSectiontext(docnew);
-							docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-							docsectionandrule.setTitle(docList.get(i1).getTitle());
-							batchdata.setCause(causename);
-							batchdata.setDocumentid(docList.get(i1).getDocId());
-							batchdata.setEndword(Endword);
-							batchdata.setRuleid(ruleid);
-							batchdata.setStartword(Startword);
-							batchdataDao.save(batchdata);
-							articleDao.updateArticleState(docid, causetable, 2);
-							docrule.save(docsectionandrule, doctable);
-							Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
-							docidandruleidDao.save(docidandruleid);
-							
-							break;
-						} else if (end == 0) {
-							docnew = docold.substring(start, docold.length());
-							docsectionandrule.setRuleid(ruleid);
-							docsectionandrule.setSectionname(latitudename);
-							docsectionandrule.setSectiontext(docnew);
-							docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-							docsectionandrule.setTitle(docList.get(i1).getTitle());
-							batchdata.setCause(causename);
-							batchdata.setDocumentid(docList.get(i1).getDocId());
-							batchdata.setEndword(Endword);
-							batchdata.setRuleid(ruleid);
-							batchdata.setStartword(Startword);
-							batchdataDao.save(batchdata);
-							articleDao.updateArticleState(docid, causetable, 2);
-							docrule.save(docsectionandrule, doctable);
-							Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
-							docidandruleidDao.save(docidandruleid);
-							
-							break;
-						}
-					}
-					if (i1%10==0) {
-						System.out.println(docid);
-					}
-				}
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-		}*/
+		String a = getName();
+		 
+		 
+		 
+		/*
+		 * String ruleString = JSONArray.fromObject(lists).toString(); if
+		 * (lists==null) { System.out.println("111111111"); } for (int k = 0; k
+		 * < lists.size(); k++) { List<Article01> docList; try { docList =
+		 * breakup(articleList, ruleString); // 获取符合审判程序的文书 JSONArray jsonArray
+		 * = JSONArray.fromObject(lists);; JSONObject ruleJson = null; for (int
+		 * i1 = 0; i1 < docList.size(); i1++) { String docid =
+		 * docList.get(i1).getDocId(); String docold =
+		 * getTextFromHtml(docList.get(i1).getDecodeData()); String docnew =
+		 * null; int start = -1; int end = -1; String leftdoc = null; String
+		 * rightdoc = null; String beginIndex1 = null; String Startword = null;
+		 * // 匹配到的开始词语 String Endword = null; // 匹配到的结束词语 for (int a = 0; a <
+		 * jsonArray.size(); a++) { ruleJson = jsonArray.getJSONObject(a); //
+		 * System.out.println(ruleJson); String startWord =
+		 * ruleJson.getString("start"); String endWord =
+		 * ruleJson.getString("end"); String judge =
+		 * ruleJson.getString("judge"); String[] startWords =
+		 * startWord.split(";|；"); String[] endWords = endWord.split(";|；"); for
+		 * (int j1 = 0; j1 < startWords.length; j1++) { Pattern patternstart =
+		 * startRuleFomat(startWords[j1]); Matcher matcher =
+		 * patternstart.matcher(docold); if (matcher.find()) { Startword =
+		 * startWords[j1]; beginIndex1 = matcher.group(); start =
+		 * docold.indexOf(beginIndex1); leftdoc = docold.substring(0,
+		 * docold.indexOf(beginIndex1) + beginIndex1.length()); rightdoc =
+		 * docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
+		 * break; } } if (rightdoc != null && start != -1) { for (int x = 0; x <
+		 * endWords.length; x++) { Endword = endWords[x]; Pattern patternend =
+		 * endRuleFomat(endWords[x]); Matcher matcher =
+		 * patternend.matcher(rightdoc); if (matcher.find()) { String beginIndex
+		 * = matcher.group(); if (endWords[x].length() > 0) { //
+		 * System.out.println(endWords.length); if (judge.equals("之前")) { end =
+		 * start + rightdoc.indexOf(beginIndex) + beginIndex1.length(); } else {
+		 * end = start + rightdoc.indexOf(beginIndex) + beginIndex.length() +
+		 * beginIndex1.length(); } } else { end = docold.length(); } break; } }
+		 * } Docsectionandrule docsectionandrule = new Docsectionandrule();
+		 * Batchdata batchdata = new Batchdata(); if (end != -1) { docnew =
+		 * docold.substring(start, end); docsectionandrule.setRuleid(ruleid);
+		 * docsectionandrule.setSectionname(latitudename);
+		 * docsectionandrule.setSectiontext(docnew);
+		 * docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
+		 * docsectionandrule.setTitle(docList.get(i1).getTitle());
+		 * batchdata.setCause(causename);
+		 * batchdata.setDocumentid(docList.get(i1).getDocId());
+		 * batchdata.setEndword(Endword); batchdata.setRuleid(ruleid);
+		 * batchdata.setStartword(Startword); batchdataDao.save(batchdata);
+		 * articleDao.updateArticleState(docid, causetable, 2);
+		 * docrule.save(docsectionandrule, doctable); Docidandruleid
+		 * docidandruleid = new Docidandruleid(docList.get(i1).getDocId(),
+		 * ruleid); docidandruleidDao.save(docidandruleid);
+		 * 
+		 * break; } else if (end == 0) { docnew = docold.substring(start,
+		 * docold.length()); docsectionandrule.setRuleid(ruleid);
+		 * docsectionandrule.setSectionname(latitudename);
+		 * docsectionandrule.setSectiontext(docnew);
+		 * docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
+		 * docsectionandrule.setTitle(docList.get(i1).getTitle());
+		 * batchdata.setCause(causename);
+		 * batchdata.setDocumentid(docList.get(i1).getDocId());
+		 * batchdata.setEndword(Endword); batchdata.setRuleid(ruleid);
+		 * batchdata.setStartword(Startword); batchdataDao.save(batchdata);
+		 * articleDao.updateArticleState(docid, causetable, 2);
+		 * docrule.save(docsectionandrule, doctable); Docidandruleid
+		 * docidandruleid = new Docidandruleid(docList.get(i1).getDocId(),
+		 * ruleid); docidandruleidDao.save(docidandruleid);
+		 * 
+		 * break; } } if (i1%10==0) { System.out.println(docid); } } } catch
+		 * (InvocationTargetException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); } catch (IllegalAccessException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 * 
+		 * }
+		 */
 		return true;
 	}
 

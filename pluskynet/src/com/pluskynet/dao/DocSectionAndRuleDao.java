@@ -25,6 +25,6 @@ public interface DocSectionAndRuleDao {
 	List<Docsectionandrule> listdoc(String doctable,int rows,String sectionname);
 	void update(String doctable,String sectionname);
 
-	void plsave(List<Docsectionandrule> docsectionlist, String doctable);
+	Boolean plsave(List<Docsectionandrule> docsectionlist, String doctable);
 
 }
