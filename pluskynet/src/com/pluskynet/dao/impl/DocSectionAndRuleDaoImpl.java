@@ -24,26 +24,29 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\:", "\\\\:"));
 		}
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
-				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "'";
-		List<Docsectionandrule> list = null;
-		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+//		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
+//				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "'";
+//		List<Docsectionandrule> list = null;
+//		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
 		Connection conn = s.connection();
 		String sql = null;
-		if (list.size() == 0) {
+//		if (list.size() == 0) {
 			sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
 					+ docsectionandrule.getRuleid() + ",'" + docsectionandrule.getDocumentsid() + "','"
 					+ docsectionandrule.getSectionname() + "',?,'"
 					+ docsectionandrule.getTitle() + "')";
-		} else {
-			sql = "update " + table + " set sectiontext = ? where id= "
-					+ list.get(0).getId();
-		}
+//		} else {
+//			sql = "update " + table + " set sectiontext = ? where id= "
+//					+ list.get(0).getId();
+//		}
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, docsectionandrule.getSectiontext());
 			stmt.addBatch();
+			stmt.executeBatch();
+			conn.setAutoCommit(false);
+			conn.commit();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

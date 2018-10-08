@@ -17,15 +17,15 @@ public class BatchdataDaoImpl extends HibernateDaoSupport implements BatchdataDa
 
 	@Override
 	public void save(Batchdata batchdata) {
-		String hql = "from Batchdata where documentid = '"+batchdata.getDocumentid()+"' and ruleid = '"+batchdata.getRuleid()+"'";
-		List<Batchdata> list = this.getHibernateTemplate().find(hql);
-		if (list.size()>0) {
-			String sql = "update Batchdata set cause = ? ,documentid = ? ,ruleid = ? ,startword = ? , endword = ? where id = ?";
-			this.getHibernateTemplate().bulkUpdate(sql,batchdata.getCause(),batchdata.getDocumentid(),batchdata.getRuleid(),batchdata.getStartword()
-					,batchdata.getEndword(),list.get(0).getId());
-		}else {
+//		String hql = "from Batchdata where documentid = '"+batchdata.getDocumentid()+"' and ruleid = '"+batchdata.getRuleid()+"'";
+//		List<Batchdata> list = this.getHibernateTemplate().find(hql);
+//		if (list.size()>0) {
+//			String sql = "update Batchdata set cause = ? ,documentid = ? ,ruleid = ? ,startword = ? , endword = ? where id = ?";
+//			this.getHibernateTemplate().bulkUpdate(sql,batchdata.getCause(),batchdata.getDocumentid(),batchdata.getRuleid(),batchdata.getStartword()
+//					,batchdata.getEndword(),list.get(0).getId());
+//		}else {
 			this.getHibernateTemplate().save(batchdata);
-		}
+//		}
 	}
 
 	@Override

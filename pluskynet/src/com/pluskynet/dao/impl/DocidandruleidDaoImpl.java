@@ -20,11 +20,11 @@ public class DocidandruleidDaoImpl extends HibernateDaoSupport implements Docida
 
 	@Override
 	public void save(Docidandruleid docidandruleid) {
-		String sql = "from Docidandruleid where docid = ? and ruleid = ?";
-		List<Docidandruleid> list = this.getHibernateTemplate().find(sql,docidandruleid.getDocid(),docidandruleid.getRuleid());
-		if (list.size()==0) {
+//		String sql = "from Docidandruleid where docid = ? and ruleid = ?";
+//		List<Docidandruleid> list = this.getHibernateTemplate().find(sql,docidandruleid.getDocid(),docidandruleid.getRuleid());
+//		if (list.size()==0) {
 			this.getHibernateTemplate().save(docidandruleid);
-		}
+//		}
 		
 	}
 

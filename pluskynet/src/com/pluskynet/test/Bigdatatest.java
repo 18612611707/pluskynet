@@ -91,7 +91,7 @@ public class Bigdatatest extends Thread {
 			String doctable = null;
 			List<Cause> list = null;
 			list = getValue();
-			if (list == null) {
+			if (list.size()==0 ||list == null) {
 				list = causeDao.getArticleList();// 获取表名
 			}
 			System.out.println(list.get(0).getCausename());

@@ -71,6 +71,11 @@ public class Bigdatasave extends Thread {
 				js = jsonArray.getJSONObject(a);
 				String trialRound = js.getString("spcx");
 				String doctype = js.getString("doctype");
+				if (title.indexOf(doctype) == -1) {
+					continue;
+			}else if (!spcx.equals(trialRound)){
+					continue;
+			}
 				ruleJson = jsonArray.getJSONObject(a);
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
@@ -79,11 +84,7 @@ public class Bigdatasave extends Thread {
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
 //				System.out.println(title.indexOf(doctype));
-				if (title.indexOf(doctype) == -1) {
-						continue;
-				}else if (!spcx.equals(trialRound)){
-						continue;
-				}
+				
 				for (int j1 = 0; j1 < startWords.length; j1++) {
 					Pattern patternstart = startRuleFomat(startWords[j1]);
 					Matcher matcher = patternstart.matcher(docold);
