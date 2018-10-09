@@ -97,7 +97,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			String leftdoc = null;
 			String rightdoc = null;
 			String beginIndex1 = null;
-			for (int c = 0; c < list.size(); c++) {
+			look:for (int c = 0; c < list.size(); c++) {
 				ruleJson = jsonArray.getJSONObject(c);
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
@@ -133,7 +133,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 							} else {
 								end = docold.length();
 							}
-							break;
+							break look;
 						}
 					}
 				}

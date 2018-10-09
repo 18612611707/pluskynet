@@ -65,7 +65,7 @@ public class Bigdatatest extends Thread {
 		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 5; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {
@@ -106,8 +106,10 @@ public class Bigdatatest extends Thread {
 				boolean runs = true;
 				int rows = 2000;
 				while (runs) {
-					System.out.println("线程名称：" + getName());
-					articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表
+					synchronized (ob) {
+						System.out.println("线程名称：" + getName());
+						articleList = articleDao.getArticle01List(list.get(i).getCausetable(), allorre, rows);// 获取文书列表	
+					}
 					if (articleList.size() == 0) {
 						System.out.println(list.get(i).getCausetable() + "表无数据！！！");
 						runs = false;
@@ -126,7 +128,7 @@ public class Bigdatatest extends Thread {
 						bigdatasave[j].save(articleLists, articleDao, batchdataDao, docrule, docidandruleidDao,
 								list.get(i).getDoctable(), lists, list.get(i).getCausename(),
 								list.get(i).getCausetable(), ruleid, latitudename);
-						bigdatasave[j].setName("规则线程：" + i + j);
+						bigdatasave[j].setName("线程名称:"+getName()+","+"规则线程：" + i + j);
 						System.out.println(bigdatasave[j].getName());
 						// executor.execute(bigdatasave[j]);
 						// if(j==0){
@@ -142,7 +144,7 @@ public class Bigdatatest extends Thread {
 					for (int j = 0; j < bigdatasave.length; j++) {
 						try {
 							bigdatasave[j].join();
-							System.out.println(bigdatasave[j]+"结束");
+							System.out.println("线程名称:"+getName()+","+bigdatasave[j]+"结束");
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
