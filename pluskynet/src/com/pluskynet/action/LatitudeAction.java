@@ -47,6 +47,29 @@ public class LatitudeAction extends BaseAction{
 	public void setLatitudeName(String latitudeName) {
 		this.latitudeName = latitudeName;
 	}
+	
+	private String cause;
+	private String spcx;
+	private String sectionname;
+	
+	public String getCause() {
+		return cause;
+	}
+	public void setCause(String cause) {
+		this.cause = cause;
+	}
+	public String getSpcx() {
+		return spcx;
+	}
+	public void setSpcx(String spcx) {
+		this.spcx = spcx;
+	}
+	public String getSectionname() {
+		return sectionname;
+	}
+	public void setSectionname(String sectionname) {
+		this.sectionname = sectionname;
+	}
 	/*
 	 * 新增纬度
 	 */
@@ -106,5 +129,28 @@ public class LatitudeAction extends BaseAction{
 		latitude.setLatitudeid(latitudeId);
 		Latitude latitudes = latitudeService.getLatitude(latitude);
 		return latitudes;
+	}
+	/*
+	 * 按照名称查询
+	 */
+	public void getLatitudeShow(){
+		String msg = "失败";
+		if (latitude.getLatitudename()==null) {
+			outJsonByMsg(msg);
+		}else{
+			List<Map> list = latitudeService.getLatitudeShow(latitude.getLatitudename());
+			outJsonByMsg(list, "成功");
+		}
+	}
+	/*
+	 * 按照规则查询
+	 */
+	public void getRuleShow(){
+		String msg = "失败";
+		if (latitude.getLatitudeid()==null) {
+			outJsonByMsg(msg);
+		}else {
+			List<Latitude> list = latitudeService.getRuleShow(latitude.getLatitudeid(),cause,spcx,sectionname);
+		}
 	}
 }

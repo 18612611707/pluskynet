@@ -85,21 +85,46 @@ public class DocRuleAction extends BaseAction{
 	public void setPreviewService(PreviewService previewService) {
 		this.previewService = previewService;
 	}
+	
+	private String causeo;
+	private String causet;
+	private String spcx;
+	private String doctype;
+	
+	public String getCauseo() {
+		return causeo;
+	}
+	public void setCauseo(String causeo) {
+		this.causeo = causeo;
+	}
+	public String getCauset() {
+		return causet;
+	}
+	public void setCauset(String causet) {
+		this.causet = causet;
+	}
+	public String getSpcx() {
+		return spcx;
+	}
+	public void setSpcx(String spcx) {
+		this.spcx = spcx;
+	}
+	public String getDoctype() {
+		return doctype;
+	}
+	public void setDoctype(String doctype) {
+		this.doctype = doctype;
+	}
 	/*
 	 * 保存段落名称
 	 */
 	public void save(){
-//		System.out.println(docrule.getSectionName());
 		String msg = null;
 		if (docrule.getSectionName()==null) {
 			msg = "失败";
 		}else{
-//		docsectionandrule.setSectionName(sectionName);
 		msg = docRuleService.save(docrule);
 		}
-//		map.put("msg", msg);
-//		queryresult = JSONObject.fromObject(map);
-//		return "save";
 		outJsonByMsg(msg);
 	}
 	/*
@@ -107,9 +132,6 @@ public class DocRuleAction extends BaseAction{
 	 */
 	public void update(){
 		String msg =null;
-//		docsectionandrule.setRule(rule);
-//		docsectionandrule.setRuleid(ruleid);
-//		docsectionandrule.setSectionName(sectionName);
 		if(docrule.getRuleid()==null){
 			msg = "失败";
 		}else{
@@ -139,9 +161,6 @@ public class DocRuleAction extends BaseAction{
 			}
 		}
 		}
-//		map.put("msg", msg);
-//		queryresult = JSONObject.fromObject(map);
-//		return "update";
 		outJsonByMsg(msg);
 		}
 	/*
@@ -155,23 +174,39 @@ public class DocRuleAction extends BaseAction{
 	 * 根据ID查询规则详细
 	 */
 	public void getDocSection(){
-//		Integer ruleid = docrule.getRuleid();
-//		docrule.setRuleid(1);
-//		System.out.println(docrule);
 		String msg = "失败";
 		if(docrule.getRuleid()==null){
 			outJsonByMsg(msg);
 		}else{
 		map = docRuleService.getDcoSection(docrule);
 		msg = "成功";
-		//q_result=jsonArray;
-//		List list=new ArrayList();
-//		list.add(1);
-//		list.add(1);
-//		list.add(1);
-//		queryresult=JSONObject.fromObject(map);
-//		return "success";
 		outJsonByMsg(map, msg);
+		}
+	}
+	/*
+	 * 根据段落名称查询
+	 */
+	public void getSecNameShow(){
+		String msg = "失败";
+		if (docrule.getSectionName()==null) {
+			outJsonByMsg(msg);
+		}else{
+			List<Map> list = docRuleService.getSecNameShow(docrule.getSectionName());
+			msg = "成功";
+			outJsonByMsg(list, msg);
+		}
+	}
+	/*
+	 * 按照条件查询规则
+	 */
+	public void getRuleShow(){
+		String msg = "失败";
+		if (docrule.getRuleid()==null) {
+			outJsonByMsg(msg);
+		}else{
+			List<Docrule> list = docRuleService.getRuleShow(docrule.getRuleid(),causeo,causet,spcx,doctype);
+			msg="成功";
+			outJsonByMsg(list, msg);
 		}
 	}
 }
