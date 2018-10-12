@@ -25,5 +25,9 @@ public interface LatitudeService {
 
 	List<Map> getScreeList(String latitudeName,Integer latitudeId);
 
+	List<Map> getLatitudeShow(String latitudename);
+
+	List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname);
+
 
 }

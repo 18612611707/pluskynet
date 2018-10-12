@@ -21,4 +21,8 @@ public interface DocRuleService {
 	void saveyldelete(String sectionname);
 
 	void saveyl(Docsectionandrule docsectionandrule);
+
+	List<Map> getSecNameShow(String sectionname);
+
+	List<Docrule> getRuleShow(Integer ruleid, String causeo, String causet, String spcx, String doctype);
 }

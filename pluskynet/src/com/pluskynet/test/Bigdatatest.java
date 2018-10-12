@@ -50,7 +50,6 @@ public class Bigdatatest extends Thread {
 	static Object ob = "aa";// 值是任意的
 	volatile private int a = 0;
 	static ThreadPoolExecutor executor = null;
-
 	static List<Latitudeaudit> Lalist = null;
 	static LatitudeauditAction latitudeauditAction;
 

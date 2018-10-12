@@ -354,4 +354,25 @@ public class LatitudeServiceImpl implements LatitudeService {
 			return pattern;
 		}
 
+		@Override
+		public List<Map> getLatitudeShow(String latitudename) {
+			List<Latitude> friList = latitudeDao.getLatitudeShow(latitudename);
+			List<Map> list = new ArrayList<Map>();
+			for (int i = 0; i < friList.size(); i++) {
+				Map<String, Object> treeMap = new HashMap<String, Object>();
+				treeMap.put("latitudeid", friList.get(i).getLatitudeid());
+				treeMap.put("latitudefid", friList.get(i).getLatitudefid());
+				treeMap.put("latitudename", friList.get(i).getLatitudename());
+				treeMap.put("children", treeList(friList.get(i).getLatitudeid()));
+				list.add(treeMap);
+			}
+			return list;
+		}
+
+		@Override
+		public List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname) {
+			List<Latitude> list = latitudeDao.getRuleShow(latitudeid,cause,spcx,sectionname);
+			return list;
+		}
+
 }
