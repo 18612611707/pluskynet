@@ -4,7 +4,7 @@ public class CauseAndName {
 	private String latitudeid; //规则id
 	private int latitudetype;//规则类型 
 	private String causetable;//案由表名
-	private String causename;//案由名称
+	private String causename;//规则名称
 	private int sunnum;//总数
 	private int cornum;//符合数
 	private int ncornum;//不符合数
