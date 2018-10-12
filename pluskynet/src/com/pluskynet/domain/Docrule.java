@@ -11,6 +11,7 @@ public class Docrule implements java.io.Serializable {
 	private Integer ruleid;
 	private String sectionName;
 	private String rule;
+	private Integer fid;
 
 	// Constructors
 
@@ -19,9 +20,10 @@ public class Docrule implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Docrule(String sectionName, String rule) {
+	public Docrule(String sectionName, String rule, Integer fid) {
 		this.sectionName = sectionName;
 		this.rule = rule;
+		this.fid = fid;
 	}
 
 	// Property accessors
@@ -48,6 +50,14 @@ public class Docrule implements java.io.Serializable {
 
 	public void setRule(String rule) {
 		this.rule = rule;
+	}
+
+	public Integer getFid() {
+		return this.fid;
+	}
+
+	public void setFid(Integer fid) {
+		this.fid = fid;
 	}
 
 }
