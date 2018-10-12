@@ -53,81 +53,98 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		ResultSet resultSet = null;
 		int toatl = 0;
 		toatl = (page - 1) * rows;
-		String sql = "select DISTINCT b.cause from latitudeaudit a left join batchdata b on a.latitudeid = b.ruleid where cause is not null ;";
-		List<String> causetable = session.createSQLQuery(sql).list();//查询案由名称
-		String sql2 = "select DISTINCT causetable,causename from cause where causename in (";
-		for (int i = 0; i < causetable.size(); i++) {
-			if (i == causetable.size() - 1) {
-				sql2 = sql2 + "'" + causetable.get(i) + "')";
-			} else {
-				sql2 = sql2 + "'" + causetable.get(i) + "',";
-			}
-		} // 查询案由表 表名
-		List<CauseAndName> list1 = new ArrayList<CauseAndName>();
-		statement = conn.prepareStatement(sql2);
+		String sql = "select latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit order by latitudeid asc limit "+ toatl+", "+rows+";";
+		List<CauseAndName> list = new ArrayList<CauseAndName>();
+		statement = conn.prepareStatement(sql);
 		resultSet = statement.executeQuery();
-		while (resultSet.next()) {
-			CauseAndName causeAndName = new CauseAndName();
-			causeAndName.setCausename(resultSet.getString("causename"));
-			causeAndName.setCausetable(resultSet.getString("causetable"));
-			list1.add(causeAndName);
-		}
-//		for (int i = 0; i < list1.size(); i++) {
-//			String sql3 = "select '"+list1.get(i).getCausename()+"',COUNT(1) sunnum,sum(case when states = 1 then 1 else 0 end) cornum,sum(case when states = 2 then 1 else 0 end) ncornum from "+list1.get(i).getCausetable();
-			
-//				list1.get(i).setSunnum(resultSet.getInt("sunnum"));
-//				list1.get(i).setCornum(resultSet.getInt("cornum"));
-//				list1.get(i).setNcornum(resultSet.getInt("ncornum"));
-//		}//查询各个案由的匹配量、不匹配量、总量
-		String hqlString = "select latitudeid,latitudetype,'' cause,a.stats rulestats,a.batchstats as batchstats from latitudeaudit a limit "+ toatl+", "+rows+";";
-		statement = conn.prepareStatement(hqlString);
-		resultSet = statement.executeQuery();
-		List<CauseAndName> list2 = new ArrayList<CauseAndName>();
 		while (resultSet.next()) {
 			CauseAndName causeAndName = new CauseAndName();
 			causeAndName.setLatitudeid(resultSet.getString("latitudeid"));
+			causeAndName.setCausetable(resultSet.getString("latitudename"));//规则名称
 			causeAndName.setLatitudetype(resultSet.getInt("latitudetype"));
-			causeAndName.setCausename(resultSet.getString("cause"));
-			causeAndName.setRulestats(resultSet.getString("rulestats"));
+			causeAndName.setRulestats(resultSet.getString("stats"));
 			causeAndName.setBatchstat(resultSet.getString("batchstats"));
-			list2.add(causeAndName);
+			list.add(causeAndName);
 		}
-		String sql3 = "select b.`ruleid` as ruleid ,COUNT(1) sunnum,COUNT( b.`documentid` IS NULL  or null ) ncornum from "+
-				"(select id,doc_id from article01 "+
- "UNION ALL select id,doc_id from article02 "+
- "UNION ALL select id,doc_id from article03 "+
- "UNION ALL select id,doc_id from article04 "+
- "UNION ALL select id,doc_id from article05 "+
- "UNION ALL select id,doc_id from article06 "+
- "UNION ALL select id,doc_id from article07 "+
- "UNION ALL select id,doc_id from article08 "+
- "UNION ALL select id,doc_id from article09 "+
- "UNION ALL select id,doc_id from article10 "+
-") a LEFT JOIN `batchdata` b on a.doc_id = b.`documentid`  group by ruleid";
-		sql3 = "SELECT `latitudeid` as ruleid,b.`sectionName` as cause ,`latitudetype` as latitudetype,COUNT(c.`ruleid`) as cornum,`stats` ,`batchstats`   FROM `latitudeaudit` a left join `docrule` b on a.`latitudeid` =b.`ruleid` left join  (select ruleid,documentsid from `docsectionandrule01` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule02` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule03` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule04` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule05` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule06` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule07` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule08` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule09` "+
-"UNION ALL select ruleid,documentsid from `docsectionandrule10` ) c on a.`latitudeid`  = c.ruleid where a.rule<>'' group by latitudeid";
-		statement = conn.prepareStatement(sql3);
+		String hql = "select SUM(num) as num from (select COUNT(1) as num from article01 union all "
+				+ "select COUNT(1) as num from article02 union all "
+				+ "select COUNT(1) as num from article03 union all "
+				+ "select COUNT(1) as num from article04 union all "
+				+ "select COUNT(1) as num from article05 union all "
+				+ "select COUNT(1) as num from article06 union all "
+				+ "select COUNT(1) as num from article07 union all "
+				+ "select COUNT(1) as num from article08 union all "
+				+ "select COUNT(1) as num from article09 union all "
+				+ "select COUNT(1) as num from article10 )a ;";//民事文书总数
+		statement = conn.prepareStatement(hql);
 		resultSet = statement.executeQuery();
+		int znum = 0;
 		while (resultSet.next()) {
-			for (int j = 0; j < list2.size(); j++) {
-				if (list2.get(j).getLatitudeid()==resultSet.getString("ruleid")) {
-					list2.get(j).setNcornum(resultSet.getInt("ncornum"));
-					list2.get(j).setSunnum(resultSet.getInt("sunnum"));
-					list2.get(j).setCornum(resultSet.getInt("cornum"));
+			znum = resultSet.getInt("num");
+		}
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).getLatitudetype()==0) {
+				String hqlString = "select ruleid,COUNT(1) as fhnum from docidandruleid where ruleid = "+list.get(i).getLatitudeid()+" ";
+				statement = conn.prepareStatement(hqlString);
+				resultSet = statement.executeQuery();
+				list.get(i).setSunnum(znum);
+				while (resultSet.next()) {
+					Integer cornum = resultSet.getInt("fhnum");
+					list.get(i).setCornum(cornum);
+					Integer ncornum = znum - cornum;
+					list.get(i).setNcornum(ncornum);
 				}
 			}
+			
 		}
+//		String hqlString = "select ruleid,COUNT(1) from docidandruleid group by ruleid;";
+		
+//		List<CauseAndName> list2 = new ArrayList<CauseAndName>();
+//		while (resultSet.next()) {
+//			CauseAndName causeAndName = new CauseAndName();
+//			causeAndName.setLatitudeid(resultSet.getString("latitudeid"));
+//			causeAndName.setLatitudetype(resultSet.getInt("latitudetype"));
+//			causeAndName.setCausename(resultSet.getString("cause"));
+//			causeAndName.setRulestats(resultSet.getString("rulestats"));
+//			causeAndName.setBatchstat(resultSet.getString("batchstats"));
+//			list2.add(causeAndName);
+//		}
+//		String sql3 = "select b.`ruleid` as ruleid ,COUNT(1) sunnum,COUNT( b.`documentid` IS NULL  or null ) ncornum from "+
+//				"(select id,doc_id from article01 "+
+// "UNION ALL select id,doc_id from article02 "+
+// "UNION ALL select id,doc_id from article03 "+
+// "UNION ALL select id,doc_id from article04 "+
+// "UNION ALL select id,doc_id from article05 "+
+// "UNION ALL select id,doc_id from article06 "+
+// "UNION ALL select id,doc_id from article07 "+
+// "UNION ALL select id,doc_id from article08 "+
+// "UNION ALL select id,doc_id from article09 "+
+// "UNION ALL select id,doc_id from article10 "+
+//") a LEFT JOIN `batchdata` b on a.doc_id = b.`documentid`  group by ruleid";
+//		sql3 = "SELECT `latitudeid` as ruleid,b.`sectionName` as cause ,`latitudetype` as latitudetype,COUNT(c.`ruleid`) as cornum,`stats` ,`batchstats`   FROM `latitudeaudit` a left join `docrule` b on a.`latitudeid` =b.`ruleid` left join  (select ruleid,documentsid from `docsectionandrule01` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule02` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule03` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule04` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule05` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule06` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule07` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule08` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule09` "+
+//"UNION ALL select ruleid,documentsid from `docsectionandrule10` ) c on a.`latitudeid`  = c.ruleid where a.rule<>'' group by latitudeid";
+//		statement = conn.prepareStatement(sql3);
+//		resultSet = statement.executeQuery();
+//		while (resultSet.next()) {
+//			for (int j = 0; j < list2.size(); j++) {
+//				if (list2.get(j).getLatitudeid()==resultSet.getString("ruleid")) {
+//					list2.get(j).setNcornum(resultSet.getInt("ncornum"));
+//					list2.get(j).setSunnum(resultSet.getInt("sunnum"));
+//					list2.get(j).setCornum(resultSet.getInt("cornum"));
+//				}
+//			}
+//		}
 		session.flush();
 		session.clear();
-		return list2;
+		return list;
 	}
 
 	@Override

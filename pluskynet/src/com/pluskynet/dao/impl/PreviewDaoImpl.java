@@ -31,7 +31,8 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 	public List<StatsDoc> getDocList(Preview preview, List<Articleyl> listaArticles) {
 		Parsing parsing = new Parsing();
 		// 文书拆分，返回docid和文书主文章信息
-		List<DocidAndDoc> docList = null;
+		List<DocidAndDoc> docList = new ArrayList<DocidAndDoc>();
+		List<DocidAndDoc> docLists = null;
 		List<StatsDoc> statsDocs = new ArrayList<StatsDoc>();
 		JSONArray jsonArray = new JSONArray();
 		JSONObject ruleJson = new JSONObject();
@@ -41,6 +42,8 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 		String judges = null;
 		String spcx = null;
 		String doctype = null;
+		Integer fhnum = 0;
+		Integer bfhnum = 0;
 		List<Otherdocrule> list = new ArrayList<Otherdocrule>();
 		for (int b = 0; b < jsonArray.size(); b++) {
 			Otherdocrule otherdocrule = new Otherdocrule();
@@ -82,8 +85,8 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 		for (int c = 0; c < list.size(); c++) {
 			jsonArray = JSONArray.fromObject(list);
 			preview.setRule(jsonArray.get(c).toString());
-			docList = parsing.DocList(listaArticles, preview);
-			docList.addAll(docList);
+			docLists = parsing.DocList(listaArticles, preview);
+			docList.addAll(docLists);
 		}
 		for (int i = 0; i < docList.size(); i++) {
 			StatsDoc statsDoc = new StatsDoc();
@@ -143,6 +146,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				docidAndDoc.setDocid(docid);
 				docidAndDoc.setTitle(doctitle);
 				statsDoc.setDocidAndDoc(docidAndDoc);
+				statsDoc.setNum(bfhnum++);
 				statsDocs.add(statsDoc);
 			} else {
 				if (end != -1) {
@@ -155,6 +159,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				docidAndDoc.setDocid(docid);
 				docidAndDoc.setTitle(doctitle);
 				statsDoc.setDocidAndDoc(docidAndDoc);
+				statsDoc.setNum(fhnum++);
 				statsDocs.add(statsDoc);
 				/*
 				 * for (int j = 0; j < statsDocs.size(); j++) {

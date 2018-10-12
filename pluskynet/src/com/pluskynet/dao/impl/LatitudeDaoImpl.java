@@ -10,6 +10,9 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import com.pluskynet.dao.LatitudeDao;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.otherdomain.Treelatitude;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 @SuppressWarnings("all")
 public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao {
 
@@ -158,6 +161,52 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 		if (list.size()>0) {
 			return list.get(0).getLatitudeid();
 		}
+		return null;
+	}
+
+	@Override
+	public List<Latitude> getLatitudeShow(String latitudename) {
+		String hql = "from Latitude where latitudeName = '"+latitudename+"'";
+		List<Latitude> list = this.getHibernateTemplate().find(hql);
+		return list;
+	}
+
+	@Override
+	public List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname) {
+		String hql = "from Latitude where latitudeId = "+latitudeid+"";
+		List<Latitude> list = this.getHibernateTemplate().find(hql);
+		List<Latitude> lists = null;
+		for (int i = 0; i < list.size(); i++) {
+			Latitude latitude = new Latitude();
+			JSONArray jsonArray = JSONArray.fromObject(list.get(i).getRule());
+			String ruleString = "";
+			for (int j = 0; j < jsonArray.size(); j++) {
+				JSONObject jss = JSONObject.fromObject(jsonArray.get(i));
+				if (spcx.length()!=0) {
+					if (!jss.get("spcx").equals(spcx)) {
+						continue;
+					}
+				}
+				if (cause.length()!=0) {
+					if (!jss.get("cause").equals(cause)) {
+						continue;
+					}
+				}
+				if (sectionname.length()!=0) {
+					if (!jss.get("sectionname").equals(sectionname)) {
+						continue;
+					}
+				}
+				ruleString = ruleString + jsonArray.get(j).toString();
+			}
+			latitude.setLatitudefid(list.get(i).getLatitudefid());
+			latitude.setLatitudeid(list.get(i).getLatitudeid());
+			latitude.setRule(ruleString);
+			latitude.setRuletype(list.get(i).getRuletype());
+			latitude.setLatitudename(list.get(i).getLatitudename());
+			lists.add(latitude);
+		}
+		
 		return null;
 	}
 }

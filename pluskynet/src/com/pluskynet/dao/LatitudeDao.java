@@ -24,4 +24,8 @@ public interface LatitudeDao {
 	
 	Integer selectid(String latitudeName);
 
+	List<Latitude> getLatitudeShow(String latitudename);
+
+	List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname);
+
 }
