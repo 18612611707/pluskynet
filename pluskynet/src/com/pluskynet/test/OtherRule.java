@@ -4,16 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.codec.language.bm.RuleType;
-import org.apache.struts2.components.ElseIf;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.pluskynet.action.DocsectionandruleAction;
 import com.pluskynet.action.LatitudeAction;
 import com.pluskynet.action.LatitudeauditAction;
-import com.pluskynet.action.PreviewAction;
-import com.pluskynet.dao.ArticleDao;
 import com.pluskynet.dao.BatchdataDao;
 import com.pluskynet.dao.CauseDao;
 import com.pluskynet.dao.DocSectionAndRuleDao;
@@ -31,14 +26,10 @@ import com.pluskynet.domain.LatitudedocKey;
 import com.pluskynet.domain.LatitudedocTime;
 import com.pluskynet.domain.LatitudedocWord;
 import com.pluskynet.otherdomain.Otherrule;
-import com.pluskynet.service.LatitudeService;
-
-import freemarker.core.ReturnInstruction.Return;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class OtherRule {
-
 	static ClassPathXmlApplicationContext resource = null;
 	static BatchdataDao batchdataDao;
 
@@ -49,25 +40,24 @@ public class OtherRule {
 		LatitudeAction latitudeAction = (LatitudeAction) resource.getBean("latitudeAction");
 		CauseDao causeDao = (CauseDao) resource.getBean("causeDao");
 		DocSectionAndRuleDao docSectionAndRuleDao = (DocSectionAndRuleDao) resource.getBean("docSectionAndRuleDao");
-		DocsectionandruleAction docsectionandruleAction = (DocsectionandruleAction) resource.getBean("docsectionandruleAction");
 		LatitudeKeyDao latitudeKeyDao = (LatitudeKeyDao) resource.getBean("latitudeKeyDao");
 		LatitudewordDao latitudewordDao = (LatitudewordDao) resource.getBean("latitudeWordDao");
 		LatitudetimeDao latitudetimeDao = (LatitudetimeDao) resource.getBean("latitudeTimeDao");
 		DocidandruleidDao docidandruleidDao = (DocidandruleidDao) resource.getBean("docidandruleidDao");
 		int batchstats = 1;// 1:已审批规则 2:剩余跑批规则
 		List<Latitudeaudit> Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 1);// 获取已审批过的规则
-		List<Cause> Causelists = causeDao.getArticleList();// 获取表名
+		List<Cause> Causelists = causeDao.getArticleList(0);// 获取表名,0:民事 1:刑事
 		for (int i = 0; i < Lalist.size(); i++) {
 			latitudeAction.setLatitudeId(Lalist.get(i).getLatitudeid());
 			Latitude latitude = latitudeAction.getLatitudes();
 			List<Otherrule> list = ruleFormat(latitude.getRule(), latitude.getRuletype());// 规则整理
-			int rows = 10000;
+			int rows = 2000;
 			for (int j = 0; j < list.size(); j++) {
 				String sectionname = list.get(j).getSectionname();
 				int num = list.get(j).getNum();
 				int timeformat = list.get(j).getTimeformat();
 				for (int j2 = 0; j2 < Causelists.size(); j2++) {
-					docsectionandruleAction.update(Causelists.get(j2).getDoctable(), sectionname);
+//					docsectionandruleAction.update(Causelists.get(j2).getDoctable(), sectionname);//需要重新跑批的数据状态改为0
 					List<Docsectionandrule> docsectionandrulelist = null;
 					do {
 						docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(j2).getDoctable(), rows,
@@ -93,13 +83,14 @@ public class OtherRule {
 												batchdata.setContain(contain[l]);
 												batchdata.setNotcon(notcon[l2]);
 												batchdataDao.save(batchdata);
-												Docidandruleid docidandruleid = new Docidandruleid(docsectionandrulelist.get(k).getDocumentsid(),Lalist.get(i).getLatitudeid());
+												Docidandruleid docidandruleid = new Docidandruleid(
+														docsectionandrulelist.get(k).getDocumentsid(),
+														Lalist.get(i).getLatitudeid());
 												docidandruleidDao.save(docidandruleid);
 											}
 										}
 									}
 								}
-
 							} else if (latitude.getRuletype() == 2) {
 								String[] startWords = list.get(j).getStart().split(";");// 对开始词语进行拆分
 								String[] endWords = list.get(j).getEnd().split(";");// 对结束词语进行拆分
@@ -141,39 +132,43 @@ public class OtherRule {
 											break;
 										}
 									}
-								
-								if (end != -1) {
-									docnew = docold.substring(start, end);
-									LatitudedocWord latitudedocWord = new LatitudedocWord();
-									latitudedocWord.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
-									latitudedocWord.setLatitudename(Lalist.get(j).getLatitudename());
-									latitudedocWord.setLatitudeid(Lalist.get(j).getLatitudeid());
-									latitudewordDao.save(latitudedocWord);
-									Batchdata batchdata = new Batchdata();
-									batchdata.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
-									batchdata.setStartword(startword);
-									batchdata.setEndword(endword);
-									batchdataDao.save(batchdata);
-									Docidandruleid docidandruleid = new Docidandruleid(docsectionandrulelist.get(k).getDocumentsid(),Lalist.get(i).getLatitudeid());
-									docidandruleidDao.save(docidandruleid);
-									break;
-								} else if (end == 0) {
-									docnew = docold.substring(start, docold.length());
-									LatitudedocWord latitudedocWord = new LatitudedocWord();
-									latitudedocWord.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
-									latitudedocWord.setLatitudename(Lalist.get(j).getLatitudename());
-									latitudedocWord.setLatitudeid(Lalist.get(j).getLatitudeid());
-									latitudewordDao.save(latitudedocWord);
-									Batchdata batchdata = new Batchdata();
-									batchdata.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
-									batchdata.setStartword(startword);
-									batchdata.setEndword(endword);
-									batchdataDao.save(batchdata);
-									Docidandruleid docidandruleid = new Docidandruleid(docsectionandrulelist.get(k).getDocumentsid(),Lalist.get(i).getLatitudeid());
-									docidandruleidDao.save(docidandruleid);
-									break;
-								}
-								
+
+									if (end != -1) {
+										docnew = docold.substring(start, end);
+										LatitudedocWord latitudedocWord = new LatitudedocWord();
+										latitudedocWord.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
+										latitudedocWord.setLatitudename(Lalist.get(j).getLatitudename());
+										latitudedocWord.setLatitudeid(Lalist.get(j).getLatitudeid());
+										latitudewordDao.save(latitudedocWord);
+										Batchdata batchdata = new Batchdata();
+										batchdata.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
+										batchdata.setStartword(startword);
+										batchdata.setEndword(endword);
+										batchdataDao.save(batchdata);
+										Docidandruleid docidandruleid = new Docidandruleid(
+												docsectionandrulelist.get(k).getDocumentsid(),
+												Lalist.get(i).getLatitudeid());
+										docidandruleidDao.save(docidandruleid);
+										break;
+									} else if (end == 0) {
+										docnew = docold.substring(start, docold.length());
+										LatitudedocWord latitudedocWord = new LatitudedocWord();
+										latitudedocWord.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
+										latitudedocWord.setLatitudename(Lalist.get(j).getLatitudename());
+										latitudedocWord.setLatitudeid(Lalist.get(j).getLatitudeid());
+										latitudewordDao.save(latitudedocWord);
+										Batchdata batchdata = new Batchdata();
+										batchdata.setDocumentid(docsectionandrulelist.get(k).getDocumentsid());
+										batchdata.setStartword(startword);
+										batchdata.setEndword(endword);
+										batchdataDao.save(batchdata);
+										Docidandruleid docidandruleid = new Docidandruleid(
+												docsectionandrulelist.get(k).getDocumentsid(),
+												Lalist.get(i).getLatitudeid());
+										docidandruleidDao.save(docidandruleid);
+										break;
+									}
+
 								}
 							} else {
 								Pattern patPunc = null;
@@ -197,7 +192,9 @@ public class OtherRule {
 										Batchdata batchdata = new Batchdata();
 										batchdata.setNums(num);
 										batchdataDao.save(batchdata);
-										Docidandruleid docidandruleid = new Docidandruleid(docsectionandrulelist.get(k).getDocumentsid(),Lalist.get(i).getLatitudeid());
+										Docidandruleid docidandruleid = new Docidandruleid(
+												docsectionandrulelist.get(k).getDocumentsid(),
+												Lalist.get(i).getLatitudeid());
 										docidandruleidDao.save(docidandruleid);
 									}
 
@@ -220,57 +217,17 @@ public class OtherRule {
 			Otherrule otherrule = new Otherrule();
 			JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
 			if (ruletype == 1) {
-				if (i == 0) {
-					otherrule.setSectionname(jsonObject.getString("sectionname"));
-					otherrule.setCond(jsonObject.getString("cond"));
-					otherrule.setContains(jsonObject.getString("contains"));
-					otherrule.setNocond(jsonObject.getString("nocond"));
-					otherrule.setNotcon(jsonObject.getString("notcon"));
-					list.add(otherrule);
-				} else {
-					for (int j = 0; j < list.size(); j++) {
-						if (list.get(j).getSectionname().equals(jsonObject.getString("sectionname"))) {
-							if (!jsonObject.getString("contains").equals("")) {
-								list.get(j).setContains(
-										list.get(j).getContains() + ";" + jsonObject.getString("contains"));
-							}
-							if (!jsonObject.getString("notcon").equals("")) {
-								list.get(j).setNotcon(list.get(j).getNotcon() + ";" + jsonObject.getString("notcon"));
-							}
-						} else {
-							otherrule.setSectionname(jsonObject.getString("sectionname"));
-							otherrule.setCond(jsonObject.getString("cond"));
-							otherrule.setContains(jsonObject.getString("contains"));
-							otherrule.setNocond(jsonObject.getString("nocond"));
-							otherrule.setNotcon(jsonObject.getString("notcon"));
-							list.add(otherrule);
-						}
-					}
-				}
+				otherrule.setSectionname(jsonObject.getString("sectionname"));
+				otherrule.setCond(jsonObject.getString("cond"));
+				otherrule.setContains(jsonObject.getString("contains"));
+				otherrule.setNocond(jsonObject.getString("nocond"));
+				otherrule.setNotcon(jsonObject.getString("notcon"));
+				list.add(otherrule);
 			} else if (ruletype == 2) {
-				if (i == 0) {
-					otherrule.setSectionname(jsonObject.getString("sectionname"));
-					otherrule.setStart(jsonObject.getString("beginText"));
-					otherrule.setEnd(jsonObject.getString("endText"));
-					list.add(otherrule);
-				} else {
-					for (int j = 0; j < list.size(); j++) {
-						if (list.get(j).getSectionname().equals(jsonObject.getString("sectionname"))) {
-							if (!jsonObject.getString("beginText").equals("")) {
-								list.get(j).setStart(list.get(j).getStart() + ";" + jsonObject.getString("beginText"));
-							}
-							if (!jsonObject.getString("endText").equals("")) {
-								list.get(j).setEnd(list.get(j).getEnd() + ";" + jsonObject.getString("endText"));
-							}
-						} else {
-							otherrule.setSectionname(jsonObject.getString("sectionname"));
-							otherrule.setStart(jsonObject.getString("beginText"));
-							otherrule.setEnd(jsonObject.getString("endText"));
-							list.add(otherrule);
-						}
-					}
-				}
-
+				otherrule.setSectionname(jsonObject.getString("sectionname"));
+				otherrule.setStart(jsonObject.getString("beginText"));
+				otherrule.setEnd(jsonObject.getString("endText"));
+				list.add(otherrule);
 			} else if (ruletype == 3) {
 				otherrule.setSectionname(jsonObject.getString("sectionname"));
 				otherrule.setNum(jsonObject.getInt("num"));

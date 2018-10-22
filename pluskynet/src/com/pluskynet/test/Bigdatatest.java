@@ -50,6 +50,7 @@ public class Bigdatatest extends Thread {
 	static Object ob = "aa";// 值是任意的
 	volatile private int a = 0;
 	static ThreadPoolExecutor executor = null;
+
 	static List<Latitudeaudit> Lalist = null;
 	static LatitudeauditAction latitudeauditAction;
 
@@ -64,7 +65,7 @@ public class Bigdatatest extends Thread {
 		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 20; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {
@@ -91,7 +92,7 @@ public class Bigdatatest extends Thread {
 			List<Cause> list = null;
 			list = getValue();
 			if (list.size()==0 ||list == null) {
-				list = causeDao.getArticleList();// 获取表名
+				list = causeDao.getArticleList(0);// 获取表名,0:民事 1:刑事
 			}
 			System.out.println(list.get(0).getCausename());
 			List<Article01> articleList = null;

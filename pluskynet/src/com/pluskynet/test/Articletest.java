@@ -5,14 +5,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.CharBuffer;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.pluskynet.action.ArticleAction;
-import com.pluskynet.domain.Article;
 /*
  * 清洗好的数据分表
  */
@@ -35,10 +33,10 @@ public class Articletest extends Thread {
 //			i = articleAction.BreakArticle(data, 200);
 //			System.out.println(i);
 //		} while (i > 0);
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i <50; i++) {
 			Articletest articletest1 = new Articletest("线程名称："+i);
 			articletest1.start();
-		}	
+		}
 	}
 	public void run() {
 		ClassPathXmlApplicationContext resource = new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -48,7 +46,7 @@ public class Articletest extends Thread {
 		int i = 0;
 		do {
 			System.out.println("线程名："+getName());
-			i = articleAction.BreakArticle(data, 200,ob);
+			i = articleAction.BreakArticle(data, 2000,ob);
 			System.out.println(i);
 		} while (i > 0);
 	}

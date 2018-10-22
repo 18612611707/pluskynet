@@ -1,5 +1,6 @@
 package com.pluskynet.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pluskynet.dao.ArticleDao;
@@ -55,10 +56,11 @@ public class ArticleServiceImpl implements ArticleService {
 		String tables = null;
 		String datas = null;
 		List<Article> list = null;
+		String table = null;
 		synchronized (ob) {
-		list = articleDao.breakArticle(data, rows);	
+			list = articleDao.breakArticle(data, rows);
 		}
-		if (data==null || data.equals("")) {
+		if (data == null || data.equals("")) {
 			tables = "article_decode";
 			datas = "2017";
 		} else {
@@ -67,40 +69,110 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 		for (int i = 0; i < list.size(); i++) {
 			// articleDao.articleState(list.get(i).getDocId(), tables, 9);
-			
+			String court = null;
+			String casetype = null;
+			String reason = null;
+			String trialRound = null;
+			String trialDate = null;
+			String appellor = null;
+			String LegalBase = null;
+			String ccourtid = null;
+			String caseno = null;
+			String courtcities = null;
+			String courtprovinces = null;
+			String casename = null;
+			String doctype = null;
 			String decodeData = list.get(i).getDecodeData();
 			JSONObject jsonObject = new JSONObject().fromObject(decodeData);
 			JSONObject jsonObject2 = new JSONObject().fromObject(jsonObject.getString("dirData"));
 			JSONObject jsonObject3 = new JSONObject().fromObject(jsonObject.getString("htmlData"));
+			JSONObject jsonObject4 = new JSONObject().fromObject(jsonObject.getString("caseinfo"));
 			String title = null;
 			try {
 				title = jsonObject3.getString("Title");
+				if (title.contains("判决书")) {
+					doctype = "判决书";
+				}else if (title.contains("裁定书")) {
+					doctype = "裁定书";
+				}else if (title.contains("调解书")) {
+					doctype = "调解书";
+				}else if (title.contains("决定书")) {
+					doctype = "决定书";
+				}else if (title.contains("通知书")) {
+					doctype = "通知书";
+				}else if (title.contains("批复")) {
+					doctype = "批复";
+				}else if (title.contains("答复")) {
+					doctype = "答复";
+				}else if (title.contains("函")) {
+					doctype = "函";
+				}else if (title.contains("令")) {
+					doctype = "令";
+				}
 			} catch (Exception e) {
 				continue;
 			}
 			JSONArray jsonArray = new JSONArray().fromObject(jsonObject2.getString("RelateInfo"));
 			for (int j = 0; j < jsonArray.size(); j++) {
+				
 				JSONObject js = new JSONObject().fromObject(jsonArray.get(j));
+				if (js.getString("key").equals("caseType")) {
+					casetype = js.getString("value");
+				}
 				if (js.getString("key").equals("reason")) {
-					String value = js.getString("value");
-					Cause cause = new Cause();
-					cause.setCausename(value);
-					String table = causeDao.select(cause);
-					if (table == "") {
-						continue;
-					}
-					Article01 article01 = new Article01();
-					article01.setDate(data);
-					article01.setTitle(title);
-					article01.setDecodeData(list.get(i).getDecodeData());
-					article01.setDocId(list.get(i).getDocId());
-					article01.setStates(0);
-					articleDao.articleSave(table, article01);
-
+					reason = js.getString("value");
+				}
+				if (js.getString("key").equals("court")) {
+					court = js.getString("value");
+				}
+				if (js.getString("key").equals("trialRound")) {
+					trialRound = js.getString("value");
+				}
+				if (js.getString("key").equals("trialDate")) {
+					trialDate = js.getString("value");
+				}
+				if (js.getString("key").equals("appellor")) {
+					appellor = js.getString("value");
 				}
 			}
-
+			/*LegalBase = jsonObject2.getString("LegalBase").toString();
+			LegalBase =LegalBase.replace("\\'", "\\\\'");*/
+			for (int j = 0; j < jsonObject4.size(); j++) {
+				ccourtid = jsonObject4.getString("法院ID").toString();
+				caseno = jsonObject4.getString("案号").toString();
+				courtcities = jsonObject4.getString("法院地市").toString();
+				courtprovinces = jsonObject4.getString("法院省份").toString();
+				casename = jsonObject4.getString("案件名称").toString();
+			}
+				Cause cause = new Cause();
+				cause.setCausename(reason);
+				table = causeDao.select(cause);
+				if (table == "") {
+					continue;
+				}	
+				Article01 article01 = new Article01();
+				article01.setDate(data);
+				article01.setTitle(title);
+				article01.setDecodeData(list.get(i).getDecodeData().replace("\\'", "\\\\'"));
+				article01.setDocId(list.get(i).getDocId());
+				article01.setStates(0);
+				article01.setAppellor(appellor);
+				article01.setCasename(casename);
+				article01.setCaseno(caseno);
+				article01.setCasetype(casetype);
+				article01.setCcourtid(Integer.parseInt(ccourtid));
+				article01.setCourt(court);
+				article01.setCourtcities(courtcities);
+				article01.setCourtprovinces(courtprovinces);
+				article01.setDoctype(doctype);
+				article01.setLegalbase(LegalBase);
+				article01.setSpcx(trialRound);
+				article01.setTrialdate(trialDate);
+				article01.setReason(reason);
+				articleDao.articleSave(table, article01);
 		}
+		
+
 		if (list.size() > 0) {
 			return 1;
 		}

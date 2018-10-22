@@ -62,43 +62,35 @@ public class LatitudeauditServiceImpl implements LatitudeauditService {
 
 	@Override
 	public List<DocidAndDoc> getDocList(String causename, int latitudetype, int num,int rows,int page,int ruleid) {
-		List<DocidAndDoc> list = null;
-		Cause cause = new Cause();
-		if (causename!=null) {
-			cause.setCausename(causename);
-			cause = causeDao.selectCause(cause);
-		}
-		if (causename!=null) {
-			 list = latitudeauditDao.getDocList(cause,latitudetype,num,rows,page,ruleid);
-		}
+//		List<DocidAndDoc> list = null;
+//		Cause cause = new Cause();
+//		if (causename!=null) {
+//			cause.setCausename(causename);
+//			cause = causeDao.selectCause(cause);
+//		}
+//		if (causename!=null) {
+		List<DocidAndDoc> list = latitudeauditDao.getDocList(causename,latitudetype,num,rows,page,ruleid);
+//		}
 		return list;
 	}
 
 	@Override
 	public int getDocby(String causename, int latitudetype, int num, int ruleid) {
 		int list = 0;
-		Cause cause = new Cause();
-		if (causename!=null) {
-			cause.setCausename(causename);
-			cause = causeDao.selectCause(cause);
-		}
-		if (causename!=null) {
-			 list = latitudeauditDao.getDocby(cause,latitudetype,num,ruleid);
-		}
+//		Cause cause = new Cause();
+//		if (causename!=null) {
+//			cause.setCausename(causename);
+//			cause = causeDao.selectCause(cause);
+//		}
+//		if (causename!=null) {
+			 list = latitudeauditDao.getDocby(causename,latitudetype,num,ruleid);
+//		}
 		return list;
 	}
 
 	@Override
-	public String getDoc(String causename, int latitudetype,String docid,int ruleid) {
-		String htmlString = null;
-		Cause cause = new Cause();
-		if (causename!=null) {
-			cause.setCausename(causename);
-			cause = causeDao.selectCause(cause);
-		}
-		if (causename!=null) {
-			htmlString = latitudeauditDao.getDoc(cause,latitudetype,docid,ruleid);
-		}
+	public String getDoc(String causename, int latitudetype,String docid) {
+		String htmlString = latitudeauditDao.getDoc(causename,latitudetype,docid);
 		return htmlString;
 	}
 

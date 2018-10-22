@@ -120,8 +120,9 @@ public class DocRuleAction extends BaseAction{
 	 */
 	public void save(){
 		String msg = null;
-		if (docrule.getSectionName()==null) {
-			msg = "失败";
+		if (docrule.getSectionname()==null) {
+			docrule.setSectionname(sectionName);
+			msg = docRuleService.save(docrule);
 		}else{
 		msg = docRuleService.save(docrule);
 		}
@@ -139,7 +140,7 @@ public class DocRuleAction extends BaseAction{
 		if (msg=="成功") {
 			Preview preview = new Preview();
 			preview.setRule(docrule.getRule());
-			String sectionname = docrule.getSectionName();
+			String sectionname = docrule.getSectionname();
 			List<StatsDoc> list = previewService.getDocList(preview);
 			int a = 0;
 			for (int i = 0; i < list.size(); i++) {
@@ -187,11 +188,13 @@ public class DocRuleAction extends BaseAction{
 	 * 根据段落名称查询
 	 */
 	public void getSecNameShow(){
-		String msg = "失败";
-		if (docrule.getSectionName()==null) {
-			outJsonByMsg(msg);
+		String msg = "成功";
+		if (docrule.getSectionname()==null) {
+			docrule.setSectionname(sectionName);
+			List<Map> list = docRuleService.getSecNameShow(docrule.getSectionname());
+			outJsonByMsg(list, msg);
 		}else{
-			List<Map> list = docRuleService.getSecNameShow(docrule.getSectionName());
+			List<Map> list = docRuleService.getSecNameShow(docrule.getSectionname());
 			msg = "成功";
 			outJsonByMsg(list, msg);
 		}
@@ -206,7 +209,7 @@ public class DocRuleAction extends BaseAction{
 		}else{
 			List<Docrule> list = docRuleService.getRuleShow(docrule.getRuleid(),causeo,causet,spcx,doctype);
 			msg="成功";
-			outJsonByMsg(list, msg);
+			outJsonByMsg(list.get(0), msg);
 		}
 	}
 }

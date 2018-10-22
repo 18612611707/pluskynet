@@ -9,7 +9,7 @@ public class Docrule implements java.io.Serializable {
 	// Fields
 
 	private Integer ruleid;
-	private String sectionName;
+	private String sectionname;
 	private String rule;
 	private Integer fid;
 
@@ -21,7 +21,7 @@ public class Docrule implements java.io.Serializable {
 
 	/** full constructor */
 	public Docrule(String sectionName, String rule, Integer fid) {
-		this.sectionName = sectionName;
+		this.sectionname = sectionName;
 		this.rule = rule;
 		this.fid = fid;
 	}
@@ -36,12 +36,12 @@ public class Docrule implements java.io.Serializable {
 		this.ruleid = ruleid;
 	}
 
-	public String getSectionName() {
-		return this.sectionName;
+	public String getSectionname() {
+		return sectionname;
 	}
 
-	public void setSectionName(String sectionName) {
-		this.sectionName = sectionName;
+	public void setSectionname(String sectionname) {
+		this.sectionname = sectionname;
 	}
 
 	public String getRule() {

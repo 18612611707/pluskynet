@@ -26,7 +26,7 @@ public class Iotest {
 	}
 	
 	public static void main(String[] args) {
-		ClassPathXmlApplicationContext resource = new ClassPathXmlApplicationContext("classpath:applicationContext.xml");
+		ClassPathXmlApplicationContext resource = new ClassPathXmlApplicationContext("applicationContext.xml");
 		CauseDao causeDao = (CauseDao) resource.getBean("causeDao");
 		LatitudeDao latitudeDao = (LatitudeDao) resource.getBean("latitudeDao");
 		File file = new File("C:/Users/Administrator/Desktop/民事案由（改）.csv");
@@ -41,7 +41,7 @@ public class Iotest {
 			e.printStackTrace();
 		}
 		String line = "";
-		
+		int a = 0;
 		try {
 			while ((line = br.readLine()) != null) {
 				String causename = null;
@@ -61,6 +61,9 @@ public class Iotest {
 					}
 				}
 				System.out.println(fcausename.length());
+				if (a==0) {
+					fcausename = fcausename.substring(1, fcausename.length());
+				}
 				Latitude latitude = new Latitude();
 				if (fcausename.length()!=1) {
 					Integer latitudeid = latitudeDao.selectid(fcausename);
@@ -69,10 +72,11 @@ public class Iotest {
 					}else{
 					latitude.setLatitudename(causename);
 					latitude.setLatitudefid(latitudeid);
-					latitudeDao.update(latitude);
-					}
+					latitudeDao.save(latitude);
+					}	
 				}
-/*				Cause cause = new Cause();
+				a = ++a;
+			/*	Cause cause = new Cause();
 				if (fcausename.length()!=1) {
 					cause.setCausename(fcausename);
 					Cause cause2= causeDao.selectCause(cause);

@@ -1,5 +1,6 @@
 package com.pluskynet.dao.impl;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,21 +47,22 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	@Transactional
-	public List<CauseAndName> getLatitudeauditList(int page,int rows) throws SQLException {
+	public List<CauseAndName> getLatitudeauditList(int page, int rows) throws SQLException {
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		Connection conn = session.connection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		int toatl = 0;
 		toatl = (page - 1) * rows;
-		String sql = "select latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit order by latitudeid asc limit "+ toatl+", "+rows+";";
+		String sql = "select latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit where latitudetype = 0 order by latitudeid asc limit "
+				+ toatl + ", " + rows + ";";
 		List<CauseAndName> list = new ArrayList<CauseAndName>();
 		statement = conn.prepareStatement(sql);
 		resultSet = statement.executeQuery();
 		while (resultSet.next()) {
 			CauseAndName causeAndName = new CauseAndName();
 			causeAndName.setLatitudeid(resultSet.getString("latitudeid"));
-			causeAndName.setCausetable(resultSet.getString("latitudename"));//规则名称
+			causeAndName.setCausename(resultSet.getString("latitudename"));// 规则名称
 			causeAndName.setLatitudetype(resultSet.getInt("latitudetype"));
 			causeAndName.setRulestats(resultSet.getString("stats"));
 			causeAndName.setBatchstat(resultSet.getString("batchstats"));
@@ -74,74 +76,33 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 				+ "select COUNT(1) as num from article06 union all "
 				+ "select COUNT(1) as num from article07 union all "
 				+ "select COUNT(1) as num from article08 union all "
-				+ "select COUNT(1) as num from article09 union all "
-				+ "select COUNT(1) as num from article10 )a ;";//民事文书总数
+				+ "select COUNT(1) as num from article09 union all " + "select COUNT(1) as num from article10 )a ;";// 民事文书总数
 		statement = conn.prepareStatement(hql);
 		resultSet = statement.executeQuery();
 		int znum = 0;
 		while (resultSet.next()) {
 			znum = resultSet.getInt("num");
 		}
-		for (int i = 0; i < list.size(); i++) {
-			if (list.get(i).getLatitudetype()==0) {
-				String hqlString = "select ruleid,COUNT(1) as fhnum from docidandruleid where ruleid = "+list.get(i).getLatitudeid()+" ";
-				statement = conn.prepareStatement(hqlString);
-				resultSet = statement.executeQuery();
-				list.get(i).setSunnum(znum);
-				while (resultSet.next()) {
-					Integer cornum = resultSet.getInt("fhnum");
-					list.get(i).setCornum(cornum);
-					Integer ncornum = znum - cornum;
-					list.get(i).setNcornum(ncornum);
+		String hqlString = "select ruleid,COUNT(1) as fhnum from docidandruleid group by ruleid";
+		statement = conn.prepareStatement(hqlString);
+		resultSet = statement.executeQuery();
+		while (resultSet.next()) {
+			for (int i = 0; i < list.size(); i++) {
+				if (list.get(i).getLatitudetype() == 0) {
+					list.get(i).setSunnum(znum);
+					System.out.println(resultSet.getString("ruleid"));
+					if (list.get(i).getLatitudeid().equals(resultSet.getString("ruleid"))) {
+						Integer cornum = resultSet.getInt("fhnum");
+						list.get(i).setCornum(cornum);
+						Integer ncornum = znum - cornum;
+						list.get(i).setNcornum(ncornum);
+						continue;
+					}
+
 				}
 			}
-			
+
 		}
-//		String hqlString = "select ruleid,COUNT(1) from docidandruleid group by ruleid;";
-		
-//		List<CauseAndName> list2 = new ArrayList<CauseAndName>();
-//		while (resultSet.next()) {
-//			CauseAndName causeAndName = new CauseAndName();
-//			causeAndName.setLatitudeid(resultSet.getString("latitudeid"));
-//			causeAndName.setLatitudetype(resultSet.getInt("latitudetype"));
-//			causeAndName.setCausename(resultSet.getString("cause"));
-//			causeAndName.setRulestats(resultSet.getString("rulestats"));
-//			causeAndName.setBatchstat(resultSet.getString("batchstats"));
-//			list2.add(causeAndName);
-//		}
-//		String sql3 = "select b.`ruleid` as ruleid ,COUNT(1) sunnum,COUNT( b.`documentid` IS NULL  or null ) ncornum from "+
-//				"(select id,doc_id from article01 "+
-// "UNION ALL select id,doc_id from article02 "+
-// "UNION ALL select id,doc_id from article03 "+
-// "UNION ALL select id,doc_id from article04 "+
-// "UNION ALL select id,doc_id from article05 "+
-// "UNION ALL select id,doc_id from article06 "+
-// "UNION ALL select id,doc_id from article07 "+
-// "UNION ALL select id,doc_id from article08 "+
-// "UNION ALL select id,doc_id from article09 "+
-// "UNION ALL select id,doc_id from article10 "+
-//") a LEFT JOIN `batchdata` b on a.doc_id = b.`documentid`  group by ruleid";
-//		sql3 = "SELECT `latitudeid` as ruleid,b.`sectionName` as cause ,`latitudetype` as latitudetype,COUNT(c.`ruleid`) as cornum,`stats` ,`batchstats`   FROM `latitudeaudit` a left join `docrule` b on a.`latitudeid` =b.`ruleid` left join  (select ruleid,documentsid from `docsectionandrule01` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule02` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule03` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule04` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule05` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule06` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule07` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule08` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule09` "+
-//"UNION ALL select ruleid,documentsid from `docsectionandrule10` ) c on a.`latitudeid`  = c.ruleid where a.rule<>'' group by latitudeid";
-//		statement = conn.prepareStatement(sql3);
-//		resultSet = statement.executeQuery();
-//		while (resultSet.next()) {
-//			for (int j = 0; j < list2.size(); j++) {
-//				if (list2.get(j).getLatitudeid()==resultSet.getString("ruleid")) {
-//					list2.get(j).setNcornum(resultSet.getInt("ncornum"));
-//					list2.get(j).setSunnum(resultSet.getInt("sunnum"));
-//					list2.get(j).setCornum(resultSet.getInt("cornum"));
-//				}
-//			}
-//		}
 		session.flush();
 		session.clear();
 		return list;
@@ -150,7 +111,7 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 	@Override
 	@Transactional
 	public int getCountBy() {
-		String hqlString = "select latitudeid,latitudetype,b.cause cause,a.stats rulestats,a.batchstats as batchstats from latitudeaudit a left join batchdata b on a.latitudeid = b.ruleid group by latitudeid,latitudetype,b.cause,a.stats,a.batchstats";
+		String hqlString = "select latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit where latitudetype = 0";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<String> latitudeaudits = session.createSQLQuery(hqlString).list();
 		return latitudeaudits.size();
@@ -213,51 +174,103 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	@Transactional
-	public List<DocidAndDoc> getDocList(Cause cause, int latitudetype, int num, int rows, int page, int ruleid) {
+	public List<DocidAndDoc> getDocList(String cause, int latitudetype, int num, int rows, int page, int ruleid) {
 		String sql = null;
 		String tablename = null;
 		int toatl = 0;
 		toatl = (page - 1) * rows;
+		// int nums = page * rows;
+		int tablenum = 0;
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		Connection conn = session.connection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		List<DocidAndDoc> list = new ArrayList<DocidAndDoc>();
-		String causetable = cause.getCausetable();
-		String doctable = cause.getDoctable();
+		String hql = "select DISTINCT(doctable) from cause where type = " + latitudetype + " and doctable<>''";
+		List<String> causelist = session.createSQLQuery(hql).list();
 		if (latitudetype == 0) {
 			if (num == 1) {
-				sql = "select `documentsid` ,`sectiontext` ,`title`  from " + doctable + "  where `ruleid` = " + ruleid
-						+ " group by `documentsid` LIMIT " + toatl + "," + rows + ";";
-			} else if (num == 2) {
-				sql = "select doc_id documentsid,'' sectiontext,`title` from " + causetable
-						+ " WHERE `doc_id`  not in (select documentsid from " + doctable + "  where `ruleid` " + ruleid
-						+ ")group by `documentsid` LIMIT " + toatl + "," + rows + ";";
-			} else {
-				sql = "select doc_id documentsid,'' sectiontext,`title` from " + causetable
-						+ "  group by `documentsid`,`title` LIMIT " + toatl + "," + rows + ";";
-			}
-			try {
-				statement = conn.prepareStatement(sql);
-				resultSet = statement.executeQuery();
-				while (resultSet.next()) {
-					DocidAndDoc docidAndDoc = new DocidAndDoc();
-					docidAndDoc.setDoc(resultSet.getString("sectiontext"));
-					docidAndDoc.setDocid(resultSet.getString("documentsid"));
-					docidAndDoc.setTitle(resultSet.getString("title"));
-					list.add(docidAndDoc);
+				for (int i = 0; i < causelist.size(); i++) {
+					String sqls = "select count(1) from " + causelist.get(i) + " where ruleid = " + ruleid;
+					List<BigInteger> tanum = session.createSQLQuery(sqls).list();
+					int nums = Integer.parseInt(tanum.get(0).toString());
+					tablenum = tablenum + nums;
+					if (toatl > tablenum) {
+						rows = (toatl - tablenum) % rows;
+						toatl = toatl - tablenum;
+						continue;
+					}
+					sql = "SELECT `documentsid` ,`sectiontext` ,`title` from docidandruleid a  left join " + ""
+							+ causelist.get(i) + " b on a.`docid` = b.`documentsid` " + "where a.ruleid = " + ruleid
+							+ " LIMIT " + toatl + "," + rows + ";";
+					try {
+						statement = conn.prepareStatement(sql);
+						resultSet = statement.executeQuery();
+						while (resultSet.next()) {
+							DocidAndDoc docidAndDoc = new DocidAndDoc();
+							docidAndDoc.setDoc(resultSet.getString("sectiontext"));
+							docidAndDoc.setDocid(resultSet.getString("documentsid"));
+							docidAndDoc.setTitle(resultSet.getString("title"));
+							list.add(docidAndDoc);
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (list.size() == rows) {
+						break;
+					}
+					/*
+					 * else { rows = rows - list.size(); }
+					 */
 				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} else if (num == 2) {
+				for (int i = 0; i < causelist.size(); i++) {
+					String sqls = "select count(1) from " + causelist.get(i) + " where ruleid = " + ruleid;
+					int tanum = session.createSQLQuery(sqls).executeUpdate();
+					tablenum = tablenum + tanum;
+					if (toatl > tablenum) {
+						rows = (toatl - tablenum) % rows;
+						toatl = toatl - tablenum;
+						continue;
+					}
+					sql = "SELECT `documentsid` ,`sectiontext` ,`title` from " + causelist.get(i)
+							+ " where a.ruleid <> " + ruleid + " LIMIT " + toatl + "," + rows + ";";
+					try {
+						statement = conn.prepareStatement(sql);
+						resultSet = statement.executeQuery();
+						while (resultSet.next()) {
+							DocidAndDoc docidAndDoc = new DocidAndDoc();
+							docidAndDoc.setDoc(resultSet.getString("sectiontext"));
+							docidAndDoc.setDocid(resultSet.getString("documentsid"));
+							docidAndDoc.setTitle(resultSet.getString("title"));
+							list.add(docidAndDoc);
+						}
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					/*
+					 * if (list.size() == rows) { break; } else { rows = rows -
+					 * list.size(); }
+					 */
+				}
 			}
+			// else {
+			// sql = "select doc_id documentsid,'' sectiontext,`title` from " +
+			// causetable
+			// + " group by `documentsid`,`title` LIMIT " + toatl + "," + rows +
+			// ";";
+			// }
+
 		}
 		return list;
 	}
 
 	@Override
+
 	@Transactional
-	public int getDocby(Cause cause, int latitudetype, int num, int ruleid) {
+	public int getDocby(String cause, int latitudetype, int num, int ruleid) {
 		String sql = null;
 		String tablename = null;
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
@@ -265,18 +278,25 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
 		List<DocidAndDoc> list = new ArrayList<DocidAndDoc>();
-		String causetable = cause.getCausetable();
-		String doctable = cause.getDoctable();
+		// String causetable = cause.getCausetable();
+		// String doctable = cause.getDoctable();
 		int count = 0;
 		if (latitudetype == 0) {
 			if (num == 1) {
-				sql = "select count(1) as num  from " + causetable + "  where `ruleid` = " + ruleid
-						+ " and states = 2;";
+				sql = "select ruleid,COUNT(1) as num from docidandruleid where ruleid = " + ruleid;
 			} else if (num == 2) {
-				sql = "select count(1) as num from " + causetable + " WHERE `doc_id`  not in (select documentsid from "
-						+ doctable + "  where `ruleid` " + ruleid + ");";
+				sql = "select SUM(num) as num from (select COUNT(1) as num from article01 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article02 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article03 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article04 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article05 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article06 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article07 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article08 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article09 where ruleid <> " + ruleid
+						+ " union all " + "select COUNT(1) as num from article10 where ruleid <> " + ruleid + " )a";
 			} else {
-				sql = "select count(1) as num from " + causetable + ";";
+				// sql = "select count(1) as num from " + causetable + ";";
 			}
 			try {
 				statement = conn.prepareStatement(sql);
@@ -284,8 +304,7 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 				while (resultSet.next()) {
 					count = resultSet.getInt("num");
 				}
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+			} catch (SQLException e) { // TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -294,22 +313,34 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	@Transactional
-	public String getDoc(Cause cause, int latitudetype, String docid, int ruleid) {
+	public String getDoc(String cause, int latitudetype, String docid) {
 		String tablename = null;
 		String html = null;
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		Connection conn = session.connection();
 		PreparedStatement statement = null;
 		ResultSet resultSet = null;
-		String causetable = cause.getCausetable();
-		String doctable = cause.getDoctable();
+		String hqls = "select DISTINCT(doctable) from cause where type = " + latitudetype + " and doctable<>''";
+		List<String> doclist = session.createSQLQuery(hqls).list();
+		String causehql = "select DISTINCT(causetable) from cause where type = " + latitudetype + " and doctable<>''";
+		List<String> causelist = session.createSQLQuery(causehql).list();
 		if (latitudetype == 0) {
-			String sql = "select sectiontext from " + doctable + " where ruleid = " + ruleid + " and documentsid = '"
-					+ docid + "';";
-			List<String> list2 = session.createSQLQuery(sql).list();
-			String hql = "select decode_data from " + causetable + " where doc_id = '" + docid + "'";
-			List<String> list = session.createSQLQuery(hql).list();
-			html = list.get(0);
+			for (int i = 0; i < doclist.size(); i++) {
+				String sql = "select sectiontext from " + doclist.get(i) + " where documentsid = '" + docid
+						+ "' and sectionname = '" + cause + "';";
+				List<String> list2 = session.createSQLQuery(sql).list();
+				if (list2.size() > 0) {
+					break;
+				}
+			}
+			for (int i = 0; i < causelist.size(); i++) {
+				String hql = "select decode_data from " + causelist.get(i) + " where doc_id = '" + docid + "'";
+				List<String> list = session.createSQLQuery(hql).list();
+				if (list.size() > 0) {
+					html = list.get(0);
+					break;
+				}
+			}
 		}
 		JSONObject jsonObject = new JSONObject().fromObject(html);
 		JSONObject jsonObject2 = JSONObject.fromObject(jsonObject.getString("htmlData"));

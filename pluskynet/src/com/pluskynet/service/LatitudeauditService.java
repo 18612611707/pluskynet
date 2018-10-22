@@ -23,6 +23,5 @@ public interface LatitudeauditService {
 
 	int getDocby(String causename, int latitudetype, int num, int ruleid);
 
-	String getDoc(String causename, int latitudetype, String docid,int ruleid);
-
+	String getDoc(String causename, int latitudetype, String docid);
 }

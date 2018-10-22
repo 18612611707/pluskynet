@@ -20,8 +20,8 @@ public class CauseDaoImpl extends HibernateDaoSupport implements CauseDao {
 	} 
 	
 
-	public List<Cause> getArticleList(){
-		String hql = "from Cause a WHERE (SELECT COUNT(causetable) FROM Cause WHERE causetable = a.causetable AND id < a.id ) < 1 and causetable is not null ORDER BY a.causetable,a.id";
+	public List<Cause> getArticleList(int ruletype){
+		String hql = "from Cause a WHERE (SELECT COUNT(causetable) FROM Cause WHERE causetable = a.causetable AND id < a.id ) < 1 and type = "+ruletype+" and causetable is not null ORDER BY a.causetable,a.id";
 		List<Cause> list = this.getHibernateTemplate().find(hql);
 		return list;
 	}

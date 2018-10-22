@@ -3,11 +3,11 @@ package com.pluskynet.domain;
 public class StatsDoc {
 	private String stats;//状态
 	private DocidAndDoc docidAndDoc;//段落内容
-	private Integer num;//数量
-	public Integer getNum() {
+	private int num;
+	public int getNum() {
 		return num;
 	}
-	public void setNum(Integer num) {
+	public void setNum(int num) {
 		this.num = num;
 	}
 	public String getStats() {

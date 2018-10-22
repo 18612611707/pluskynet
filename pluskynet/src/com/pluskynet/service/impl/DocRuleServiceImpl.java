@@ -45,7 +45,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 		if (msg.equals("成功")) {
 			Map<?, ?> map = docRuleDao.getDcoSection(docrule);
 			String sectionname = map.get("sectionName").toString();
-			docrule.setSectionName(sectionname);
+			docrule.setSectionname(sectionname);
 			Latitudeaudit latitudeaudit = new Latitudeaudit();
 			latitudeaudit.setRule(docrule.getRule());
 			latitudeaudit.setLatitudename(sectionname);
@@ -64,7 +64,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 			Map<String, Object> treeMap = new HashMap<String, Object>();
 			treeMap.put("ruleid", friList.get(i).getRuleid());
 			treeMap.put("fid", friList.get(i).getFid());
-			treeMap.put("sectionname", friList.get(i).getSectionName());
+			treeMap.put("sectionname", friList.get(i).getSectionname());
 			treeMap.put("children", treeList(friList.get(i).getRuleid()));
 			list.add(treeMap);
 		}
@@ -104,7 +104,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 			Map<String, Object> treeMap = new HashMap<String, Object>();
 			treeMap.put("ruleid", list.get(i).getRuleid());
 			treeMap.put("fid", list.get(i).getFid());
-			treeMap.put("sectionname", list.get(i).getSectionName());
+			treeMap.put("sectionname", list.get(i).getSectionname());
 			treeMap.put("children", treeList(list.get(i).getRuleid()));
 			lists.add(treeMap);
 		}

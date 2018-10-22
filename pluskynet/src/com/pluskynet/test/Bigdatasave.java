@@ -138,10 +138,9 @@ public class Bigdatasave extends Thread {
 					docrule.save(docsectionandrule, doctable);
 					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
 					docidandruleidDao.save(docidandruleid);
-					docidlist.add(docidandruleid);
-					docsectionlist.add(docsectionandrule);
-					batchlist.add(batchdata);
-
+//					docidlist.add(docidandruleid);
+//					docsectionlist.add(docsectionandrule);
+//					batchlist.add(batchdata);
 					break;
 				} else if (end == 0) {
 					docnew = docold.substring(start, docold.length());
@@ -160,9 +159,9 @@ public class Bigdatasave extends Thread {
 					 docrule.save(docsectionandrule, doctable);
 					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
 					 docidandruleidDao.save(docidandruleid);
-					docidlist.add(docidandruleid);
-					docsectionlist.add(docsectionandrule);
-					batchlist.add(batchdata);
+//					docidlist.add(docidandruleid);
+//					docsectionlist.add(docsectionandrule);
+//					batchlist.add(batchdata);
 					break;
 				}
 			}

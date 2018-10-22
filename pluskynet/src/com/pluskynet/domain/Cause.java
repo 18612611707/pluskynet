@@ -13,6 +13,7 @@ public class Cause implements java.io.Serializable {
 	private String causename;
 	private String causetable;
 	private String doctable;
+	private Integer type;
 
 	// Constructors
 
@@ -21,11 +22,12 @@ public class Cause implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Cause(Integer fid, String causename, String causetable, String doctable) {
+	public Cause(Integer fid, String causename, String causetable, String doctable, Integer type) {
 		this.fid = fid;
 		this.causename = causename;
 		this.causetable = causetable;
 		this.doctable = doctable;
+		this.type = type;
 	}
 
 	// Property accessors
@@ -68,6 +70,14 @@ public class Cause implements java.io.Serializable {
 
 	public void setDoctable(String doctable) {
 		this.doctable = doctable;
+	}
+
+	public Integer getType() {
+		return this.type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

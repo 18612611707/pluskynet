@@ -23,11 +23,11 @@ public interface LatitudeauditDao {
 
 	void updatebatchestats(Latitudeaudit latitudeaudit);
 
-	List<DocidAndDoc> getDocList(Cause cause, int latitudetype, int num, int rows, int page,int ruleid);
+	List<DocidAndDoc> getDocList(String cause, int latitudetype, int num, int rows, int page,int ruleid);
 
-	int getDocby(Cause cause, int latitudetype, int num, int ruleid);
+	int getDocby(String cause, int latitudetype, int num, int ruleid);
 
-	String getDoc(Cause cause, int latitudetype, String docid,int ruleid);
+	String getDoc(String cause, int latitudetype, String docid);
 
 	
 
