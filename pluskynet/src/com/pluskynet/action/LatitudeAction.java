@@ -74,6 +74,10 @@ public class LatitudeAction extends BaseAction{
 	 * 新增纬度
 	 */
 	public void save(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = latitudeService.save(latitude);
 		outJsonByMsg(msg);
 //		latitu.put("msg", msg);
@@ -83,6 +87,10 @@ public class LatitudeAction extends BaseAction{
 	 * 修改纬度名称和规则
 	 */
 	public void update(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = latitudeService.update(latitude);
 		outJsonByMsg(msg);
 	}
@@ -90,6 +98,10 @@ public class LatitudeAction extends BaseAction{
 	 * 获取纬度树
 	 */
 	public void getLatitudeList(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		List<Map> list = latitudeService.getLatitudeList();
 		outJsonByMsg(list, "成功");
 	}
@@ -97,6 +109,10 @@ public class LatitudeAction extends BaseAction{
 	 * 根据ID获取纬度详细信息
 	 */
 	public void getLatitude(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		Latitude latitudes = latitudeService.getLatitude(latitude);
 		outJsonByMsg(latitudes, "成功");
 	}
@@ -104,6 +120,10 @@ public class LatitudeAction extends BaseAction{
 	 * 模糊查询纬度名称
 	 */
 	public void getLatitudeName(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		List<String> latitudes = latitudeService.getLatitudeName(latitude);
 		outJsonByMsg(latitudes, "成功");
 
@@ -112,6 +132,10 @@ public class LatitudeAction extends BaseAction{
 	 *规则预览 
 	 */
 	public void getDocList(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		List<StatsDoc> list = latitudeService.getDocList(latitude);
 		outJsonByMsg(list, "成功");
 	}
@@ -119,6 +143,10 @@ public class LatitudeAction extends BaseAction{
 	 * 获取筛选页左侧列表
 	 */
 	public void getScreeList(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		List<Map> list = latitudeService.getScreeList(latitudeName,latitudeId);
 		outJsonByMsg(list, "成功");
 	}
@@ -134,6 +162,10 @@ public class LatitudeAction extends BaseAction{
 	 * 按照名称查询
 	 */
 	public void getLatitudeShow(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = "失败";
 		if (latitude.getLatitudename()==null) {
 			outJsonByMsg(msg);
@@ -146,6 +178,10 @@ public class LatitudeAction extends BaseAction{
 	 * 按照规则查询
 	 */
 	public void getRuleShow(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = "失败";
 		if (latitude.getLatitudeid()==null) {
 			outJsonByMsg(msg);

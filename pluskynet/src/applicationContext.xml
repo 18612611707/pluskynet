@@ -81,10 +81,14 @@
 				<value>com/pluskynet/domain/LatitudedocTime.hbm.xml</value>
 				<value>com/pluskynet/domain/LatitudedocWord.hbm.xml</value>
 				<value>com/pluskynet/domain/Docidandruleid.hbm.xml</value>
+				<value>com/pluskynet/domain/User.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
 	<!-- 配置Action类 -->
+	<bean id="LoginAction" class="com.pluskynet.action.LoginAction">
+		<property name="loginService" ref="loginService" />
+	</bean>
 	<bean id="latitudeDocAction" class="com.pluskynet.action.LatitudeDocAction"
 		scope="prototype">
 		<property name="latitudeDocService" ref="latitudeDocService" />
@@ -123,6 +127,9 @@
 		<property name="synonymService" ref="synonymService" />
 	</bean>
 	<!-- 配置业务层的类 Service -->
+	<bean id ="loginService" class="com.pluskynet.service.impl.LoginServiceImpl">
+		<property name="loginDao" ref="loginDao"/>
+	</bean>
 	<bean id="latitudeDocService" class="com.pluskynet.service.impl.LatitudeDocServiceImpl">
 		<property name="latitudeDocDao" ref="latitudeDocDao" />
 		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
@@ -209,6 +216,9 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<bean id="docidandruleidDao" class="com.pluskynet.dao.impl.DocidandruleidDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="loginDao" class="com.pluskynet.dao.impl.LoginDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 配合事务管理器 -->

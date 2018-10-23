@@ -19,8 +19,10 @@ import org.apache.struts2.ServletActionContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.util.StringUtils;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
+import com.pluskynet.domain.User;
 
 /**
  * 
@@ -391,5 +393,15 @@ public abstract class BaseAction extends ActionSupport implements Serializable,M
 			JSONObject json = JSONObject.fromObject(formList,config);
 			outJsonString(json.toString());
 		}
+	}
+	/*
+	 * 验证是否登录
+	 */
+	public boolean isLogined(){
+		User users = (User) ActionContext.getContext().getSession().get("user");
+		if (users!= null) {
+			return true;
+		}
+		return false;
 	}
 }

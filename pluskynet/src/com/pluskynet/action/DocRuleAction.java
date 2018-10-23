@@ -119,6 +119,10 @@ public class DocRuleAction extends BaseAction{
 	 * 保存段落名称
 	 */
 	public void save(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = null;
 		if (docrule.getSectionname()==null) {
 			docrule.setSectionname(sectionName);
@@ -132,6 +136,10 @@ public class DocRuleAction extends BaseAction{
 	 * 修改名称或规则
 	 */
 	public void update(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg =null;
 		if(docrule.getRuleid()==null){
 			msg = "失败";
@@ -168,6 +176,10 @@ public class DocRuleAction extends BaseAction{
 	 * 查询规则段落列表
 	 */
 	public void getDocSectionList(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		List<Map> list = docRuleService.getDcoSectionList();
 		outJsonByMsg(list, "成功");
 	}
@@ -175,6 +187,10 @@ public class DocRuleAction extends BaseAction{
 	 * 根据ID查询规则详细
 	 */
 	public void getDocSection(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = "失败";
 		if(docrule.getRuleid()==null){
 			outJsonByMsg(msg);
@@ -188,6 +204,10 @@ public class DocRuleAction extends BaseAction{
 	 * 根据段落名称查询
 	 */
 	public void getSecNameShow(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = "成功";
 		if (docrule.getSectionname()==null) {
 			docrule.setSectionname(sectionName);
@@ -203,6 +223,10 @@ public class DocRuleAction extends BaseAction{
 	 * 按照条件查询规则
 	 */
 	public void getRuleShow(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		String msg = "失败";
 		if (docrule.getRuleid()==null) {
 			outJsonByMsg(msg);
