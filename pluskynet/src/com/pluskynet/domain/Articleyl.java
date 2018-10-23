@@ -23,6 +23,8 @@ public class Articleyl implements java.io.Serializable {
 	private Long taskId;
 	private String taskStartDate;
 	private String decodeData;
+	private String belonguser;
+	private Integer belongid;
 
 	// Constructors
 
@@ -30,10 +32,15 @@ public class Articleyl implements java.io.Serializable {
 	public Articleyl() {
 	}
 
+	/** minimal constructor */
+	public Articleyl(String belonguser) {
+		this.belonguser = belonguser;
+	}
+
 	/** full constructor */
 	public Articleyl(String docId, String title, String data, Integer state, String createdUser, Timestamp createdTime,
-			String updatedUser, Timestamp updatedTime, Integer yn, Long taskId, String taskStartDate,
-			String decodeData) {
+			String updatedUser, Timestamp updatedTime, Integer yn, Long taskId, String taskStartDate, String decodeData,
+			String belonguser, Integer belongid) {
 		this.docId = docId;
 		this.title = title;
 		this.data = data;
@@ -46,6 +53,8 @@ public class Articleyl implements java.io.Serializable {
 		this.taskId = taskId;
 		this.taskStartDate = taskStartDate;
 		this.decodeData = decodeData;
+		this.belonguser = belonguser;
+		this.belongid = belongid;
 	}
 
 	// Property accessors
@@ -152,6 +161,22 @@ public class Articleyl implements java.io.Serializable {
 
 	public void setDecodeData(String decodeData) {
 		this.decodeData = decodeData;
+	}
+
+	public String getBelonguser() {
+		return this.belonguser;
+	}
+
+	public void setBelonguser(String belonguser) {
+		this.belonguser = belonguser;
+	}
+
+	public Integer getBelongid() {
+		return this.belongid;
+	}
+
+	public void setBelongid(Integer belongid) {
+		this.belongid = belongid;
 	}
 
 }

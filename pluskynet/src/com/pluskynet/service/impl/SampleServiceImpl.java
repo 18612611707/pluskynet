@@ -11,6 +11,7 @@ import com.pluskynet.domain.Article01;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Rule;
 import com.pluskynet.domain.Sample;
+import com.pluskynet.domain.User;
 import com.pluskynet.service.SampleService;
 
 import net.sf.json.JSONArray;
@@ -29,7 +30,7 @@ public class SampleServiceImpl implements SampleService{
 	}
 
 	@Override
-	public void random(Sample sample) {
+	public void random(Sample sample,User user) {
 		List<Article01> list = new ArrayList<Article01>();
 		JSONArray jsonArray = JSONArray.fromObject(sample.getRule());
 		for (int i = 0; i < jsonArray.size(); i++) {
@@ -45,15 +46,15 @@ public class SampleServiceImpl implements SampleService{
 			articleyl = sampleDao.getListArticle(table,year,Integer.valueOf(count),trialRound,doctype);
 			list.addAll(articleyl);
 		}
-		sampleDao.delete();
-		sampleDao.save(list);
-		sampleDao.saverule(sample);
+		sampleDao.delete(user);
+		sampleDao.save(list,user);
+		sampleDao.saverule(sample,user);
 		
 	}
 
 	@Override
-	public Sample select() {
-		Sample sample = sampleDao.select();	
+	public Sample select(User user) {
+		Sample sample = sampleDao.select(user);	
 		return sample;
 	}
 

@@ -2,11 +2,12 @@ package com.pluskynet.service;
 
 import com.pluskynet.domain.Rule;
 import com.pluskynet.domain.Sample;
+import com.pluskynet.domain.User;
 
 public interface SampleService {
 
-	void random(Sample sample);
+	void random(Sample sample, User user);
 
-	Sample select();
+	Sample select(User user);
 
 }

@@ -13,9 +13,6 @@ public class ArticleylAction extends BaseAction {
 	private Articleyl article;
 
 	private ArticleylService articleService;
-
-	
-
 	public ArticleylService getArticleService() {
 		return articleService;
 	}

@@ -11,6 +11,7 @@ import com.pluskynet.dao.LatitudeauditDao;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitudeaudit;
+import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.TreeDocrule;
 import com.pluskynet.otherdomain.Treelatitude;
 import com.pluskynet.service.DocRuleService;
@@ -51,6 +52,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 			latitudeaudit.setLatitudename(sectionname);
 			latitudeaudit.setLatitudeid(docrule.getRuleid());
 			latitudeaudit.setLatitudetype(0);
+			latitudeaudit.setReserved(docrule.getReserved());
 			latitudeauditDao.update(latitudeaudit);
 		}
 		return msg;
@@ -86,8 +88,8 @@ public class DocRuleServiceImpl implements DocRuleService {
 	}
 
 	@Override
-	public void saveyldelete(String sectionname) {
-		docSectionAndRuleDao.saveyldelete(sectionname);
+	public void saveyldelete(String sectionname,User user) {
+		docSectionAndRuleDao.saveyldelete(sectionname,user);
 		
 	}
 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.StatsDoc;
+import com.pluskynet.domain.User;
 import com.pluskynet.service.LatitudeService;
 import com.pluskynet.util.BaseAction;
 
@@ -74,7 +75,8 @@ public class LatitudeAction extends BaseAction{
 	 * 新增纬度
 	 */
 	public void save(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -87,7 +89,8 @@ public class LatitudeAction extends BaseAction{
 	 * 修改纬度名称和规则
 	 */
 	public void update(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -98,7 +101,8 @@ public class LatitudeAction extends BaseAction{
 	 * 获取纬度树
 	 */
 	public void getLatitudeList(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -109,7 +113,8 @@ public class LatitudeAction extends BaseAction{
 	 * 根据ID获取纬度详细信息
 	 */
 	public void getLatitude(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -120,7 +125,8 @@ public class LatitudeAction extends BaseAction{
 	 * 模糊查询纬度名称
 	 */
 	public void getLatitudeName(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -132,7 +138,8 @@ public class LatitudeAction extends BaseAction{
 	 *规则预览 
 	 */
 	public void getDocList(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -143,7 +150,8 @@ public class LatitudeAction extends BaseAction{
 	 * 获取筛选页左侧列表
 	 */
 	public void getScreeList(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -162,7 +170,8 @@ public class LatitudeAction extends BaseAction{
 	 * 按照名称查询
 	 */
 	public void getLatitudeShow(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -178,7 +187,8 @@ public class LatitudeAction extends BaseAction{
 	 * 按照规则查询
 	 */
 	public void getRuleShow(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}

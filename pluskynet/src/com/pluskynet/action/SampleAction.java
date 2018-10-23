@@ -2,6 +2,7 @@ package com.pluskynet.action;
 
 import com.pluskynet.domain.Rule;
 import com.pluskynet.domain.Sample;
+import com.pluskynet.domain.User;
 import com.pluskynet.service.SampleService;
 import com.pluskynet.util.BaseAction;
 
@@ -20,11 +21,21 @@ public class SampleAction extends BaseAction{
 	}
 
 	public void random(){
-		sampleService.random(sample);
+		User user = isLogined();
+		if (user==null) {
+			outJsonByMsg("未登录");
+			return;
+		}
+		sampleService.random(sample,user);
 		outJsonByMsg("成功");
 	}
 	public void select(){
-		sample = sampleService.select();
+		User user = isLogined();
+		if (user==null) {
+			outJsonByMsg("未登录");
+			return;
+		}
+		sample = sampleService.select(user);
 		outJsonByMsg(sample, "成功");
 	}
 

@@ -397,11 +397,11 @@ public abstract class BaseAction extends ActionSupport implements Serializable,M
 	/*
 	 * 验证是否登录
 	 */
-	public boolean isLogined(){
+	public User isLogined(){
 		User users = (User) ActionContext.getContext().getSession().get("user");
 		if (users!= null) {
-			return true;
+			return users;
 		}
-		return false;
+		return users;
 	}
 }

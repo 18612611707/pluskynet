@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.pluskynet.domain.Preview;
 import com.pluskynet.domain.StatsDoc;
+import com.pluskynet.domain.User;
 import com.pluskynet.service.PreviewService;
 import com.pluskynet.util.BaseAction;
 @SuppressWarnings("all")
@@ -51,7 +52,8 @@ public class PreviewAction extends BaseAction{
 	 * 规则预览
 	 */
 	public void getDocList(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -63,7 +65,8 @@ public class PreviewAction extends BaseAction{
 		}
 	}
 	public void getDoc(){
-		if (!isLogined()) {
+		User user = isLogined();
+		if (user==null) {
 			outJsonByMsg("未登录");
 			return;
 		}

@@ -10,6 +10,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.User;
 import com.pluskynet.test.Bigdatatest;
 import com.sun.star.rdf.QueryException;
 
@@ -85,8 +86,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	}
 
 	@Override
-	public void saveyldelete(String sectionname) {
-		String sql = "from Docsectionandrule where sectionname = ?";
+	public void saveyldelete(String sectionname,User user) {
+		String sql = "from Docsectionandrule where sectionname = ? and userid = '"+user.getUserid()+"'";
 		List<Docsectionandrule> list = this.getHibernateTemplate().find(sql, sectionname);
 		if (list.size() > 0) {
 			for (int j = 0; j < list.size(); j++) {

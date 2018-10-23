@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.User;
 @SuppressWarnings("all")
 public interface DocRuleService {
 
@@ -18,7 +19,7 @@ public interface DocRuleService {
 
 	Map<?, ?> getDcoSection(Docrule docrule);
 
-	void saveyldelete(String sectionname);
+	void saveyldelete(String sectionname, User user);
 
 	void saveyl(Docsectionandrule docsectionandrule);
 

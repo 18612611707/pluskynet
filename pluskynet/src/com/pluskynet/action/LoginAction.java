@@ -36,7 +36,14 @@ public class LoginAction extends BaseAction {
 			ActionContext.getContext().getSession().remove("user");
 			outJsonByMsg("成功");
 		}
-		outJsonByMsg("失败");
+		outJsonByMsg("未登录");
+	}
+	public void selectuser() {
+		user = (User) ActionContext.getContext().getSession().get("user");
+		if (user!=null) {
+			outJsonByMsg(user, "成功");
+		}
+		outJsonByMsg("未登录");
 	}
 
 	@Override

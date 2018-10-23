@@ -117,7 +117,22 @@ public class Bigdatatest extends Thread {
 					}
 					Bigdatasave bigdatasave[] = new Bigdatasave[Lalist.size()];
 					for (int j = 0; j < Lalist.size(); j++) {// 循环已审批规则
-						List<Otherdocrule> lists = ruleformat(Lalist.get(j).getRule()); // 规则整理
+						List<Otherdocrule> lists = new ArrayList<Otherdocrule>();
+						if (Lalist.get(j).getReserved()==null) {
+							lists = ruleformat(Lalist.get(j).getRule()); // 规则整理
+						}else{
+							JSONArray jsonArray = JSONArray.fromObject(Lalist.get(j).getRule());
+							for (int k = 0; k < jsonArray.size(); k++) {
+								JSONObject ruleJson = JSONObject.fromObject(jsonArray.get(k));
+								Otherdocrule otherdocrule = new Otherdocrule();
+								otherdocrule.setJudge(ruleJson.getString("judge"));
+								otherdocrule.setSpcx(ruleJson.getString("trialRound"));
+								otherdocrule.setDoctype(ruleJson.getString("doctype"));
+								otherdocrule.setStart(ruleJson.getString("start"));
+								otherdocrule.setEnd(ruleJson.getString("end"));
+								lists.add(otherdocrule);
+							}
+						}
 						int ruleid = Lalist.get(j).getLatitudeid();
 						String latitudename = Lalist.get(j).getLatitudename();
 						String startword = null;

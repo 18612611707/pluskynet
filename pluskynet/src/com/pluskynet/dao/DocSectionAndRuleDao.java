@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.User;
 import com.sun.star.rdf.QueryException;
 
 import javassist.expr.NewArray;
@@ -20,7 +21,7 @@ public interface DocSectionAndRuleDao {
 
 	void saveyl(Docsectionandrule docsectionandrule);
 
-	void saveyldelete(String sectionname);
+	void saveyldelete(String sectionname, User user);
 	
 	List<Docsectionandrule> listdoc(String doctable,int rows,String sectionname);
 	void update(String doctable,String sectionname);
