@@ -51,6 +51,10 @@ public class PreviewAction extends BaseAction{
 	 * 规则预览
 	 */
 	public void getDocList(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		if(preview.getRule()==null || preview.getRule().equals("")){
 			outJsonByMsg("失败");
 		 }else{
@@ -59,6 +63,10 @@ public class PreviewAction extends BaseAction{
 		}
 	}
 	public void getDoc(){
+		if (!isLogined()) {
+			outJsonByMsg("未登录");
+			return;
+		}
 		Map<String, Object> map= previewService.getDoc(docid,preview.getRule());
 //		outJsonByMsg(list, list.size());
 		outJsonByMsg(map,"成功");

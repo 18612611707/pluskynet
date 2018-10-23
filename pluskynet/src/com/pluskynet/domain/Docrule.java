@@ -12,6 +12,7 @@ public class Docrule implements java.io.Serializable {
 	private String sectionname;
 	private String rule;
 	private Integer fid;
+	private String reserved;
 
 	// Constructors
 
@@ -20,10 +21,11 @@ public class Docrule implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Docrule(String sectionName, String rule, Integer fid) {
-		this.sectionname = sectionName;
+	public Docrule(String sectionname, String rule, Integer fid, String reserved) {
+		this.sectionname = sectionname;
 		this.rule = rule;
 		this.fid = fid;
+		this.reserved = reserved;
 	}
 
 	// Property accessors
@@ -37,7 +39,7 @@ public class Docrule implements java.io.Serializable {
 	}
 
 	public String getSectionname() {
-		return sectionname;
+		return this.sectionname;
 	}
 
 	public void setSectionname(String sectionname) {
@@ -58,6 +60,14 @@ public class Docrule implements java.io.Serializable {
 
 	public void setFid(Integer fid) {
 		this.fid = fid;
+	}
+
+	public String getReserved() {
+		return this.reserved;
+	}
+
+	public void setReserved(String reserved) {
+		this.reserved = reserved;
 	}
 
 }
