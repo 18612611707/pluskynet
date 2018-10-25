@@ -65,19 +65,17 @@
 		<action name="LatitudeauditAction" class="com.pluskynet.action.LatitudeauditAction">
 		</action>
 		<!-- 用户前台查询 -->
-		<action name="LatitudeDocAction" class="com.pluskynet.action.LatitudeDocAction" 
+		<action name="LatitudeDocAction" class="com.pluskynet.action.LatitudeDocAction"
 			method="{1}">
-			
+
 		</action>
 		<!-- 预览数据维护 -->
-		<action name="SampleAction" class="com.pluskynet.action.SampleAction" 
+		<action name="SampleAction" class="com.pluskynet.action.SampleAction"
 			method="{1}">
-			
 		</action>
 		<!-- 同义词维护 -->
-		<action name="SynonymAction" class="com.pluskynet.action.SynonymAction" 
+		<action name="SynonymAction" class="com.pluskynet.action.SynonymAction"
 			method="{1}">
-			
 		</action>
 	</package>
 

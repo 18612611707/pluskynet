@@ -24,4 +24,6 @@ public interface DocRuleDao {
 
 	List<Docrule> getRuleShow(Integer ruleid, String causeo, String causet, String spcx, String doctype);
 
+	String updatesecname(Docrule docrule);
+
 }

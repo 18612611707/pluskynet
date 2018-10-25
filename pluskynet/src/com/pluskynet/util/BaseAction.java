@@ -90,7 +90,6 @@ public abstract class BaseAction extends ActionSupport implements Serializable,M
 	public HttpServletRequest getRequest() {
 		return ServletActionContext.getRequest();
 	}
-//	private ;
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 	             throws ServletException, IOException {
@@ -101,13 +100,8 @@ public abstract class BaseAction extends ActionSupport implements Serializable,M
 	 * @return
 	 */
 	public HttpServletResponse getResponse() {
-		if (ServletActionContext.getRequest().getServerName().equals("39.104.183.189") || ServletActionContext.getRequest().getServerName().equals("127.0.0.1")) {
-			return ServletActionContext.getResponse();
-		}else {
-			System.out.println(ServletActionContext.getRequest().getServerName());
-			return null;
-		}
 		
+			return ServletActionContext.getResponse();		
 	}
 
 	/**

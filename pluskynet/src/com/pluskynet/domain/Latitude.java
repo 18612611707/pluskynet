@@ -21,6 +21,7 @@ public class Latitude implements java.io.Serializable {
 	private String createruser;
 	private String stats;
 	private Timestamp creatertime;
+	private String reserved;
 
 	// Constructors
 
@@ -36,7 +37,7 @@ public class Latitude implements java.io.Serializable {
 
 	/** full constructor */
 	public Latitude(String latitudetype, Integer latitudefid, String latitudename, Integer ruletype, String rule,
-			Integer num, String createrole, String createruser, String stats, Timestamp creatertime) {
+			Integer num, String createrole, String createruser, String stats, Timestamp creatertime, String reserved) {
 		this.latitudetype = latitudetype;
 		this.latitudefid = latitudefid;
 		this.latitudename = latitudename;
@@ -47,6 +48,7 @@ public class Latitude implements java.io.Serializable {
 		this.createruser = createruser;
 		this.stats = stats;
 		this.creatertime = creatertime;
+		this.reserved = reserved;
 	}
 
 	// Property accessors
@@ -137,6 +139,14 @@ public class Latitude implements java.io.Serializable {
 
 	public void setCreatertime(Timestamp creatertime) {
 		this.creatertime = creatertime;
+	}
+
+	public String getReserved() {
+		return this.reserved;
+	}
+
+	public void setReserved(String reserved) {
+		this.reserved = reserved;
 	}
 
 }

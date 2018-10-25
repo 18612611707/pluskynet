@@ -35,6 +35,7 @@ public class LoginAction extends BaseAction {
 		if (user!=null && user.getUsername().equals(user.getUsername())) {
 			ActionContext.getContext().getSession().remove("user");
 			outJsonByMsg("成功");
+			return;
 		}
 		outJsonByMsg("未登录");
 	}
@@ -42,6 +43,7 @@ public class LoginAction extends BaseAction {
 		user = (User) ActionContext.getContext().getSession().get("user");
 		if (user!=null) {
 			outJsonByMsg(user, "成功");
+			return;
 		}
 		outJsonByMsg("未登录");
 	}

@@ -45,7 +45,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 		String msg = docRuleDao.update(docrule);
 		if (msg.equals("成功")) {
 			Map<?, ?> map = docRuleDao.getDcoSection(docrule);
-			String sectionname = map.get("sectionName").toString();
+			String sectionname = map.get("sectionname").toString();
 			docrule.setSectionname(sectionname);
 			Latitudeaudit latitudeaudit = new Latitudeaudit();
 			latitudeaudit.setRule(docrule.getRule());
@@ -117,6 +117,12 @@ public class DocRuleServiceImpl implements DocRuleService {
 	public List<Docrule> getRuleShow(Integer ruleid, String causeo, String causet, String spcx, String doctype) {
 		List<Docrule> list = docRuleDao.getRuleShow(ruleid,causeo,causet,spcx,doctype);
 		return list;
+	}
+
+	@Override
+	public String updatesecname(Docrule docrule) {
+		String msg = docRuleDao.updatesecname(docrule);
+		return msg;
 	}
 
 }
