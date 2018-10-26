@@ -77,6 +77,9 @@
 		<action name="SynonymAction" class="com.pluskynet.action.SynonymAction"
 			method="{1}">
 		</action>
+		<action name="DictionaryAction" class="com.pluskynet.action.DictionaryAction"
+			method="{1}">
+		</action>
 	</package>
 
 </struts>

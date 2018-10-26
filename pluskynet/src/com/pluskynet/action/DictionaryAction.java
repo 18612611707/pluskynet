@@ -14,7 +14,7 @@ public class DictionaryAction extends BaseAction{
 	@Override
 	public Object getModel() {
 		dictionary = new Dictionary();
-		return null;
+		return dictionary;
 	}
 	private DictionaryService dictionaryService;
 	
@@ -59,13 +59,13 @@ public class DictionaryAction extends BaseAction{
 		outJsonByMsg(msg);
 	}
 
-	public List<Map> getDicname(){
+	public void getDicname(){
 		User user = isLogined();
 		if (user==null) {
 			outJsonByMsg("未登录");
-			return null;
+			return ;
 		}
 		List<Map> list = dictionaryService.getDicname(dictionary.getCode());
-		return list;
+		outJsonByMsg(list,"成功");
 	}
 }
