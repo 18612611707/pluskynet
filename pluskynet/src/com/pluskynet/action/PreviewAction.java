@@ -60,7 +60,7 @@ public class PreviewAction extends BaseAction{
 		if(preview.getRule()==null || preview.getRule().equals("")){
 			outJsonByMsg("失败");
 		 }else{
-		List<StatsDoc> list = previewService.getDocList(preview);
+		List<StatsDoc> list = previewService.getDocList(preview,user);
 		outJsonByMsg(list, "成功");
 		}
 	}

@@ -13,15 +13,16 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import com.pluskynet.dao.ArticleylDao;
 import com.pluskynet.domain.Articleyl;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.User;
 import com.pluskynet.util.PageNoUtil;
 @SuppressWarnings("all")
 public class ArticleylDaoImpl extends HibernateDaoSupport implements ArticleylDao {
 	private SessionFactory sessionFactory;
 	
 	@Override
-	public List<Articleyl> getArticles() {
-		String hql = "from Articleyl";
-		List<Articleyl> list = this.getHibernateTemplate().find(hql);
+	public List<Articleyl> getArticles(User user) {
+		String hql = "from Articleyl where belongid = ?";
+		List<Articleyl> list = this.getHibernateTemplate().find(hql,user.getUserid());
 //		if (list.size()>0) {
 //			return list;
 //		}

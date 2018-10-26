@@ -16,6 +16,7 @@ import com.pluskynet.dao.PreviewDao;
 import com.pluskynet.domain.Articleyl;
 import com.pluskynet.domain.Preview;
 import com.pluskynet.domain.StatsDoc;
+import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.service.PreviewService;
 
@@ -43,8 +44,8 @@ public class PreviewServiceImpl implements PreviewService {
 	}
 
 	@Override
-	public List<StatsDoc> getDocList(Preview preview) {
-		List<Articleyl> listaArticles = articleylDao.getArticles();
+	public List<StatsDoc> getDocList(Preview preview,User user) {
+		List<Articleyl> listaArticles = articleylDao.getArticles(user);
 		List<StatsDoc> jsonArray = previewDao.getDocList(preview, listaArticles);
 //		docSectionAndRuleDao.saveyldelete(preview.getDocName());
 //		for (int i = 0; i < jsonArray.size(); i++) {

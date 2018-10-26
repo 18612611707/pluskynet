@@ -156,14 +156,15 @@ public class DocRuleAction extends BaseAction {
 			outJsonByMsg("未登录");
 			return;
 		}
+		Map map = new HashMap();
 		String msg = null;
 		if (docrule.getSectionname() == null) {
 			docrule.setSectionname(sectionName);
-			msg = docRuleService.save(docrule);
+			map = docRuleService.save(docrule);
 		} else {
-			msg = docRuleService.save(docrule);
+			map = docRuleService.save(docrule);
 		}
-		outJsonByMsg(msg);
+		outJsonByMsg(map,"成功");
 	}
 
 	/*

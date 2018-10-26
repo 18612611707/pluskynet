@@ -4,20 +4,23 @@ import java.util.List;
 
 import com.pluskynet.dao.ArticleylDao;
 import com.pluskynet.domain.Articleyl;
+import com.pluskynet.domain.User;
 import com.pluskynet.service.ArticleylService;
+
+import javassist.expr.NewArray;
 
 public class ArticleylServiceImpl implements ArticleylService {
 
 	private ArticleylDao articleDao;
-
+	User user = new User(); 
 	@Override
 	public List<Articleyl> findPageBy() { // �?��做分�?
-		return articleDao.getArticles();
+		return articleDao.getArticles(user);
 	}
-
+	
 	@Override
 	public List<Articleyl> getArticles() {
-		return articleDao.getArticles();
+		return articleDao.getArticles(user);
 	}
 
 	public ArticleylDao getArticleDao() {

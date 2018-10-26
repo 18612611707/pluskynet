@@ -5,10 +5,11 @@ import java.util.Map;
 
 import com.pluskynet.domain.Preview;
 import com.pluskynet.domain.StatsDoc;
+import com.pluskynet.domain.User;
 
 public interface PreviewService {
 
-	List<StatsDoc> getDocList(Preview preview);
+	List<StatsDoc> getDocList(Preview preview,User user);
 
 	Map<String, Object> getDoc(String docid,String rule);
 	

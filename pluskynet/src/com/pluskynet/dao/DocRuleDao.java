@@ -10,7 +10,7 @@ import com.pluskynet.otherdomain.TreeDocrule;
 @SuppressWarnings("all")
 public interface DocRuleDao {
 
-	String save(Docrule docrule);
+	Map save(Docrule docrule);
 
 	String update(Docrule docrule);
 

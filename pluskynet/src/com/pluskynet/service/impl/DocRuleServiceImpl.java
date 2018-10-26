@@ -35,9 +35,9 @@ public class DocRuleServiceImpl implements DocRuleService {
 	}
 
 	@Override
-	public String save(Docrule docrule) {
-		String msg = docRuleDao.save(docrule);
-		return msg;
+	public Map save(Docrule docrule) {
+		Map map = docRuleDao.save(docrule);
+		return map;
 	}
 
 	@Override

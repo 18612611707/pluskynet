@@ -17,6 +17,6 @@ public interface DictionaryDao {
 
 	String deleteDic(Dictionary dictionary);
 
-	List<Dictionarytree> getDicname(String name);
+	List<Dictionarytree> getDicname(String code);
 
 }

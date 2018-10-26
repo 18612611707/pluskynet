@@ -82,12 +82,12 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				}
 			}
 		}
-		for (int c = 0; c < list.size(); c++) {
-			jsonArray = JSONArray.fromObject(list);
-			preview.setRule(jsonArray.get(c).toString());
+//		for (int c = 0; c < list.size(); c++) {
+//			jsonArray = JSONArray.fromObject(list);
+//			preview.setRule(jsonArray.get(c).toString());
 			docLists = parsing.DocList(listaArticles, preview);
 			docList.addAll(docLists);
-		}
+//		}
 		for (int i = 0; i < docList.size(); i++) {
 			StatsDoc statsDoc = new StatsDoc();
 			DocidAndDoc docidAndDoc = new DocidAndDoc();
@@ -100,11 +100,16 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			String leftdoc = null;
 			String rightdoc = null;
 			String beginIndex1 = null;
+			String before = null;
 			look:for (int c = 0; c < list.size(); c++) {
 				ruleJson = jsonArray.getJSONObject(c);
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
 				String endWord = ruleJson.getString("end");
+				if (startWord.contains("^")) {
+					before = startWord.substring(0,startWord.indexOf("^"));
+					startWord = startWord.substring(startWord.indexOf("^")+1);
+				}
 				String judge = ruleJson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");

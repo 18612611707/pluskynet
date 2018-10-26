@@ -119,8 +119,9 @@ public abstract class BaseAction extends ActionSupport implements Serializable,M
 	public void outJsonString(String str) {
 		//getResponse().setContentType("text/javascript;charset=UTF-8");
 		getResponse().setContentType("text/html;charset=UTF-8");
-		getResponse().addHeader("Access-Control-Allow-Origin", "*");
+		getResponse().addHeader("Access-Control-Allow-Origin", ServletActionContext.getRequest().getHeader("origin"));
 		getResponse().addHeader("Access-Control-Max-Age", "10000");
+		getResponse().addHeader("Access-Control-Allow-Credentials", "true");
 		getResponse().addHeader("Access-Control-Allow-Headers", "Content-Type,Content-Length,Authorization,Accept,X-Requested-With,accesstoken,orgcode");
 		outString(str);
 	}

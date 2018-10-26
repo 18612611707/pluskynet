@@ -16,6 +16,6 @@ public interface DictionaryService {
 
 	String deleteDic(Dictionary dictionary);
 
-	List<Map> getDicname(String name);
+	List<Map> getDicname(String code);
 
 }

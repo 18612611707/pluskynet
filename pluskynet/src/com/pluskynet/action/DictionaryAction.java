@@ -65,7 +65,7 @@ public class DictionaryAction extends BaseAction{
 			outJsonByMsg("未登录");
 			return null;
 		}
-		List<Map> list = dictionaryService.getDicname(dictionary.getName());
+		List<Map> list = dictionaryService.getDicname(dictionary.getCode());
 		return list;
 	}
 }

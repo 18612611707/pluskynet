@@ -18,8 +18,8 @@ import net.sf.json.JSONObject;
 public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 
 	@Override
-	public String save(Docrule docrule) {
-		String msg = null;
+	public Map save(Docrule docrule) {
+		Map map = new HashMap();
 		if (docrule.getFid() == null) {
 			docrule.setFid(0);
 		}
@@ -29,15 +29,16 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 			String queryStr = "update Docrule set sectionName = ? ,fid = ? where ruleid = ?";
 			this.getHibernateTemplate().bulkUpdate(queryStr, docrule.getSectionname(), docrule.getFid(),
 					docrules.get(0).getRuleid());
-			msg = "成功";
-			return msg;
+			map.put("ruleid", docrules.get(0).getRuleid());
+		} else {
+			this.getHibernateTemplate().save(docrule);
+			List<Docrule> docrulesTo = this.getHibernateTemplate().find(hql, docrule.getSectionname(),
+					docrule.getFid());
+			if (docrulesTo.size() > 0) {
+				map.put("ruleid", docrulesTo.get(0).getRuleid());
+			}
 		}
-		this.getHibernateTemplate().save(docrule);
-		List<Docrule> docrulesTo = this.getHibernateTemplate().find(hql, docrule.getSectionname(), docrule.getFid());
-		if (docrulesTo.size() > 0) {
-			msg = "成功";
-		}
-		return msg;
+		return map;
 	}
 
 	@Override
@@ -204,6 +205,7 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 			hqls = "update Docrule set sectionName = ?,fid = ? where ruleid = ?";
 			this.getHibernateTemplate().bulkUpdate(hqls, docrule.getSectionname(), docrule.getFid(),
 					docrule.getRuleid());
+			return "成功";
 		}
 		return msg;
 	}

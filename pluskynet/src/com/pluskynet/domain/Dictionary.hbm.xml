@@ -18,5 +18,8 @@
                 <comment>一级为0</comment>
             </column>
         </property>
+        <property name="code" type="java.lang.String">
+            <column name="code" length="50" />
+        </property>
     </class>
 </hibernate-mapping>

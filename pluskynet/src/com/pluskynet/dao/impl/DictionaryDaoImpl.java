@@ -97,16 +97,20 @@ public class DictionaryDaoImpl extends HibernateDaoSupport implements Dictionary
 	}
 
 	@Override
-	public List<Dictionarytree> getDicname(String name) {
-		String sqlString = "from Dictionary where name = ?";
-		List<Dictionary> list = this.getHibernateTemplate().find(sqlString,name);
+	public List<Dictionarytree> getDicname(String code) {
+		String sqlString = "from Dictionary where code = ?";
+		List<Dictionary> list = this.getHibernateTemplate().find(sqlString,code);
 		List<Dictionarytree> firstList = new ArrayList<Dictionarytree>();
 		for (int i = 0; i < list.size(); i++) {
-			Dictionarytree dictionarytree = new Dictionarytree();
-			dictionarytree.setFid(list.get(i).getFid());
-			dictionarytree.setId(list.get(i).getId());
-			dictionarytree.setName(list.get(i).getName());
-			firstList.add(dictionarytree);
+			String hql = "from Dictionary where fid = ?";
+			List<Dictionary> lists = this.getHibernateTemplate().find(hql,list.get(i).getId());
+			for (int j = 0; j < lists.size(); j++) {
+				Dictionarytree dictionarytree = new Dictionarytree();
+				dictionarytree.setFid(lists.get(i).getFid());
+				dictionarytree.setId(lists.get(i).getId());
+				dictionarytree.setName(lists.get(i).getName());
+				firstList.add(dictionarytree);
+			}
 		}
 		return firstList;
 	}

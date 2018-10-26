@@ -92,8 +92,8 @@ public class DictionaryServiceImpl implements DictionaryService {
 	}
 
 	@Override
-	public List<Map> getDicname(String name) {
-		List<Dictionarytree> firstdic = dictionaryDao.getDicname(name);
+	public List<Map> getDicname(String code) {
+		List<Dictionarytree> firstdic = dictionaryDao.getDicname(code);
 		List<Map> list = new ArrayList<Map>();
 		for (int i = 0; i < firstdic.size(); i++) {
 			Map<String, Object> treeMap = new HashMap<String, Object>();

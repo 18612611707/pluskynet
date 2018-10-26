@@ -15,6 +15,7 @@ import com.pluskynet.domain.Preview;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 @SuppressWarnings("all")
 public class Parsing {
 	String title;// 文书标题
@@ -125,15 +126,15 @@ public class Parsing {
 			String value = null;
 			JSONObject jsonObject4 = new JSONObject().fromObject(jsonObject.getString("dirData"));
 			JSONArray jsonArray1 = new JSONArray().fromObject(jsonObject4.getString("RelateInfo"));
-			JSONObject js = new JSONObject().fromObject(preview.getRule());
-				String trialRound = js.getString("spcx");
-				String doctype = js.getString("doctype");
-				if (title.indexOf(doctype) != -1 && spcx.equals(trialRound)) {
-					String docTextString = jsonObject2.getString("Html");
-					docidAndDoc.setDoc(getTextFromHtml(docTextString));
-					docList.add(docidAndDoc);
-				}
-			
+			// JSONObject js = new JSONObject().fromObject(preview.getRule());
+			// String trialRound = js.getString("spcx");
+			// String doctype = js.getString("doctype");
+			// if (title.indexOf(doctype) != -1 && spcx.equals(trialRound)) {
+			String docTextString = jsonObject2.getString("Html");
+			docidAndDoc.setDoc(getTextFromHtml(docTextString));
+			docList.add(docidAndDoc);
+			// }
+
 		}
 		return docList;
 	}

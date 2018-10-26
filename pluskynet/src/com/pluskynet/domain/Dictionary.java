@@ -11,6 +11,7 @@ public class Dictionary implements java.io.Serializable {
 	private Integer id;
 	private String name;
 	private Integer fid;
+	private String code;
 
 	// Constructors
 
@@ -18,10 +19,17 @@ public class Dictionary implements java.io.Serializable {
 	public Dictionary() {
 	}
 
-	/** full constructor */
+	/** minimal constructor */
 	public Dictionary(String name, Integer fid) {
 		this.name = name;
 		this.fid = fid;
+	}
+
+	/** full constructor */
+	public Dictionary(String name, Integer fid, String code) {
+		this.name = name;
+		this.fid = fid;
+		this.code = code;
 	}
 
 	// Property accessors
@@ -48,6 +56,14 @@ public class Dictionary implements java.io.Serializable {
 
 	public void setFid(Integer fid) {
 		this.fid = fid;
+	}
+
+	public String getCode() {
+		return this.code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

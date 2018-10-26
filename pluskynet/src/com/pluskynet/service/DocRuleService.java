@@ -11,7 +11,7 @@ import com.pluskynet.domain.User;
 @SuppressWarnings("all")
 public interface DocRuleService {
 
-	String save(Docrule docrule);
+	Map save(Docrule docrule);
 
 	String update(Docrule docrule);
 
