@@ -20,4 +20,6 @@ public interface DictionaryService {
 
 	List<Map> getNextdic(Integer id);
 
+	List<Map> getCodedic(String code);
+
 }

@@ -14,6 +14,7 @@ import com.pluskynet.dao.CauseDao;
 import com.pluskynet.dao.LatitudeDao;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Latitude;
+import com.pluskynet.domain.User;
 
 public class Iotest {
 	LatitudeDao latitudeDao;
@@ -22,7 +23,9 @@ public class Iotest {
 		this.latitudeDao = latitudeDao;
 	}
 	public void save(Latitude latitude){
-		latitudeDao.save(latitude);
+		User user = new User();
+		user.setUsername("admin");
+		latitudeDao.save(latitude,user);
 	}
 	
 	public static void main(String[] args) {
@@ -72,7 +75,9 @@ public class Iotest {
 					}else{
 					latitude.setLatitudename(causename);
 					latitude.setLatitudefid(latitudeid);
-					latitudeDao.save(latitude);
+					User user = new User();
+					user.setUsername("admin");
+					latitudeDao.save(latitude,user);
 					}	
 				}
 				a = ++a;

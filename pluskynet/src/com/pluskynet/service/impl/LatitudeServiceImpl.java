@@ -48,8 +48,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public String save(Latitude latitude) {
-		String msg = latitudeDao.save(latitude);
+	public Map save(Latitude latitude,User user) {
+		Map msg = latitudeDao.save(latitude,user);
 		return msg;
 	}
 
@@ -385,8 +385,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 		}
 
 		@Override
-		public String updateName(Latitude latitude) {
-			String msg = latitudeDao.updateName(latitude);
+		public String updateName(Latitude latitude,User user) {
+			String msg = latitudeDao.updateName(latitude,user);
 			return msg;
 		}
 

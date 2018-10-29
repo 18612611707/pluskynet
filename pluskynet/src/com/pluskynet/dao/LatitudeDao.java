@@ -9,7 +9,7 @@ import com.pluskynet.otherdomain.Treelatitude;
 @SuppressWarnings("all")
 public interface LatitudeDao {
 
-	String save(Latitude latitude);
+	Map save(Latitude latitude, User user);
 
 	String update(Latitude latitude, User user);
 
@@ -31,6 +31,6 @@ public interface LatitudeDao {
 
 	List<Treelatitude> getDeeptLevel(Latitude treelatitude, User user);
 
-	String updateName(Latitude latitude);
+	String updateName(Latitude latitude, User user);
 
 }

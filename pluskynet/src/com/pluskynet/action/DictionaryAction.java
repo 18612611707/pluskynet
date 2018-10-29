@@ -77,6 +77,9 @@ public class DictionaryAction extends BaseAction{
 		}
 		outJsonByMsg(lists,"成功");
 	}
+	/*
+	 * 根据父级id查询子集列表
+	 */
 	public void getNextdic(){
 		User user = isLogined();
 		if (user==null) {
@@ -84,6 +87,18 @@ public class DictionaryAction extends BaseAction{
 			return;
 		}
 		List<Map> list = dictionaryService.getNextdic(dictionary.getId());
+		outJsonByMsg(list,"成功");
+	}
+	/*
+	 * 根据code查询本级信息
+	 */
+	public void getCodedic(){
+		User user = isLogined();
+		if (user==null) {
+			outJsonByMsg("未登录");
+			return;
+		}
+		List<Map> list = dictionaryService.getCodedic(dictionary.getCode());
 		outJsonByMsg(list,"成功");
 	}
 }

@@ -10,7 +10,7 @@ import com.pluskynet.otherdomain.Treelatitude;
 @SuppressWarnings("all")
 public interface LatitudeService {
 
-	String save(Latitude latitude);
+	Map save(Latitude latitude, User user);
 
 	String update(Latitude latitude, User user);
 
@@ -30,7 +30,7 @@ public interface LatitudeService {
 
 	List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname);
 
-	String updateName(Latitude latitude);
+	String updateName(Latitude latitude, User user);
 
 
 }

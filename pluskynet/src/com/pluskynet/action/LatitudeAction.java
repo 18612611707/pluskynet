@@ -80,8 +80,8 @@ public class LatitudeAction extends BaseAction{
 			outJsonByMsg("未登录");
 			return;
 		}
-		String msg = latitudeService.save(latitude);
-		outJsonByMsg(msg);
+		Map msg = latitudeService.save(latitude,user);
+		outJsonByMsg(msg,"成功");
 //		latitu.put("msg", msg);
 //		return "save";
 		}
@@ -212,7 +212,7 @@ public class LatitudeAction extends BaseAction{
 		if (latitude.getLatitudeid() == null) {
 			msg = "失败";
 		} else {
-			msg = latitudeService.updateName(latitude);
+			msg = latitudeService.updateName(latitude,user);
 		}
 		outJsonByMsg(msg);
 	}

@@ -21,4 +21,6 @@ public interface DictionaryDao {
 
 	List<Dictionary> getNextdic(Integer id);
 
+	List<Dictionary> getCodedic(String code);
+
 }

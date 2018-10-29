@@ -122,4 +122,11 @@ public class DictionaryDaoImpl extends HibernateDaoSupport implements Dictionary
 		return lists;
 	}
 
+	@Override
+	public List<Dictionary> getCodedic(String code) {
+		String hql = "from Dictionary where code = ?";
+		List<Dictionary> lists = this.getHibernateTemplate().find(hql,code);
+		return lists;
+	}
+
 }

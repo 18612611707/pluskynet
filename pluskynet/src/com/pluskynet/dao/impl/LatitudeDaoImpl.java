@@ -18,16 +18,20 @@ import net.sf.json.JSONObject;
 public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao {
 
 	@Override
-	public String save(Latitude latitude) {
+	public Map save(Latitude latitude,User user) {
 		String hql = "from Latitude where latitudename = ?";
 		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudename());
 		if(list.size()>0){
 			String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?  where latitudeid = ?";
 			this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),latitude.getLatitudeid());
 		}else {
+			latitude.setCreateruser(user.getUsername());
 			this.getHibernateTemplate().save(latitude);
 		}
-		return "成功";
+		Map map = new HashMap();
+		list = this.getHibernateTemplate().find(hql,latitude.getLatitudename());
+		map.put("ruleid", list.get(0).getLatitudeid());
+		return map;
 	}
 
 	@Override
@@ -36,19 +40,19 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
 		if(list.size()>0){
 			if (latitude.getLatitudename()==null || latitude.getLatitudename().equals("")) {
-				String queryStr = "update Latitude set rule = ? ,ruletype = ?  where latitudeid = ?";
-				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getRule(),latitude.getRuletype(),latitude.getLatitudeid());
+				String queryStr = "update Latitude set rule = ? ,ruletype = ? ,reserved =? where latitudeid = ?";
+				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getRule(),latitude.getRuletype(),latitude.getReserved(),latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";	
 			}else if (latitude.getRule()==null || latitude.getRule().equals("")) {
-				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?  where latitudeid = ?";
-				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),latitude.getLatitudeid());
+				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?,reserved =?  where latitudeid = ?";
+				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),latitude.getReserved(),latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";	
 			}else{
-				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ? ,rule = ?,ruletype=? where latitudeid = ?";
+				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ? ,rule = ?,ruletype=? ,reserved =? where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),
-						latitude.getRule(),latitude.getRuletype(),latitude.getLatitudeid());
+						latitude.getRule(),latitude.getRuletype(),latitude.getReserved(),latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			}
@@ -213,9 +217,9 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	}
 
 	@Override
-	public String updateName(Latitude latitude) {
-		String hql = "from Latitude where latitudeid = ?";
-		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid());
+	public String updateName(Latitude latitude,User user) {
+		String hql = "from Latitude where latitudeid = ? and createruser = ? ";
+		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
 		if(list.size()>0){
 			if (latitude.getLatitudename()==null || latitude.getLatitudename().equals("")) {
 				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?  where latitudeid = ?";
@@ -224,6 +228,6 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 				return "成功";	
 			}
 	}
-		return "id不存在";
+		return "段落不存在或无权限修改";
 	}
 }
