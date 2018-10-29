@@ -231,11 +231,11 @@ public class DocRuleAction extends BaseAction {
 	 * 查询规则段落列表
 	 */
 	public void getDocSectionList() {
-		User user = isLogined();
-		if (user == null) {
-			outJsonByMsg("未登录");
-			return;
-		}
+//		User user = isLogined();
+//		if (user == null) {
+//			outJsonByMsg("未登录");
+//			return;
+//		}
 		List<Map> list = docRuleService.getDcoSectionList();
 		outJsonByMsg(list, "成功");
 	}

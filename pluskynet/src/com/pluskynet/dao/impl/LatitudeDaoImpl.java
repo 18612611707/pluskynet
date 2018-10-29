@@ -9,6 +9,7 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 import com.pluskynet.dao.LatitudeDao;
 import com.pluskynet.domain.Latitude;
+import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.Treelatitude;
 
 import net.sf.json.JSONArray;
@@ -30,9 +31,9 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	}
 
 	@Override
-	public String update(Latitude latitude) {
-		String hql = "from Latitude where latitudeid = ?";
-		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid());
+	public String update(Latitude latitude,User user) {
+		String hql = "from Latitude where latitudeid = ? and createruser = ?";
+		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
 		if(list.size()>0){
 			if (latitude.getLatitudename()==null || latitude.getLatitudename().equals("")) {
 				String queryStr = "update Latitude set rule = ? ,ruletype = ?  where latitudeid = ?";
@@ -57,10 +58,10 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	}
 	@Override
 	//查询一级菜单  
-	public List<Treelatitude> getFirstLevel() {
+	public List<Treelatitude> getFirstLevel(User user) {
 		String hql =null;
-		hql = "from Latitude where latitudefid = 0";
-		List<Latitude> listFirstLevel = this.getHibernateTemplate().find(hql);
+		hql = "from Latitude where latitudefid = 0 and createruser = ? and createruser = 'admin' ";
+		List<Latitude> listFirstLevel = this.getHibernateTemplate().find(hql,user.getUsername());
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		for (int i = 0; i < listFirstLevel.size(); i++) {
 			Treelatitude treelatitude = new Treelatitude();
@@ -74,34 +75,35 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 
 	@Override
 	 //根据一级id查询所有的子集
-	public List<Treelatitude> getNextSubSet(Treelatitude voteTree) {
-		 String hql = "from Latitude where latitudefid = ?";  
-	        List<Latitude> tNextLevel = this.getHibernateTemplate().find(hql,voteTree.getLatitudeid()); 
-	        List<Treelatitude> list = new ArrayList<Treelatitude>();
-	        for (int i = 0; i < tNextLevel.size(); i++) {
-	        	//遍历这个二级目录的集合
-				Treelatitude treelatitude = new Treelatitude();
-				treelatitude.setLatitudeid(tNextLevel.get(i).getLatitudeid());
-				treelatitude.setLatitudefid(tNextLevel.get(i).getLatitudefid());
-				treelatitude.setLatitudename(tNextLevel.get(i).getLatitudename());
-			            List<Treelatitude> ts = getDeeptLevel(tNextLevel.get(i));  
-			            //将下面的子集都依次递归进来 
-			            treelatitude.setChildren(ts);
-			            list.add(treelatitude);
-			}
-	        return list;  
+	public List<Latitude> getNextSubSet(Treelatitude voteTree,User user) {
+		 String hql = "from Latitude where latitudefid = ? and createruser = ? and createruser = 'admin'";  
+	        List<Latitude> tNextLevel = this.getHibernateTemplate().find(hql,voteTree.getLatitudeid(),user.getUsername()); 
+//	        List<Treelatitude> list = new ArrayList<Treelatitude>();
+//	        for (int i = 0; i < tNextLevel.size(); i++) {
+//	        	//遍历这个二级目录的集合
+//				Treelatitude treelatitude = new Treelatitude();
+//				treelatitude.setLatitudeid(tNextLevel.get(i).getLatitudeid());
+//				treelatitude.setLatitudefid(tNextLevel.get(i).getLatitudefid());
+//				treelatitude.setLatitudename(tNextLevel.get(i).getLatitudename());
+//			            List<Treelatitude> ts = getDeeptLevel(tNextLevel.get(i));  
+//			            //将下面的子集都依次递归进来 
+//			            treelatitude.setChildren(ts);
+//			            list.add(treelatitude);
+//			}
+	        return tNextLevel;  
 	}
-	private List<Treelatitude> getDeeptLevel(Latitude latitude) {
-		 String hql = "from Latitude where latitudefid = ?";  
-	     List<Latitude> tsLevel = this.getHibernateTemplate().find(hql,latitude.getLatitudeid());
+	@Override
+	public List<Treelatitude> getDeeptLevel(Latitude latitude,User user) {
+		 String hql = "from Latitude where latitudefid = ? and createruser = ? and createruser = 'admin'";  
+	     List<Latitude> tsLevel = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
 	     List<Treelatitude> list = new ArrayList<Treelatitude>();
-	     if(tsLevel.size()>0){  
+	     if(tsLevel.size()>0){
 	            for (int i = 0; i <tsLevel.size(); i++) {  
 	            	Treelatitude treelatitude = new Treelatitude();
 	            	treelatitude.setLatitudeid(tsLevel.get(i).getLatitudeid());
 					treelatitude.setLatitudefid(tsLevel.get(i).getLatitudefid());
 					treelatitude.setLatitudename(tsLevel.get(i).getLatitudename());
-					treelatitude.setChildren(getDeeptLevel(tsLevel.get(i)));
+					treelatitude.setChildren(getDeeptLevel(tsLevel.get(i),user));
 					list.add(treelatitude);
 	            }  
 	        }  
@@ -165,9 +167,9 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	}
 
 	@Override
-	public List<Latitude> getLatitudeShow(String latitudename) {
-		String hql = "from Latitude where latitudeName = '"+latitudename+"'";
-		List<Latitude> list = this.getHibernateTemplate().find(hql);
+	public List<Latitude> getLatitudeShow(String latitudename,User user) {
+		String hql = "from Latitude where latitudeName = '"+latitudename+"' and createruser = ? ";
+		List<Latitude> list = this.getHibernateTemplate().find(hql,user.getUsername());
 		return list;
 	}
 
@@ -207,6 +209,21 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 			lists.add(latitude);
 		}
 		
-		return null;
+		return lists;
+	}
+
+	@Override
+	public String updateName(Latitude latitude) {
+		String hql = "from Latitude where latitudeid = ?";
+		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid());
+		if(list.size()>0){
+			if (latitude.getLatitudename()==null || latitude.getLatitudename().equals("")) {
+				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?  where latitudeid = ?";
+				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),latitude.getLatitudeid());
+				this.getHibernateTemplate().flush();
+				return "成功";	
+			}
+	}
+		return "id不存在";
 	}
 }

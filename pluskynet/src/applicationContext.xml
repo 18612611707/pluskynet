@@ -35,9 +35,9 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<!-- <prop key="hibernate.show_sql">true</prop> -->
-				<prop key="hibernate.format_sql">true</prop> 
-				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
 				<prop key="hibernate.connection.release_model">after_statement</prop>
 			</props>
 		</property>

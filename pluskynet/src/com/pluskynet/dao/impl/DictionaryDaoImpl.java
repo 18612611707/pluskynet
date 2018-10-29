@@ -115,4 +115,11 @@ public class DictionaryDaoImpl extends HibernateDaoSupport implements Dictionary
 		return firstList;
 	}
 
+	@Override
+	public List<Dictionary> getNextdic(Integer id) {
+		String hql = "from Dictionary where fid = ?";
+		List<Dictionary> lists = this.getHibernateTemplate().find(hql,id);
+		return lists;
+	}
+
 }

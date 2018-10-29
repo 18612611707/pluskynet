@@ -1,6 +1,5 @@
 package com.pluskynet.service;
 
-import com.pluskynet.domain.Rule;
 import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.User;
 

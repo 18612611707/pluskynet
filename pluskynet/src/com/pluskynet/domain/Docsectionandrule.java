@@ -16,9 +16,8 @@ public class Docsectionandrule implements java.io.Serializable {
 	private Integer views;
 	private Integer downloads;
 	private String title;
-	private Integer state;
-	private String belonguser;
 	private Integer belongid;
+	private String belonguser;
 
 	// Constructors
 
@@ -28,7 +27,7 @@ public class Docsectionandrule implements java.io.Serializable {
 
 	/** full constructor */
 	public Docsectionandrule(Integer ruleid, String documentsid, String sectionname, String sectiontext, Integer views,
-			Integer downloads, String title, Integer state, String belonguser, Integer belongid) {
+			Integer downloads, String title, Integer belongid, String belonguser) {
 		this.ruleid = ruleid;
 		this.documentsid = documentsid;
 		this.sectionname = sectionname;
@@ -36,9 +35,8 @@ public class Docsectionandrule implements java.io.Serializable {
 		this.views = views;
 		this.downloads = downloads;
 		this.title = title;
-		this.state = state;
-		this.belonguser = belonguser;
 		this.belongid = belongid;
+		this.belonguser = belonguser;
 	}
 
 	// Property accessors
@@ -107,12 +105,12 @@ public class Docsectionandrule implements java.io.Serializable {
 		this.title = title;
 	}
 
-	public Integer getState() {
-		return this.state;
+	public Integer getBelongid() {
+		return this.belongid;
 	}
 
-	public void setState(Integer state) {
-		this.state = state;
+	public void setBelongid(Integer belongid) {
+		this.belongid = belongid;
 	}
 
 	public String getBelonguser() {
@@ -121,14 +119,6 @@ public class Docsectionandrule implements java.io.Serializable {
 
 	public void setBelonguser(String belonguser) {
 		this.belonguser = belonguser;
-	}
-
-	public Integer getBelongid() {
-		return this.belongid;
-	}
-
-	public void setBelongid(Integer belongid) {
-		this.belongid = belongid;
 	}
 
 }

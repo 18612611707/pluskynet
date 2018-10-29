@@ -9,6 +9,8 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 import com.pluskynet.dao.DocSectionAndRuleDao;
+import com.pluskynet.domain.Article01;
+import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.User;
 import com.pluskynet.test.Bigdatatest;
@@ -73,8 +75,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 
 	@Override
 	@Transactional
-	public List<Docsectionandrule> getDocLists(String sectionname) {
-		String hql = "select * from docsectionandrule where sectionname = '" + sectionname + "' ";
+	public List<Docsectionandrule> getDocLists(String sectionname,User user) {
+		String hql = "select * from docsectionandrule where sectionname = '" + sectionname + "' and belonguser = '"+user.getUsername()+"' and belongid = '"+user.getUserid()+"' ";
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Docsectionandrule> list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
 		return list;
@@ -175,6 +177,16 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		}
 		return true;
 
+	}
+
+	@Override
+	public List<Docsectionandrule> getDocsectionList(Cause doctable, String year, Integer count, String trialRound,
+			String doctype) {
+		String hql = "select * from "+doctable.getDoctable()+" where documentsid in (SELECT doc_id FROM "+doctable.getCausetable()+" WHERE `id`  >= ((SELECT MAX(id) FROM "+doctable.getCausetable()+")-(SELECT MIN(id) FROM "+doctable.getCausetable()+")) * RAND() + (SELECT MIN(id) FROM "+doctable.getCausetable()+") "
+				+ "and `date` ='"+year+"' and spcx ='"+trialRound+"' and doctype = '"+doctype+"' limit "+count+")";
+		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		List<Docsectionandrule> list = session.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+		return list;
 	}
 
 	// public boolean update(Docsectionandrule docsectionandrule) {

@@ -18,4 +18,6 @@ public interface DictionaryService {
 
 	List<Map> getDicname(String code);
 
+	List<Map> getNextdic(Integer id);
+
 }

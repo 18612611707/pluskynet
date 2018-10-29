@@ -10,6 +10,7 @@ import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.dao.LatitudeauditDao;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.TreeDocrule;
@@ -74,11 +75,28 @@ public class DocRuleServiceImpl implements DocRuleService {
 	}
 	
 	public List<TreeDocrule> treeList(int latitudeid) {
-		List<TreeDocrule> nextSubSet = new ArrayList<TreeDocrule>();
+		List<Docrule> nextSubSet = new ArrayList<Docrule>();
 		TreeDocrule voteTree = new TreeDocrule();
 		voteTree.setRuleid(latitudeid);
 		nextSubSet = docRuleDao.getNextSubSet(voteTree);
-		return nextSubSet;
+		 List<TreeDocrule> list = new ArrayList<TreeDocrule>();
+	        for (int i = 0; i < nextSubSet.size(); i++) {
+	        	//遍历这个二级目录的集合
+	        	TreeDocrule treelatitude = new TreeDocrule();
+				treelatitude.setRuleid(nextSubSet.get(i).getRuleid());
+				treelatitude.setFid(nextSubSet.get(i).getFid());
+				treelatitude.setSectionname(nextSubSet.get(i).getSectionname());
+				List<TreeDocrule> ts = docRuleDao.getDeeptLevel(nextSubSet.get(i));  
+	            //将下面的子集都依次递归进来 
+	            treelatitude.setChildren(ts);
+			    list.add(treelatitude);
+			}
+		return list;
+//		List<TreeDocrule> nextSubSet = new ArrayList<TreeDocrule>();
+//		TreeDocrule voteTree = new TreeDocrule();
+//		voteTree.setRuleid(latitudeid);
+//		nextSubSet = docRuleDao.getNextSubSet(voteTree);
+//		return nextSubSet;
 	}
 
 	@Override

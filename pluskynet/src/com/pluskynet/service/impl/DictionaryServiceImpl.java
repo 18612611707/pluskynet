@@ -105,4 +105,19 @@ public class DictionaryServiceImpl implements DictionaryService {
 		}
 		return list;
 	}
+
+	@Override
+	public List<Map> getNextdic(Integer id) {
+		List<Dictionary> listDic = dictionaryDao.getNextdic(id);
+		List<Map> list = new ArrayList<Map>();
+		for (int i = 0; i < listDic.size(); i++) {
+			Map<String, Object> treeMap = new HashMap<String, Object>();
+			treeMap.put("id", listDic.get(i).getId());
+			treeMap.put("fid", listDic.get(i).getFid());
+			treeMap.put("name", listDic.get(i).getName());
+//			treeMap.put("children", treeList(firstdic.get(i).getId()));
+			list.add(treeMap);
+		}
+		return list;
+	}
 }

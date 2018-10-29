@@ -1,5 +1,7 @@
 package com.pluskynet.action;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,9 +65,25 @@ public class DictionaryAction extends BaseAction{
 		User user = isLogined();
 		if (user==null) {
 			outJsonByMsg("未登录");
-			return ;
+			return;
 		}
-		List<Map> list = dictionaryService.getDicname(dictionary.getCode());
+		String[] codes = dictionary.getCode().split(",");
+		List<Map> lists = new ArrayList<>();
+		for (int i = 0; i < codes.length; i++) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			List<Map> list = dictionaryService.getDicname(codes[i]);
+			map.put(codes[i], list);
+			lists.add(map);
+		}
+		outJsonByMsg(lists,"成功");
+	}
+	public void getNextdic(){
+		User user = isLogined();
+		if (user==null) {
+			outJsonByMsg("未登录");
+			return;
+		}
+		List<Map> list = dictionaryService.getNextdic(dictionary.getId());
 		outJsonByMsg(list,"成功");
 	}
 }

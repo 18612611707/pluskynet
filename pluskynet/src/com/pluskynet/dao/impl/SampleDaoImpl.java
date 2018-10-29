@@ -11,6 +11,7 @@ import com.pluskynet.dao.SampleDao;
 import com.pluskynet.dao.SynonymDao;
 import com.pluskynet.domain.Article01;
 import com.pluskynet.domain.Articleyl;
+import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Rule;
 import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.User;
@@ -30,6 +31,11 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao{
 	}
 
 	@Override
+	/*
+	 * (non-Javadoc)
+	 * @see com.pluskynet.dao.SampleDao#save(java.util.List, com.pluskynet.domain.User)
+	 * 保存段落样本
+	 */
 	public void save(List<Article01> list,User user) {
 		for (int i = 0; i < list.size(); i++) {
 			Articleyl articleyl = new Articleyl();
@@ -45,7 +51,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao{
 	@Override
 	@Transactional
 	public void saverule(Sample sample,User user) {
-		String hql = "delete From Sample where userid = "+user.getUserid()+"";
+		String hql = "delete From Sample where belongid = "+user.getUserid()+"";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		session.createSQLQuery(hql).executeUpdate();
 		this.getHibernateTemplate().save(sample);
@@ -53,7 +59,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao{
 
 	@Override
 	public Sample select(User user) {
-		String hql = "from Sample where userid = "+user.getUserid()+"";
+		String hql = "from Sample where belongid = "+user.getUserid()+"";
 		List<Sample> list = this.getHibernateTemplate().find(hql);
 		if (list.size()>0) {
 			return list.get(0);
@@ -64,11 +70,44 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao{
 
 	@Override
 	@Transactional
+	/*
+	 * (non-Javadoc)
+	 * @see com.pluskynet.dao.SampleDao#delete(com.pluskynet.domain.User)
+	 * 删除段落样本
+	 */
 	public void delete(User user) {
-		String hql = "delete From Articleyl where userid = "+user.getUserid()+"";
+		String hql = "delete From Articleyl where belongid = "+user.getUserid()+"";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		session.createSQLQuery(hql).executeUpdate();
-		
+	}
+
+	@Override
+	/*
+	 * (non-Javadoc)删除段落样本
+	 * @see com.pluskynet.dao.SampleDao#deleteDoc(com.pluskynet.domain.User)
+	 */
+	public void deleteDoc(User user) {
+		String hql = "delete From Docsectionandrule where belongid = "+user.getUserid()+"";
+		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		session.createSQLQuery(hql).executeUpdate();
+	}
+
+	@Override
+	/*
+	 * (non-Javadoc)保存段落样本
+	 * @see com.pluskynet.dao.SampleDao#saveDoc(java.util.List, com.pluskynet.domain.User)
+	 */
+	public void saveDoc(List<Docsectionandrule> list, User user) {
+		for (int i = 0; i < list.size(); i++) {
+			Docsectionandrule docsectionandrule = new Docsectionandrule();
+			docsectionandrule.setSectionname(list.get(i).getSectiontext());
+			docsectionandrule.setDocumentsid(list.get(i).getDocumentsid());
+			docsectionandrule.setSectionname(list.get(i).getSectionname());
+			docsectionandrule.setTitle(list.get(i).getTitle());
+			docsectionandrule.setBelongid(user.getUserid());
+			docsectionandrule.setBelonguser(user.getUsername());
+			this.getHibernateTemplate().save(docsectionandrule);
+		}
 		
 	}
 

@@ -3,6 +3,7 @@ package com.pluskynet.dao;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.User;
 import com.sun.star.rdf.QueryException;
@@ -17,7 +18,7 @@ public interface DocSectionAndRuleDao {
 
 	List<Docsectionandrule> getDoc(Docsectionandrule docsectionandrule);
 
-	List<Docsectionandrule> getDocLists(String sectionname);
+	List<Docsectionandrule> getDocLists(String sectionname,User user);
 
 	void saveyl(Docsectionandrule docsectionandrule);
 
@@ -27,5 +28,8 @@ public interface DocSectionAndRuleDao {
 	void update(String doctable,String sectionname);
 
 	Boolean plsave(List<Docsectionandrule> docsectionlist, String doctable);
+
+	List<Docsectionandrule> getDocsectionList(Cause cause, String year, Integer valueOf, String trialRound,
+			String doctype);
 
 }

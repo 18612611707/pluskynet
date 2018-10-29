@@ -94,7 +94,7 @@ public class LatitudeAction extends BaseAction{
 			outJsonByMsg("未登录");
 			return;
 		}
-		String msg = latitudeService.update(latitude);
+		String msg = latitudeService.update(latitude,user);
 		outJsonByMsg(msg);
 	}
 	/*
@@ -106,7 +106,7 @@ public class LatitudeAction extends BaseAction{
 			outJsonByMsg("未登录");
 			return;
 		}
-		List<Map> list = latitudeService.getLatitudeList();
+		List<Map> list = latitudeService.getLatitudeList(user);
 		outJsonByMsg(list, "成功");
 	}
 	/*
@@ -143,7 +143,7 @@ public class LatitudeAction extends BaseAction{
 			outJsonByMsg("未登录");
 			return;
 		}
-		List<StatsDoc> list = latitudeService.getDocList(latitude);
+		List<StatsDoc> list = latitudeService.getDocList(latitude,user);
 		outJsonByMsg(list, "成功");
 	}
 	/*
@@ -179,7 +179,7 @@ public class LatitudeAction extends BaseAction{
 		if (latitude.getLatitudename()==null) {
 			outJsonByMsg(msg);
 		}else{
-			List<Map> list = latitudeService.getLatitudeShow(latitude.getLatitudename());
+			List<Map> list = latitudeService.getLatitudeShow(latitude.getLatitudename(),user);
 			outJsonByMsg(list, "成功");
 		}
 	}
@@ -198,5 +198,22 @@ public class LatitudeAction extends BaseAction{
 		}else {
 			List<Latitude> list = latitudeService.getRuleShow(latitude.getLatitudeid(),cause,spcx,sectionname);
 		}
+	}
+	/*
+	 * 修改名称
+	 */
+	public void updateName() {
+		User user = isLogined();
+		if (user == null) {
+			outJsonByMsg("未登录");
+			return;
+		}
+		String msg = null;
+		if (latitude.getLatitudeid() == null) {
+			msg = "失败";
+		} else {
+			msg = latitudeService.updateName(latitude);
+		}
+		outJsonByMsg(msg);
 	}
 }

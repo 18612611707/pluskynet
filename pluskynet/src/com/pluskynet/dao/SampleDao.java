@@ -3,6 +3,7 @@ package com.pluskynet.dao;
 import java.util.List;
 
 import com.pluskynet.domain.Article01;
+import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.User;
 
@@ -17,5 +18,9 @@ public interface SampleDao {
 	Sample select(User user);
 
 	void delete(User user);
+
+	void deleteDoc(User user);
+
+	void saveDoc(List<Docsectionandrule> list, User user);
 
 }

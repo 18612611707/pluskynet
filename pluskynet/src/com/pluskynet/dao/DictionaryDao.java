@@ -19,4 +19,6 @@ public interface DictionaryDao {
 
 	List<Dictionarytree> getDicname(String code);
 
+	List<Dictionary> getNextdic(Integer id);
+
 }

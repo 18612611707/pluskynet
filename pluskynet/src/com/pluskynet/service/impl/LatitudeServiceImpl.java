@@ -17,6 +17,7 @@ import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.domain.StatsDoc;
+import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.OtherLatitude;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.otherdomain.Treelatitude;
@@ -53,8 +54,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public String update(Latitude latitude) {
-		String msg = latitudeDao.update(latitude);
+	public String update(Latitude latitude,User user) {
+		String msg = latitudeDao.update(latitude,user);
 		if (msg.equals("成功")) {
 			latitude = latitudeDao.getLatitude(latitude);
 			Latitudeaudit latitudeaudit = new Latitudeaudit();
@@ -68,15 +69,15 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public List<Map> getLatitudeList() {
-		List<Treelatitude> friList = latitudeDao.getFirstLevel();
+	public List<Map> getLatitudeList(User user) {
+		List<Treelatitude> friList = latitudeDao.getFirstLevel(user); //获取一级内容
 		List<Map> list = new ArrayList<Map>();
 		for (int i = 0; i < friList.size(); i++) {
 			Map<String, Object> treeMap = new HashMap<String, Object>();
 			treeMap.put("latitudeid", friList.get(i).getLatitudeid());
 			treeMap.put("latitudefid", friList.get(i).getLatitudefid());
 			treeMap.put("latitudename", friList.get(i).getLatitudename());
-			treeMap.put("children", treeList(friList.get(i).getLatitudeid()));
+			treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
 			list.add(treeMap);
 		}
 
@@ -85,19 +86,24 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public List<Treelatitude> treeList(int latitudeid) {
-		List<Treelatitude> nextSubSet = new ArrayList<Treelatitude>();
+	public List<Treelatitude> treeList(int latitudeid, User user) {
+		List<Latitude> nextSubSet = new ArrayList<Latitude>();
 		Treelatitude voteTree = new Treelatitude();
 		voteTree.setLatitudeid(latitudeid);
-		nextSubSet = latitudeDao.getNextSubSet(voteTree);
-		// 一级目录
-
-		// for (Treelatitude voteTree : friList) {
-		// //根据一级目录查找所有的子集
-		// voteTree.setChildren(nextSubSet);
-		//
-		// }
-		return nextSubSet;
+		nextSubSet = latitudeDao.getNextSubSet(voteTree,user);
+		 List<Treelatitude> list = new ArrayList<Treelatitude>();
+	        for (int i = 0; i < nextSubSet.size(); i++) {
+	        	//遍历这个二级目录的集合
+				Treelatitude treelatitude = new Treelatitude();
+				treelatitude.setLatitudeid(nextSubSet.get(i).getLatitudeid());
+				treelatitude.setLatitudefid(nextSubSet.get(i).getLatitudefid());
+				treelatitude.setLatitudename(nextSubSet.get(i).getLatitudename());
+				List<Treelatitude> ts = latitudeDao.getDeeptLevel(nextSubSet.get(i),user);  
+	            //将下面的子集都依次递归进来 
+	            treelatitude.setChildren(ts);
+			    list.add(treelatitude);
+			}
+		return list;
 	}
 
 	@Override
@@ -113,7 +119,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public List<StatsDoc> getDocList(Latitude latitude) {
+	public List<StatsDoc> getDocList(Latitude latitude,User user) {
 		List<StatsDoc> listsDocs = new ArrayList<StatsDoc>();
 		JSONArray jsonArray = new JSONArray().fromObject(latitude.getRule());
 		int b = latitude.getRuletype();
@@ -125,7 +131,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 				}
 				String sectionname = jsonObject.getString("sectionname"); // 段落名
 				String sectiontext = null;
-				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname);
+				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
 				String contains = jsonObject.getString("contains");
 				String[] contain = contains.split(";");// 包含
 				boolean a = false;
@@ -185,7 +191,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				String sectionname = jsonObject.getString("sectionname"); // 段落名
 				String sectiontext = null;
-				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname);
+				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
 				Pattern patPunc = null;
 				for (int k = 0; k < list.size(); k++) {
 					sectiontext = list.get(k).getSectiontext();
@@ -231,7 +237,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				String sectionname = jsonObject.getString("sectionname"); // 段落名
 				String sectiontext = null;
-				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname);
+				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
 				docList.addAll(list);
 			}
 			for (int i = 0; i < docList.size(); i++) {
@@ -358,15 +364,15 @@ public class LatitudeServiceImpl implements LatitudeService {
 		}
 
 		@Override
-		public List<Map> getLatitudeShow(String latitudename) {
-			List<Latitude> friList = latitudeDao.getLatitudeShow(latitudename);
+		public List<Map> getLatitudeShow(String latitudename,User user) {
+			List<Latitude> friList = latitudeDao.getLatitudeShow(latitudename,user);
 			List<Map> list = new ArrayList<Map>();
 			for (int i = 0; i < friList.size(); i++) {
 				Map<String, Object> treeMap = new HashMap<String, Object>();
 				treeMap.put("latitudeid", friList.get(i).getLatitudeid());
 				treeMap.put("latitudefid", friList.get(i).getLatitudefid());
 				treeMap.put("latitudename", friList.get(i).getLatitudename());
-				treeMap.put("children", treeList(friList.get(i).getLatitudeid()));
+				treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
 				list.add(treeMap);
 			}
 			return list;
@@ -376,6 +382,12 @@ public class LatitudeServiceImpl implements LatitudeService {
 		public List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname) {
 			List<Latitude> list = latitudeDao.getRuleShow(latitudeid,cause,spcx,sectionname);
 			return list;
+		}
+
+		@Override
+		public String updateName(Latitude latitude) {
+			String msg = latitudeDao.updateName(latitude);
+			return msg;
 		}
 
 }

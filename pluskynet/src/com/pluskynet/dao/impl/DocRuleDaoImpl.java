@@ -51,8 +51,8 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 		if (docrule.getFid() == null) {
 			docrule.setFid(0);
 		}
-		String hql = "from Docrule where ruleid = ? and fid = ?";
-		List<Docrule> docrules = this.getHibernateTemplate().find(hql, docrule.getRuleid(), docrule.getFid());
+		String hql = "from Docrule where ruleid = ?";
+		List<Docrule> docrules = this.getHibernateTemplate().find(hql, docrule.getRuleid());
 		if (docrules.size() > 0) {
 			if (docrule.getRule() == null || docrule.getRule().equals("")) {
 				hqls = "update Docrule set sectionName = ?,fid = ?,reserved=? where ruleid = ?";
@@ -102,25 +102,26 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 	}
 
 	@Override
-	public List<TreeDocrule> getNextSubSet(TreeDocrule voteTree) {
+	public List<Docrule> getNextSubSet(TreeDocrule voteTree) {
 		String hql = "from Docrule where fid = ?";
 		List<Docrule> tNextLevel = this.getHibernateTemplate().find(hql, voteTree.getRuleid());
-		List<TreeDocrule> list = new ArrayList<TreeDocrule>();
-		for (int i = 0; i < tNextLevel.size(); i++) {
-			// 遍历这个二级目录的集合
-			TreeDocrule treelatitude = new TreeDocrule();
-			treelatitude.setRuleid(tNextLevel.get(i).getRuleid());
-			treelatitude.setFid(tNextLevel.get(i).getFid());
-			treelatitude.setSectionname(tNextLevel.get(i).getSectionname());
-			List<TreeDocrule> ts = getDeeptLevel(tNextLevel.get(i));
-			// 将下面的子集都依次递归进来
-			treelatitude.setChildren(ts);
-			list.add(treelatitude);
-		}
-		return list;
+//		List<TreeDocrule> list = new ArrayList<TreeDocrule>();
+//		for (int i = 0; i < tNextLevel.size(); i++) {
+//			// 遍历这个二级目录的集合
+//			TreeDocrule treelatitude = new TreeDocrule();
+//			treelatitude.setRuleid(tNextLevel.get(i).getRuleid());
+//			treelatitude.setFid(tNextLevel.get(i).getFid());
+//			treelatitude.setSectionname(tNextLevel.get(i).getSectionname());
+//			List<TreeDocrule> ts = getDeeptLevel(tNextLevel.get(i));
+//			// 将下面的子集都依次递归进来
+//			treelatitude.setChildren(ts);
+//			list.add(treelatitude);
+//		}
+		return tNextLevel;
 	}
 
-	private List<TreeDocrule> getDeeptLevel(Docrule latitude) {
+	@Override
+	public List<TreeDocrule> getDeeptLevel(Docrule latitude) {
 		String hql = "from Docrule where fid = ?";
 		List<Docrule> tsLevel = this.getHibernateTemplate().find(hql, latitude.getRuleid());
 		List<TreeDocrule> list = new ArrayList<TreeDocrule>();
@@ -199,8 +200,8 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 		if (docrule.getFid() == null) {
 			docrule.setFid(0);
 		}
-		String hql = "from Docrule where ruleid = ? and fid = ?";
-		List<Docrule> docrules = this.getHibernateTemplate().find(hql, docrule.getRuleid(), docrule.getFid());
+		String hql = "from Docrule where ruleid = ?";
+		List<Docrule> docrules = this.getHibernateTemplate().find(hql, docrule.getRuleid());
 		if (docrules.size() > 0) {
 			hqls = "update Docrule set sectionName = ?,fid = ? where ruleid = ?";
 			this.getHibernateTemplate().bulkUpdate(hqls, docrule.getSectionname(), docrule.getFid(),
