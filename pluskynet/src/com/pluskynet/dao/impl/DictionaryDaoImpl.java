@@ -106,9 +106,9 @@ public class DictionaryDaoImpl extends HibernateDaoSupport implements Dictionary
 			List<Dictionary> lists = this.getHibernateTemplate().find(hql,list.get(i).getId());
 			for (int j = 0; j < lists.size(); j++) {
 				Dictionarytree dictionarytree = new Dictionarytree();
-				dictionarytree.setFid(lists.get(i).getFid());
-				dictionarytree.setId(lists.get(i).getId());
-				dictionarytree.setName(lists.get(i).getName());
+				dictionarytree.setFid(lists.get(j).getFid());
+				dictionarytree.setId(lists.get(j).getId());
+				dictionarytree.setName(lists.get(j).getName());
 				firstList.add(dictionarytree);
 			}
 		}

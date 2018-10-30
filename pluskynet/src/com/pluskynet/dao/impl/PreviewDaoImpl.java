@@ -120,6 +120,11 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
+						StringBuffer s = new StringBuffer(leftdoc);
+						leftdoc = s.reverse().toString();
+						if (before!=null) {
+							start = start + beginIndex1.length() - leftdoc.indexOf(before);
+						}
 						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
 						break;
 					}

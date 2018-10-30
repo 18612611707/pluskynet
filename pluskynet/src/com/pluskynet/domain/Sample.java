@@ -12,6 +12,7 @@ public class Sample implements java.io.Serializable {
 	private String rule;
 	private String belonguser;
 	private Integer belongid;
+	private String reserved;
 
 	// Constructors
 
@@ -19,11 +20,19 @@ public class Sample implements java.io.Serializable {
 	public Sample() {
 	}
 
-	/** full constructor */
+	/** minimal constructor */
 	public Sample(String rule, String belonguser, Integer belongid) {
 		this.rule = rule;
 		this.belonguser = belonguser;
 		this.belongid = belongid;
+	}
+
+	/** full constructor */
+	public Sample(String rule, String belonguser, Integer belongid, String reserved) {
+		this.rule = rule;
+		this.belonguser = belonguser;
+		this.belongid = belongid;
+		this.reserved = reserved;
 	}
 
 	// Property accessors
@@ -58,6 +67,14 @@ public class Sample implements java.io.Serializable {
 
 	public void setBelongid(Integer belongid) {
 		this.belongid = belongid;
+	}
+
+	public String getReserved() {
+		return this.reserved;
+	}
+
+	public void setReserved(String reserved) {
+		this.reserved = reserved;
 	}
 
 }

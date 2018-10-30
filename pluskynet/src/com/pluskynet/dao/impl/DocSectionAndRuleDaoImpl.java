@@ -75,8 +75,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 
 	@Override
 	@Transactional
-	public List<Docsectionandrule> getDocLists(String sectionname,User user) {
-		String hql = "select * from docsectionandrule where sectionname = '" + sectionname + "' and belonguser = '"+user.getUsername()+"' and belongid = '"+user.getUserid()+"' ";
+	public List<Docsectionandrule> getDocLists(int sectionname,User user) {
+		String hql = "select * from docsectionandrule where ruleid = '" + sectionname + "' and belonguser = '"+user.getUsername()+"' and belongid = '"+user.getUserid()+"' ";
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Docsectionandrule> list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
 		return list;
@@ -182,8 +182,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	@Override
 	public List<Docsectionandrule> getDocsectionList(Cause doctable, String year, Integer count, String trialRound,
 			String doctype) {
-		String hql = "select * from "+doctable.getDoctable()+" where documentsid in (SELECT doc_id FROM "+doctable.getCausetable()+" WHERE `id`  >= ((SELECT MAX(id) FROM "+doctable.getCausetable()+")-(SELECT MIN(id) FROM "+doctable.getCausetable()+")) * RAND() + (SELECT MIN(id) FROM "+doctable.getCausetable()+") "
-				+ "and `date` ='"+year+"' and spcx ='"+trialRound+"' and doctype = '"+doctype+"' limit "+count+")";
+		String hql = "select * from "+doctable.getDoctable()+" where documentsid in (SELECT  * FROM "+doctable.getDoctable()+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+doctable.getDoctable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+doctable.getDoctable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+doctable.getDoctable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Docsectionandrule> list = session.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
 		return list;

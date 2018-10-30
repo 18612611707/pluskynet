@@ -38,6 +38,9 @@ public class SampleServiceImpl implements SampleService{
 	public void random(Sample sample,User user) {
 		List<Docsectionandrule> doclist = new ArrayList<Docsectionandrule>();
 		List<Article01> list = new ArrayList<Article01>();
+		if (sample.getRule()==null || sample.getRule().equals("[]")) {
+			return;
+		}
 		JSONArray jsonArray = JSONArray.fromObject(sample.getRule());
 		for (int i = 0; i < jsonArray.size(); i++) {
 			List<Docsectionandrule> doclists = new ArrayList<Docsectionandrule>();
@@ -53,9 +56,10 @@ public class SampleServiceImpl implements SampleService{
 			if (jsonObject.has("latitudename")) {
 				doclists = docsectionandruledao.getDocsectionList(table,year,Integer.valueOf(count),trialRound,doctype);
 				doclist.addAll(doclists);
-			}
+			}else{
 			articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype);
 			list.addAll(articleyl);
+			}
 		}
 		if (doclist.size()>0) {
 			sampleDao.deleteDoc(user);

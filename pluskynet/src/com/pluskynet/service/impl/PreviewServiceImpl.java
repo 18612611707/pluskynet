@@ -182,7 +182,7 @@ public class PreviewServiceImpl implements PreviewService {
 					String start = html[i].substring(0, 1);
 					String p = "[\\u4e00-\\u9fa5]+";
 					if (start.matches(p)) {
-						newHtml = "<span style=\"color:red\">" + html[i] + "</span></div>";
+						newHtml = "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">" + html[i] + "</span></div>";
 					} else {
 						Document doc = Jsoup.parse(html[i]);
 						String eles = doc.getElementsByTag("div").text();
@@ -192,7 +192,7 @@ public class PreviewServiceImpl implements PreviewService {
 							if(html[i].indexOf(eles)!=-1){
 							String left = html[i].substring(0, html[i].indexOf(eles));
 							String right = html[i].substring(left.length() + eles.length());
-							newHtml = newHtml + left + "<span style=\"color:red\">" + eles + right + "</span></div>";
+							newHtml = newHtml + left + "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">" + eles + right + "</span></div>";
 							}
 							}
 					}

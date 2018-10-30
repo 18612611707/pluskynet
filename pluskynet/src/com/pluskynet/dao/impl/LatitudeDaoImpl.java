@@ -30,7 +30,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 		}
 		Map map = new HashMap();
 		list = this.getHibernateTemplate().find(hql,latitude.getLatitudename());
-		map.put("ruleid", list.get(0).getLatitudeid());
+		map.put("latitudeid", list.get(0).getLatitudeid());
 		return map;
 	}
 
@@ -221,12 +221,10 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 		String hql = "from Latitude where latitudeid = ? and createruser = ? ";
 		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
 		if(list.size()>0){
-			if (latitude.getLatitudename()==null || latitude.getLatitudename().equals("")) {
 				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?  where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
-				return "成功";	
-			}
+				return "成功";
 	}
 		return "段落不存在或无权限修改";
 	}

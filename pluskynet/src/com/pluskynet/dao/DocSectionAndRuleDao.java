@@ -18,7 +18,7 @@ public interface DocSectionAndRuleDao {
 
 	List<Docsectionandrule> getDoc(Docsectionandrule docsectionandrule);
 
-	List<Docsectionandrule> getDocLists(String sectionname,User user);
+	List<Docsectionandrule> getDocLists(int sectionname,User user);
 
 	void saveyl(Docsectionandrule docsectionandrule);
 

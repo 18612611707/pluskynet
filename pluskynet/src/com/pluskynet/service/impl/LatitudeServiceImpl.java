@@ -126,10 +126,10 @@ public class LatitudeServiceImpl implements LatitudeService {
 		if (b == 1) {
 			for (int i = 0; i < jsonArray.size(); i++) {
 				JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
-				if (!jsonObject.get("state").equals("新录")) {
-					continue;
-				}
-				String sectionname = jsonObject.getString("sectionname"); // 段落名
+//				if (!jsonObject.get("state").equals("新录")) {
+//					continue;
+//				}
+				int sectionname = jsonObject.getInt("sectionname"); // 段落名
 				String sectiontext = null;
 				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
 				String contains = jsonObject.getString("contains");
@@ -189,7 +189,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 				JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
 				StatsDoc statsDoc = new StatsDoc();
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
-				String sectionname = jsonObject.getString("sectionname"); // 段落名
+				int sectionname = jsonObject.getInt("sectionname"); // 段落名
 				String sectiontext = null;
 				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
 				Pattern patPunc = null;
@@ -235,7 +235,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 				JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
 				StatsDoc statsDoc = new StatsDoc();
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
-				String sectionname = jsonObject.getString("sectionname"); // 段落名
+				int sectionname = jsonObject.getInt("sectionname"); // 段落名
 				String sectiontext = null;
 				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
 				docList.addAll(list);
