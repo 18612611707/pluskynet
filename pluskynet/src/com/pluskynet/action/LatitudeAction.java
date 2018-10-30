@@ -216,4 +216,13 @@ public class LatitudeAction extends BaseAction{
 		}
 		outJsonByMsg(msg);
 	}
+	public void approve(){
+		User user = isLogined();
+		if (user == null) {
+			outJsonByMsg("未登录");
+			return;
+		}
+		String msg = latitudeService.approve(latitude,user);
+		outJsonByMsg(msg);
+	}
 }

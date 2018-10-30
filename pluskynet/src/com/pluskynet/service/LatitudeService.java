@@ -32,5 +32,7 @@ public interface LatitudeService {
 
 	String updateName(Latitude latitude, User user);
 
+	String approve(Latitude latitude, User user);
+
 
 }

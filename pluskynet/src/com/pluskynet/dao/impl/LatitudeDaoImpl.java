@@ -56,7 +56,6 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 				this.getHibernateTemplate().flush();
 				return "成功";
 			}
-			
 		}
 		return "失败";
 	}
@@ -64,7 +63,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	//查询一级菜单  
 	public List<Treelatitude> getFirstLevel(User user) {
 		String hql =null;
-		hql = "from Latitude where latitudefid = 0 and createruser = ? and createruser = 'admin' ";
+		hql = "from Latitude where latitudefid = 0 and (createruser = ? or createruser = 'admin')  ";
 		List<Latitude> listFirstLevel = this.getHibernateTemplate().find(hql,user.getUsername());
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		for (int i = 0; i < listFirstLevel.size(); i++) {
@@ -72,6 +71,8 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 			treelatitude.setLatitudeid(listFirstLevel.get(i).getLatitudeid());
 			treelatitude.setLatitudefid(listFirstLevel.get(i).getLatitudefid());
 			treelatitude.setLatitudename(listFirstLevel.get(i).getLatitudename());
+			treelatitude.setCreator(listFirstLevel.get(i).getCreateruser());
+			treelatitude.setStat(listFirstLevel.get(i).getStats());
 			list.add(treelatitude);
 		}
 		return list;
@@ -108,6 +109,8 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 					treelatitude.setLatitudefid(tsLevel.get(i).getLatitudefid());
 					treelatitude.setLatitudename(tsLevel.get(i).getLatitudename());
 					treelatitude.setChildren(getDeeptLevel(tsLevel.get(i),user));
+					treelatitude.setCreator(tsLevel.get(i).getCreateruser());
+					treelatitude.setStat(tsLevel.get(i).getStats());
 					list.add(treelatitude);
 	            }  
 	        }  
@@ -227,5 +230,18 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 				return "成功";
 	}
 		return "段落不存在或无权限修改";
+	}
+
+	@Override
+	public String approve(Latitude latitude,User user) {
+		String sql = "from Latitude where latitudeid = ? and createruser = ? ";
+		List<Latitude> list = this.getHibernateTemplate().find(sql,latitude.getLatitudeid(),user.getUsername());
+		if (list.size()>0) {
+			String hql = "update latitude set stats = ? where latitudeid = ? ";
+			this.getHibernateTemplate().bulkUpdate(hql,latitude.getStats(),latitude.getLatitudeid());
+			return "成功";
+		}
+		
+		return "失败";
 	}
 }

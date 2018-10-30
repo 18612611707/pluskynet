@@ -77,6 +77,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 			treeMap.put("latitudeid", friList.get(i).getLatitudeid());
 			treeMap.put("latitudefid", friList.get(i).getLatitudefid());
 			treeMap.put("latitudename", friList.get(i).getLatitudename());
+			treeMap.put("creator", friList.get(i).getCreator());
+			treeMap.put("stat", friList.get(i).getStat());
 			treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
 			list.add(treeMap);
 		}
@@ -109,6 +111,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 	@Override
 	public Latitude getLatitude(Latitude latitude) {
 		Latitude list = latitudeDao.getLatitude(latitude);
+		
 		return list;
 	}
 
@@ -387,6 +390,12 @@ public class LatitudeServiceImpl implements LatitudeService {
 		@Override
 		public String updateName(Latitude latitude,User user) {
 			String msg = latitudeDao.updateName(latitude,user);
+			return msg;
+		}
+
+		@Override
+		public String approve(Latitude latitude,User user) {
+			String msg = latitudeDao.approve(latitude,user);
 			return msg;
 		}
 

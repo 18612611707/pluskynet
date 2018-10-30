@@ -33,5 +33,18 @@ public class Treelatitude {
 	private String latitudename;
 	@SuppressWarnings("rawtypes")
 	private List<?> children = new ArrayList<Object>();
-
+	private String creator;
+	private String stat;
+	public String getCreator() {
+		return creator;
+	}
+	public void setCreator(String creator) {
+		this.creator = creator;
+	}
+	public String getStat() {
+		return stat;
+	}
+	public void setStat(String stat) {
+		this.stat = stat;
+	}
 }

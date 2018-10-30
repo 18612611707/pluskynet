@@ -33,4 +33,6 @@ public interface LatitudeDao {
 
 	String updateName(Latitude latitude, User user);
 
+	String approve(Latitude latitude, User user);
+
 }

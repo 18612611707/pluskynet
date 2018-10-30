@@ -106,26 +106,31 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
 				String endWord = ruleJson.getString("end");
-				if (startWord.contains("^")) {
-					before = startWord.substring(0,startWord.indexOf("^"));
-					startWord = startWord.substring(startWord.indexOf("^")+1);
-				}
+				
 				String judge = ruleJson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
 				for (int j = 0; j < startWords.length; j++) {
+					if (startWords[j].contains("^")) {
+						before = startWords[j].substring(0,startWord.indexOf("^"));
+						startWords[j] = startWords[j].substring(startWord.indexOf("^")+1);
+					}else{
+						before = null;
+					}
 					Pattern patternstart = startRuleFomat(startWords[j]);
 					Matcher matcher = patternstart.matcher(docold);
 					if (matcher.find()) {
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
+//						System.out.println(leftdoc.length());
 						StringBuffer s = new StringBuffer(leftdoc);
 						leftdoc = s.reverse().toString();
 						if (before!=null) {
-							start = start + beginIndex1.length() - leftdoc.indexOf(before);
+							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
 						}
-						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
+						rightdoc = docold.substring(start);
+//						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
 						break;
 					}
 				}
@@ -138,10 +143,9 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 							if (endWords[x].length() > 0) {
 								// System.out.println(endWords.length);
 								if (judge.equals("之前")) {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex);
 								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()
-											+ beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
 								}
 							} else {
 								end = docold.length();
@@ -190,7 +194,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 	// 开始规则格式化
 	public Pattern startRuleFomat(String startWords) {
 		String reg_charset = null;
-		String[] start = startWords.split(",|，");
+		String[] start = startWords.split("*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
 				if (reg_charset == null) {
@@ -209,7 +213,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 	// 结束规则格式化
 	public Pattern endRuleFomat(String endWords) {
 		String reg_charset = null;
-		String[] end = endWords.split(",|，");
+		String[] end = endWords.split("*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
 				if (reg_charset == null) {
