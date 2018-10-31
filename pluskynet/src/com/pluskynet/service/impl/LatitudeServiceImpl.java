@@ -144,7 +144,6 @@ public class LatitudeServiceImpl implements LatitudeService {
 	@Override
 	public Latitude getLatitude(Latitude latitude) {
 		Latitude list = latitudeDao.getLatitude(latitude);
-		
 		return list;
 	}
 

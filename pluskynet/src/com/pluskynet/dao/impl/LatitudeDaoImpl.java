@@ -247,15 +247,26 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 
 	@Override
 	public String approve(Latitude latitude, User user) {
-		String sql = "from Latitude where latitudeid = ? and createruser = ? ";
-		List<Latitude> list = this.getHibernateTemplate().find(sql, latitude.getLatitudeid(), user.getUsername());
+		String sql = null;
+		List<Latitude> list = new ArrayList<Latitude>();
+		System.out.println(user.getRolecode());
+		if (user.getRolecode()!=null) {
+			if (user.getRolecode().equals("admin")) {
+				sql = "from Latitude where latitudeid = ? and stats = 'wait'";
+				list = this.getHibernateTemplate().find(sql, latitude.getLatitudeid());
+			}
+		}else{
+			sql = "from Latitude where latitudeid = ? and createruser = ? ";
+			list = this.getHibernateTemplate().find(sql, latitude.getLatitudeid(), user.getUsername());
+		}
 		if (list.size() > 0) {
-			String hql = "update latitude set stats = ? where latitudeid = ? ";
+			String hql = "update Latitude set stats = ? where latitudeid = ? ";
 			this.getHibernateTemplate().bulkUpdate(hql, latitude.getStats(), latitude.getLatitudeid());
+			this.getHibernateTemplate().flush();
 			return "成功";
 		}
 
-		return "失败";
+		return "不需要审核";
 	}
 
 	@Override

@@ -42,9 +42,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 			treeMap.put("children", treeList(firstdic.get(i).getId()));
 			list.add(treeMap);
 		}
-
 		return list;
-
 	}
 
 	private Object treeList(int id) {
