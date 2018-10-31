@@ -112,8 +112,8 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				String[] endWords = endWord.split(";|；");
 				for (int j = 0; j < startWords.length; j++) {
 					if (startWords[j].contains("^")) {
-						before = startWords[j].substring(0,startWord.indexOf("^"));
-						startWords[j] = startWords[j].substring(startWord.indexOf("^")+1);
+						before = startWords[j].substring(0,startWords[j].indexOf("^"));
+						startWords[j] = startWords[j].substring(startWords[j].indexOf("^")+1);
 					}else{
 						before = null;
 					}

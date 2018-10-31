@@ -19,16 +19,17 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 
 	@Override
 	public Map save(Latitude latitude,User user) {
+		Map map = new HashMap();
 		String hql = "from Latitude where latitudename = ?";
 		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudename());
 		if(list.size()>0){
-			String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?  where latitudeid = ?";
-			this.getHibernateTemplate().bulkUpdate(queryStr,latitude.getLatitudename(),latitude.getLatitudefid(),latitude.getLatitudeid());
+			return map;
 		}else {
+			latitude.setStats("create");
 			latitude.setCreateruser(user.getUsername());
 			this.getHibernateTemplate().save(latitude);
 		}
-		Map map = new HashMap();
+		
 		list = this.getHibernateTemplate().find(hql,latitude.getLatitudename());
 		map.put("latitudeid", list.get(0).getLatitudeid());
 		return map;
@@ -36,7 +37,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 
 	@Override
 	public String update(Latitude latitude,User user) {
-		String hql = "from Latitude where latitudeid = ? and createruser = ?";
+		String hql = "from Latitude where latitudeid = ? and createruser = ? and (stats = 'reject' or stats = 'create')" ;
 		List<Latitude> list = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
 		if(list.size()>0){
 			if (latitude.getLatitudename()==null || latitude.getLatitudename().equals("")) {
@@ -63,7 +64,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	//查询一级菜单  
 	public List<Treelatitude> getFirstLevel(User user) {
 		String hql =null;
-		hql = "from Latitude where latitudefid = 0 and (createruser = ? or createruser = 'admin')  ";
+		hql = "from Latitude where latitudefid = 0 ";
 		List<Latitude> listFirstLevel = this.getHibernateTemplate().find(hql,user.getUsername());
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		for (int i = 0; i < listFirstLevel.size(); i++) {
@@ -81,8 +82,8 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	@Override
 	 //根据一级id查询所有的子集
 	public List<Latitude> getNextSubSet(Treelatitude voteTree,User user) {
-		 String hql = "from Latitude where latitudefid = ? and createruser = ? and createruser = 'admin'";  
-	        List<Latitude> tNextLevel = this.getHibernateTemplate().find(hql,voteTree.getLatitudeid(),user.getUsername()); 
+		 String hql = "from Latitude where latitudefid = ?";  
+	        List<Latitude> tNextLevel = this.getHibernateTemplate().find(hql,voteTree.getLatitudeid()); 
 //	        List<Treelatitude> list = new ArrayList<Treelatitude>();
 //	        for (int i = 0; i < tNextLevel.size(); i++) {
 //	        	//遍历这个二级目录的集合
@@ -99,8 +100,8 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	}
 	@Override
 	public List<Treelatitude> getDeeptLevel(Latitude latitude,User user) {
-		 String hql = "from Latitude where latitudefid = ? and createruser = ? and createruser = 'admin'";  
-	     List<Latitude> tsLevel = this.getHibernateTemplate().find(hql,latitude.getLatitudeid(),user.getUsername());
+		 String hql = "from Latitude where latitudefid = ? ";  
+	     List<Latitude> tsLevel = this.getHibernateTemplate().find(hql,latitude.getLatitudeid());
 	     List<Treelatitude> list = new ArrayList<Treelatitude>();
 	     if(tsLevel.size()>0){
 	            for (int i = 0; i <tsLevel.size(); i++) {  

@@ -1,5 +1,8 @@
 package com.pluskynet.action;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -42,7 +45,12 @@ public class LoginAction extends BaseAction {
 	public void selectuser() {
 		user = (User) ActionContext.getContext().getSession().get("user");
 		if (user!=null) {
-			outJsonByMsg(user, "成功");
+			Map map = new HashMap();
+			map.put("name", user.getName());
+			map.put("username", user.getUsername());
+			map.put("role", user.getRolecode());
+			map.put("userid", user.getUserid());
+			outJsonByMsg(map, "成功");
 			return;
 		}
 		outJsonByMsg("未登录");

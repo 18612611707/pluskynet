@@ -132,15 +132,26 @@ public class PreviewServiceImpl implements PreviewService {
 				judge = rulejson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
+				String before = null;
 				for (int j = 0; j < startWords.length; j++) {
+					if (startWords[j].contains("^")) {
+						before = startWords[j].substring(0,startWords[j].indexOf("^"));
+						startWords[j] = startWords[j].substring(startWords[j].indexOf("^")+1);
+					}else{
+						before = null;
+					}
 					Pattern patternstart = startRuleFomat(startWords[j]);
 					Matcher matcher = patternstart.matcher(htmlString);
 					if (matcher.find()) {
 						beginIndex1 = matcher.group();
 						start = htmlString.indexOf(beginIndex1);
 						leftdoc = htmlString.substring(0, htmlString.indexOf(beginIndex1) + beginIndex1.length());
-						rightdoc = htmlString.substring(htmlString.indexOf(beginIndex1) + beginIndex1.length());
-						matchStart = startWords[j];
+						StringBuffer s = new StringBuffer(leftdoc);
+						leftdoc = s.reverse().toString();
+						if (before!=null) {
+							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
+						}
+						rightdoc = htmlString.substring(start);
 						break;
 					}
 				}

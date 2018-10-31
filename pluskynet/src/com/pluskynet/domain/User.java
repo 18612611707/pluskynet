@@ -19,6 +19,7 @@ public class User implements java.io.Serializable {
 	private Timestamp createtime;
 	private String createuser;
 	private Integer iseff;
+	private String rolecode;
 
 	// Constructors
 
@@ -35,7 +36,7 @@ public class User implements java.io.Serializable {
 
 	/** full constructor */
 	public User(String username, String name, String password, Integer phone, String email, Timestamp createtime,
-			String createuser, Integer iseff) {
+			String createuser, Integer iseff, String rolecode) {
 		this.username = username;
 		this.name = name;
 		this.password = password;
@@ -44,6 +45,7 @@ public class User implements java.io.Serializable {
 		this.createtime = createtime;
 		this.createuser = createuser;
 		this.iseff = iseff;
+		this.rolecode = rolecode;
 	}
 
 	// Property accessors
@@ -118,6 +120,14 @@ public class User implements java.io.Serializable {
 
 	public void setIseff(Integer iseff) {
 		this.iseff = iseff;
+	}
+
+	public String getRolecode() {
+		return this.rolecode;
+	}
+
+	public void setRolecode(String rolecode) {
+		this.rolecode = rolecode;
 	}
 
 }
