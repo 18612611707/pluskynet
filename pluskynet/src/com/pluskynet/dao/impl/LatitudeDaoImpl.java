@@ -110,7 +110,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 
 	@Override
 	public List<Treelatitude> getDeeptLevel(Latitude latitude, User user) {
-		String hql = "from Latitude where latitudefid = ? ";
+		String hql = "from Latitude where latitudefid = ? order by latitudeid";
 		List<Latitude> tsLevel = this.getHibernateTemplate().find(hql, latitude.getLatitudeid());
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		if (tsLevel.size() > 0) {
@@ -256,5 +256,12 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 		}
 
 		return "失败";
+	}
+
+	@Override
+	public List<Latitude> getLatitudeList() {
+		String sql = "from Latitude";
+		List<Latitude> list = this.getHibernateTemplate().find(sql);
+		return list;
 	}
 }

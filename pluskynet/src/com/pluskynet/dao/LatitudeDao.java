@@ -35,4 +35,6 @@ public interface LatitudeDao {
 
 	String approve(Latitude latitude, User user);
 
+	List<Latitude> getLatitudeList();
+
 }

@@ -70,23 +70,56 @@ public class LatitudeServiceImpl implements LatitudeService {
 
 	@Override
 	public List<Map> getLatitudeList(User user) {
-		List<Treelatitude> friList = latitudeDao.getFirstLevel(user); //获取一级内容
+		List<Latitude> lists = latitudeDao.getLatitudeList();
 		List<Map> list = new ArrayList<Map>();
-		for (int i = 0; i < friList.size(); i++) {
+		for (int i = 0; i < lists.size(); i++) {
+			if (lists.get(i).getLatitudefid()!=0) {
+				continue;
+			}
 			Map<String, Object> treeMap = new HashMap<String, Object>();
-			treeMap.put("latitudeid", friList.get(i).getLatitudeid());
-			treeMap.put("latitudefid", friList.get(i).getLatitudefid());
-			treeMap.put("latitudename", friList.get(i).getLatitudename());
-			treeMap.put("creator", friList.get(i).getCreator());
-			treeMap.put("stat", friList.get(i).getStat());
-			treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
+			treeMap.put("latitudeid", lists.get(i).getLatitudeid());
+			treeMap.put("latitudefid", lists.get(i).getLatitudefid());
+			treeMap.put("latitudename", lists.get(i).getLatitudename());
+			treeMap.put("creator", lists.get(i).getCreateruser());
+			treeMap.put("stat", lists.get(i).getStats());
+			treeMap.put("children", children(lists,lists.get(i).getLatitudeid()));
 			list.add(treeMap);
 		}
+		
+//		List<Treelatitude> friList = latitudeDao.getFirstLevel(user); //获取一级内容
+//
+//		for (int i = 0; i < friList.size(); i++) {
+//			Map<String, Object> treeMap = new HashMap<String, Object>();
+//			treeMap.put("latitudeid", friList.get(i).getLatitudeid());
+//			treeMap.put("latitudefid", friList.get(i).getLatitudefid());
+//			treeMap.put("latitudename", friList.get(i).getLatitudename());
+//			treeMap.put("creator", friList.get(i).getCreator());
+//			treeMap.put("stat", friList.get(i).getStat());
+//			treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
+//			list.add(treeMap);
+//		}
 
 		return list;
 
 	}
 
+	private List<Treelatitude> children(List<Latitude> lists, Integer latitudeid) {
+		List<Treelatitude> list = new ArrayList<Treelatitude>();
+		for (int i = 0; i < lists.size(); i++) {
+			if (lists.get(i).getLatitudefid().intValue()==latitudeid.intValue()) {
+				Treelatitude treeMap = new Treelatitude();
+				treeMap.setLatitudeid(lists.get(i).getLatitudeid());
+				treeMap.setLatitudefid(lists.get(i).getLatitudefid());
+				treeMap.setLatitudename(lists.get(i).getLatitudename());
+				treeMap.setCreator(lists.get(i).getCreateruser());
+				treeMap.setStat(lists.get(i).getStats());
+				List<Treelatitude> tree = children(lists,lists.get(i).getLatitudeid());
+				treeMap.setChildren(tree);
+				list.add(treeMap);
+			}
+		}
+		return list;
+	}
 	@Override
 	public List<Treelatitude> treeList(int latitudeid, User user) {
 		List<Latitude> nextSubSet = new ArrayList<Latitude>();
