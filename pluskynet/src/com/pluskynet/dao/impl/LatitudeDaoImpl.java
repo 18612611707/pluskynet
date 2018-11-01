@@ -33,6 +33,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 				latitude.setStats("create");
 			}
 			latitude.setCreateruser(user.getUsername());
+			latitude.setCreatorName(user.getName());
 			this.getHibernateTemplate().save(latitude);
 		}
 

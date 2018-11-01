@@ -10,6 +10,7 @@ import com.pluskynet.dao.SampleDao;
 import com.pluskynet.domain.Article01;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.User;
 import com.pluskynet.service.SampleService;
@@ -28,34 +29,51 @@ public class SampleServiceImpl implements SampleService{
 	public void setSampleDao(SampleDao sampleDao) {
 		this.sampleDao = sampleDao;
 	}
-	public DocSectionAndRuleDao docsectionandruledao;
-
-	public void setDocsectionandruledao(DocSectionAndRuleDao docsectionandruledao) {
-		this.docsectionandruledao = docsectionandruledao;
+	
+	private DocSectionAndRuleDao docSectionAndRuleDao;
+	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
+		this.docSectionAndRuleDao = docSectionAndRuleDao;
 	}
+
 
 	@Override
 	public void random(Sample sample,User user) {
-		List<Docsectionandrule> doclist = new ArrayList<Docsectionandrule>();
+		List<Docsectionandrule01> doclist = new ArrayList<Docsectionandrule01>();
 		List<Article01> list = new ArrayList<Article01>();
 		if (sample.getRule()==null || sample.getRule().equals("[]")) {
 			return;
 		}
 		JSONArray jsonArray = JSONArray.fromObject(sample.getRule());
 		for (int i = 0; i < jsonArray.size(); i++) {
-			List<Docsectionandrule> doclists = new ArrayList<Docsectionandrule>();
+			List<Docsectionandrule01> doclists = new ArrayList<Docsectionandrule01>();
 			List<Article01> articleyl = new ArrayList<Article01>();
 			JSONObject jsonObject = new JSONObject().fromObject(jsonArray.get(i));
 			String year = jsonObject.getString("year");
-			String count = jsonObject.getString("count");
+			int count = jsonObject.getInt("count");
 			String trialRound = jsonObject.getString("trialRound");
 			String doctype = jsonObject.getString("doctype");
 			Cause cause = new Cause();
 			cause.setCausename(jsonObject.getString("causet"));
 			Cause table = causeDao.selectCause(cause);
+			String latitudename = jsonObject.getString("latitudename");
 			if (jsonObject.has("latitudename")) {
-				doclists = docsectionandruledao.getDocsectionList(table,year,Integer.valueOf(count),trialRound,doctype);
-				doclist.addAll(doclists);
+				if (!jsonObject.getString("latitudename").equals("")) {
+					System.out.println(doclists);
+					System.out.println(docSectionAndRuleDao);
+					System.out.println(table);
+					System.out.println(table.getDoctable());
+					System.out.println(year);
+					System.out.println(count);
+					System.out.println(trialRound);
+					System.out.println(doctype);
+					System.out.println(doclists);
+					doclists = docSectionAndRuleDao.getDocsectionList(table,year,count,trialRound,doctype);
+					doclist.addAll(doclists);
+				}else{
+					articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype);
+					list.addAll(articleyl);
+				}
+				
 			}else{
 			articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype);
 			list.addAll(articleyl);

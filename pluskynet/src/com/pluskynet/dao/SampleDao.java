@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pluskynet.domain.Article01;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.User;
 
@@ -21,6 +22,6 @@ public interface SampleDao {
 
 	void deleteDoc(User user);
 
-	void saveDoc(List<Docsectionandrule> list, User user);
+	void saveDoc(List<Docsectionandrule01> list, User user);
 
 }

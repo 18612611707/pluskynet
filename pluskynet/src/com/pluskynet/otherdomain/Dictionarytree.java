@@ -7,6 +7,7 @@ public class Dictionarytree {
 	private int id;
 	private String name;
 	private int fid;
+	private String code;
 	private List<?> children = new ArrayList<Object>();
 	public int getId() {
 		return id;
@@ -32,6 +33,13 @@ public class Dictionarytree {
 	public void setChildren(List<?> children) {
 		this.children = children;
 	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
 	
 
 }

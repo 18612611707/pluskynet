@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.User;
 import com.sun.star.rdf.QueryException;
 
@@ -29,7 +30,7 @@ public interface DocSectionAndRuleDao {
 
 	Boolean plsave(List<Docsectionandrule> docsectionlist, String doctable);
 
-	List<Docsectionandrule> getDocsectionList(Cause cause, String year, Integer valueOf, String trialRound,
+	List<Docsectionandrule01> getDocsectionList(Cause cause, String year, int valueOf, String trialRound,
 			String doctype);
 
 }

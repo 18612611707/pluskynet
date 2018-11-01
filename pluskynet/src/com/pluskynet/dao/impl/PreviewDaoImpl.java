@@ -194,7 +194,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 	// 开始规则格式化
 	public Pattern startRuleFomat(String startWords) {
 		String reg_charset = null;
-		String[] start = startWords.split("*");
+		String[] start = startWords.split("\\*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
 				if (reg_charset == null) {
@@ -213,7 +213,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 	// 结束规则格式化
 	public Pattern endRuleFomat(String endWords) {
 		String reg_charset = null;
-		String[] end = endWords.split("*");
+		String[] end = endWords.split("\\*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
 				if (reg_charset == null) {

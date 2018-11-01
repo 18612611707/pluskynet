@@ -66,6 +66,7 @@ public class Bigdatasave extends Thread {
 			String beginIndex1 = null;
 			String Startword = null; // 匹配到的开始词语
 			String Endword = null; // 匹配到的结束词语
+			String before = null;
 			for (int a = 0; a < jsonArray.size(); a++) {
 				JSONObject js = new JSONObject();
 				js = jsonArray.getJSONObject(a);
@@ -76,6 +77,7 @@ public class Bigdatasave extends Thread {
 			}else if (!spcx.equals(trialRound)){
 					continue;
 			}
+				
 				ruleJson = jsonArray.getJSONObject(a);
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
@@ -86,14 +88,26 @@ public class Bigdatasave extends Thread {
 //				System.out.println(title.indexOf(doctype));
 				
 				for (int j1 = 0; j1 < startWords.length; j1++) {
+					if (startWords[j1].contains("^")) {
+						before = startWords[j1].substring(0,startWords[j1].indexOf("^"));
+						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^")+1);
+					}else{
+						before = null;
+					}
 					Pattern patternstart = startRuleFomat(startWords[j1]);
 					Matcher matcher = patternstart.matcher(docold);
 					if (matcher.find()) {
-						Startword = startWords[j1];
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
+//						System.out.println(leftdoc.length());
+						StringBuffer s = new StringBuffer(leftdoc);
+						leftdoc = s.reverse().toString();
+						if (before!=null) {
+							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
+						}
+						rightdoc = docold.substring(start);
+//						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
 						break;
 					}
 				}
@@ -269,7 +283,7 @@ public class Bigdatasave extends Thread {
 	// 开始规则正则化
 	public static Pattern startRuleFomat(String startWords) {
 		String reg_charset = null;
-		String[] start = startWords.split(",|，");
+		String[] start = startWords.split("\\*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
 				if (reg_charset == null) {
@@ -288,7 +302,7 @@ public class Bigdatasave extends Thread {
 	// 结束规则正则化
 	public static Pattern endRuleFomat(String endWords) {
 		String reg_charset = null;
-		String[] end = endWords.split(",|，");
+		String[] end = endWords.split("\\*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
 				if (reg_charset == null) {

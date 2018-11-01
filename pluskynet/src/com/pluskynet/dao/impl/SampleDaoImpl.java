@@ -12,6 +12,7 @@ import com.pluskynet.dao.SynonymDao;
 import com.pluskynet.domain.Article01;
 import com.pluskynet.domain.Articleyl;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.Rule;
 import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.User;
@@ -84,11 +85,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	}
 
 	@Override
-	/*
-	 * (non-Javadoc)删除段落样本
-	 * 
-	 * @see com.pluskynet.dao.SampleDao#deleteDoc(com.pluskynet.domain.User)
-	 */
+	@Transactional
 	public void deleteDoc(User user) {
 		String hql = "delete From docsectionandrule where belongid = " + user.getUserid() + "";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
@@ -96,13 +93,8 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	}
 
 	@Override
-	/*
-	 * (non-Javadoc)保存段落样本
-	 * 
-	 * @see com.pluskynet.dao.SampleDao#saveDoc(java.util.List,
-	 * com.pluskynet.domain.User)
-	 */
-	public void saveDoc(List<Docsectionandrule> list, User user) {
+	@Transactional	
+	public void saveDoc(List<Docsectionandrule01> list, User user) {
 		for (int i = 0; i < list.size(); i++) {
 			Docsectionandrule docsectionandrule = new Docsectionandrule();
 			docsectionandrule.setSectionname(list.get(i).getSectiontext());

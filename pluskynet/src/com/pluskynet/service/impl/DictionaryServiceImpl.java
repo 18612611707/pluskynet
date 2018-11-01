@@ -42,7 +42,9 @@ public class DictionaryServiceImpl implements DictionaryService {
 			treeMap.put("children", treeList(firstdic.get(i).getId()));
 			list.add(treeMap);
 		}
+
 		return list;
+
 	}
 
 	private Object treeList(int id) {
@@ -98,7 +100,7 @@ public class DictionaryServiceImpl implements DictionaryService {
 			treeMap.put("id", firstdic.get(i).getId());
 			treeMap.put("fid", firstdic.get(i).getFid());
 			treeMap.put("name", firstdic.get(i).getName());
-//			treeMap.put("children", treeList(firstdic.get(i).getId()));
+			treeMap.put("code", firstdic.get(i).getCode());
 			list.add(treeMap);
 		}
 		return list;

@@ -65,7 +65,7 @@ public class Bigdatatest extends Thread {
 		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 50; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {
@@ -92,7 +92,7 @@ public class Bigdatatest extends Thread {
 			List<Cause> list = null;
 			list = getValue();
 			if (list.size()==0 ||list == null) {
-				list = causeDao.getArticleList(0);// 获取表名,0:民事 1:刑事
+				list = causeDao.getArticleList(1);// 获取表名,0:民事 1:刑事
 			}
 			System.out.println(list.get(0).getCausename());
 			List<Article01> articleList = null;
@@ -254,7 +254,7 @@ public class Bigdatatest extends Thread {
 	// 开始规则正则化
 	public static Pattern startRuleFomat(String startWords) {
 		String reg_charset = null;
-		String[] start = startWords.split(",|，");
+		String[] start = startWords.split("\\*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
 				if (reg_charset == null) {
@@ -273,7 +273,7 @@ public class Bigdatatest extends Thread {
 	// 结束规则正则化
 	public static Pattern endRuleFomat(String endWords) {
 		String reg_charset = null;
-		String[] end = endWords.split(",|，");
+		String[] end = endWords.split("\\*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
 				if (reg_charset == null) {

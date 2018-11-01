@@ -12,6 +12,7 @@ import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.domain.Article01;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.User;
 import com.pluskynet.test.Bigdatatest;
 import com.sun.star.rdf.QueryException;
@@ -180,11 +181,13 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	}
 
 	@Override
-	public List<Docsectionandrule> getDocsectionList(Cause doctable, String year, Integer count, String trialRound,
+	@Transactional
+	public List<Docsectionandrule01> getDocsectionList(Cause doctable, String year, int count, String trialRound,
 			String doctype) {
-		String hql = "select * from "+doctable.getDoctable()+" where documentsid in (SELECT  * FROM "+doctable.getDoctable()+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+doctable.getDoctable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+doctable.getDoctable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+doctable.getDoctable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
+		String hql = "select * from "+doctable.getDoctable()+" a left join "+doctable.getCausetable()+" b on a.documentsid = b.doc_id where b.spcx='"+trialRound+"' and b.doctype='"+doctype+"' and b.date = '"+year+"' LIMIT "+count+";";
+//		String hql = "select * from "+doctable.getDoctable()+" where documentsid in (SELECT  * FROM "+doctable.getCausetable()+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+doctable.getCausetable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+doctable.getCausetable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+doctable.getCausetable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		List<Docsectionandrule> list = session.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+		List<Docsectionandrule01> list = session.createSQLQuery(hql).addEntity(Docsectionandrule01.class).list();
 		return list;
 	}
 
