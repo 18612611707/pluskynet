@@ -35,7 +35,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="hibernate.show_sql">true</prop> -->
 				<prop key="hibernate.format_sql">true</prop>
 				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
 				<prop key="hibernate.connection.release_model">after_statement</prop>
@@ -93,9 +93,8 @@
 	<bean id="LoginAction" class="com.pluskynet.action.LoginAction">
 		<property name="loginService" ref="loginService" />
 	</bean>
-	<bean id="latitudeDocAction" class="com.pluskynet.action.LatitudeDocAction"
-		scope="prototype">
-		<property name="latitudeDocService" ref="latitudeDocService" />
+	<bean id="latitudeDocAction" class="com.pluskynet.action.LatitudeAction">
+		
 	</bean>
 	<bean id="latitudeAction" class="com.pluskynet.action.LatitudeAction">
 		<property name="latitudeService" ref="latitudeService" />
@@ -172,6 +171,7 @@
 	<bean id="sampleService" class="com.pluskynet.service.impl.SampleServiceImpl">
 		<property name="causeDao" ref="causeDao"/>
 		<property name="sampleDao" ref="sampleDao" />
+		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
 	</bean>
 	<bean id="synonymService" class="com.pluskynet.service.impl.SynonymServiceImpl">
 		<property name="synonymDao" ref="synonymDao" />
