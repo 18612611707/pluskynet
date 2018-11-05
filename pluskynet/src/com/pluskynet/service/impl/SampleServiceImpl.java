@@ -52,22 +52,18 @@ public class SampleServiceImpl implements SampleService{
 			int count = jsonObject.getInt("count");
 			String trialRound = jsonObject.getString("trialRound");
 			String doctype = jsonObject.getString("doctype");
+			String sectionname = jsonObject.getString("sectionname");
 			Cause cause = new Cause();
 			cause.setCausename(jsonObject.getString("causet"));
 			Cause table = causeDao.selectCause(cause);
 			String latitudename = jsonObject.getString("latitudename");
-			if (jsonObject.has("latitudename")) {
-				if (!jsonObject.getString("latitudename").equals("")) {
-					System.out.println(doclists);
-					System.out.println(docSectionAndRuleDao);
-					System.out.println(table);
-					System.out.println(table.getDoctable());
-					System.out.println(year);
-					System.out.println(count);
-					System.out.println(trialRound);
-					System.out.println(doctype);
-					System.out.println(doclists);
-					doclists = docSectionAndRuleDao.getDocsectionList(table,year,count,trialRound,doctype);
+			int latitudeid =-1;
+			if (!latitudename.equals("")) {
+				latitudeid = Integer.valueOf(latitudename);
+			}
+			if (jsonObject.has("sectionname")) {
+				if (!jsonObject.getString("sectionname").equals("")) {
+					doclists = docSectionAndRuleDao.getDocsectionList(table,year,count,trialRound,doctype,Integer.valueOf(sectionname),latitudeid);
 					doclist.addAll(doclists);
 				}else{
 					articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype);

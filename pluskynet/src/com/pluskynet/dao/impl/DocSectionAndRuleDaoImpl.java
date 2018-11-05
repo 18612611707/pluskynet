@@ -183,11 +183,21 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	@Override
 	@Transactional
 	public List<Docsectionandrule01> getDocsectionList(Cause doctable, String year, int count, String trialRound,
-			String doctype) {
-		String hql = "select * from "+doctable.getDoctable()+" a left join "+doctable.getCausetable()+" b on a.documentsid = b.doc_id where b.spcx='"+trialRound+"' and b.doctype='"+doctype+"' and b.date = '"+year+"' LIMIT "+count+";";
-//		String hql = "select * from "+doctable.getDoctable()+" where documentsid in (SELECT  * FROM "+doctable.getCausetable()+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+doctable.getCausetable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+doctable.getCausetable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+doctable.getCausetable()+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
+			String doctype , Integer sectionname, Integer latitudename) {
+//		String hql = "select * from "+doctable.getDoctable()+" a left join "+doctable.getCausetable()+" b on a.documentsid = b.doc_id where b.spcx='"+trialRound+"' and b.doctype='"+doctype+"' and b.date = '"+year+"' LIMIT "+count+";";
+		String hql ="SELECT * FROM "+doctable.getDoctable()+" WHERE id >= ((SELECT MAX(id) FROM "+doctable.getDoctable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+doctable.getDoctable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+doctable.getDoctable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') "+count+" ;"; 
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		List<Docsectionandrule01> list = session.createSQLQuery(hql).addEntity(Docsectionandrule01.class).list();
+		List<Article01> lists = session.createSQLQuery(hql).addEntity(Article01.class).list();
+		String sql = null;
+		for (int i = 0; i < lists.size(); i++) {
+			sql = "select * from "+doctable.getDoctable()+" where documentsid in (";
+			if (i==lists.size()-1) {
+				sql = sql + "'"+ lists.get(i).getDocId() +"') and ruleid = "+sectionname+"";
+			}else {
+				sql = sql + "'"+ lists.get(i).getDocId() +"',";
+			}
+		}
+		List<Docsectionandrule01> list = session.createSQLQuery(sql).addEntity(Docsectionandrule01.class).list();
 		return list;
 	}
 

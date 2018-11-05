@@ -21,9 +21,10 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	@Override
 	public Map save(Latitude latitude, User user) {
 		Map map = new HashMap();
-		String hql = "from Latitude where latitudename = ?";
-		List<Latitude> list = this.getHibernateTemplate().find(hql, latitude.getLatitudename());
+		String hql = "from Latitude where latitudename = ? and latitudefid = ?";
+		List<Latitude> list = this.getHibernateTemplate().find(hql, latitude.getLatitudename(),latitude.getLatitudefid());
 		if (list.size() > 0) {
+			map.put("msg", "已存在");
 			return map;
 		} else {
 			System.out.println(user.getRolecode());
@@ -36,8 +37,7 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 			latitude.setCreatorName(user.getName());
 			this.getHibernateTemplate().save(latitude);
 		}
-
-		list = this.getHibernateTemplate().find(hql, latitude.getLatitudename());
+		list = this.getHibernateTemplate().find(hql, latitude.getLatitudename(),latitude.getLatitudefid());
 		map.put("latitudeid", list.get(0).getLatitudeid());
 		return map;
 	}

@@ -55,17 +55,17 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 		List<Docrule> docrules = this.getHibernateTemplate().find(hql, docrule.getRuleid());
 		if (docrules.size() > 0) {
 			if (docrule.getRule() == null || docrule.getRule().equals("")) {
-				hqls = "update Docrule set sectionName = ?,fid = ?,reserved=? where ruleid = ?";
-				this.getHibernateTemplate().bulkUpdate(hqls, docrule.getSectionname(), docrule.getFid(),
+				hqls = "update Docrule set sectionName = ?,reserved=? where ruleid = ?";
+				this.getHibernateTemplate().bulkUpdate(hqls, docrule.getSectionname(),
 						docrule.getReserved(), docrule.getRuleid());
 			} else if (docrule.getSectionname() == null || docrule.getSectionname().equals("")) {
-				hqls = "update Docrule set rule = ?,fid = ? ,reserved=? where ruleid = ?";
-				this.getHibernateTemplate().bulkUpdate(hqls, docrule.getRule(), docrule.getFid(), docrule.getReserved(),
+				hqls = "update Docrule set rule = ? ,reserved=? where ruleid = ?";
+				this.getHibernateTemplate().bulkUpdate(hqls, docrule.getRule(), docrule.getReserved(),
 						docrule.getRuleid());
 			} else {
-				hqls = "update Docrule set rule = ?,sectionName = ?,fid = ? ,reserved=? where ruleid = ?";
+				hqls = "update Docrule set rule = ?,sectionName = ? ,reserved=? where ruleid = ?";
 				this.getHibernateTemplate().bulkUpdate(hqls, docrule.getRule(), docrule.getSectionname(),
-						docrule.getFid(), docrule.getReserved(), docrule.getRuleid());
+						 docrule.getReserved(), docrule.getRuleid());
 			}
 			msg = "成功";
 		}

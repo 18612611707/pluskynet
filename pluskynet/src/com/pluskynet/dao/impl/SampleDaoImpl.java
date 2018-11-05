@@ -24,7 +24,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	@Override
 	@Transactional
 	public List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype) {
-		String hql = "SELECT  * FROM "+table+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
+		String hql = "SELECT * FROM "+table+" WHERE id >= ((SELECT MAX(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') "+count+" ;";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Article01> list = session.createSQLQuery(hql).addEntity(Article01.class).list();
 		return list;
@@ -97,7 +97,8 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	public void saveDoc(List<Docsectionandrule01> list, User user) {
 		for (int i = 0; i < list.size(); i++) {
 			Docsectionandrule docsectionandrule = new Docsectionandrule();
-			docsectionandrule.setSectionname(list.get(i).getSectiontext());
+			docsectionandrule.setRuleid(list.get(i).getRuleid());
+			docsectionandrule.setSectiontext(list.get(i).getSectiontext());
 			docsectionandrule.setDocumentsid(list.get(i).getDocumentsid());
 			docsectionandrule.setSectionname(list.get(i).getSectionname());
 			docsectionandrule.setTitle(list.get(i).getTitle());

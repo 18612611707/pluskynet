@@ -80,6 +80,9 @@
 		<action name="DictionaryAction" class="com.pluskynet.action.DictionaryAction"
 			method="{1}">
 		</action>
+		<action name="ParaAction" class="com.pluskynet.action.ParaAction"
+			method="{1}">
+		</action>
 	</package>
 
 </struts>

@@ -31,6 +31,6 @@ public interface DocSectionAndRuleDao {
 	Boolean plsave(List<Docsectionandrule> docsectionlist, String doctable);
 
 	List<Docsectionandrule01> getDocsectionList(Cause cause, String year, int valueOf, String trialRound,
-			String doctype);
+			String doctype, Integer sectionname, Integer latitudename);
 
 }

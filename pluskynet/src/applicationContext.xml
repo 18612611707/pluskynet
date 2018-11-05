@@ -35,7 +35,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<!-- <prop key="hibernate.show_sql">true</prop> -->
+				<prop key="hibernate.show_sql">true</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
 				<prop key="hibernate.connection.release_model">after_statement</prop>
@@ -87,6 +87,9 @@
 		</property>
 	</bean>
 	<!-- 配置Action类 -->
+	<bean id="ParaAction" class="com.pluskynet.action.ParaAction">
+		<property name="paraService" ref="paraService" />
+	</bean>
 	<bean id="DictionaryAction" class="com.pluskynet.action.DictionaryAction">
 		<property name="dictionaryService" ref="dictionaryService" />
 	</bean>
@@ -130,6 +133,9 @@
 		<property name="synonymService" ref="synonymService" />
 	</bean>
 	<!-- 配置业务层的类 Service -->
+	<bean id ="paraService" class="com.pluskynet.service.impl.ParaServiceImpl">
+		<property name="paraDao" ref="paraDao"/>
+	</bean>
 	<bean id ="dictionaryService" class="com.pluskynet.service.impl.DictionaryServiceImpl">
 		<property name="dictionaryDao" ref="dictionaryDao"/>
 	</bean>
@@ -229,6 +235,9 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<bean id="dictionaryDao" class="com.pluskynet.dao.impl.DictionaryDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="paraDao" class="com.pluskynet.dao.impl.ParaDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 配合事务管理器 -->

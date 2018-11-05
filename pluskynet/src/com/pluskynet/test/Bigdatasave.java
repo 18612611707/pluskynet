@@ -72,7 +72,7 @@ public class Bigdatasave extends Thread {
 				js = jsonArray.getJSONObject(a);
 				String trialRound = js.getString("spcx");
 				String doctype = js.getString("doctype");
-				if (title.indexOf(doctype) == -1) {
+				if (!docList.get(i1).getSpcx().equals("spcx")) {
 					continue;
 			}else if (!spcx.equals(trialRound)){
 					continue;

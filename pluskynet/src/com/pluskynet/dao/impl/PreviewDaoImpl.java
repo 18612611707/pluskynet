@@ -102,7 +102,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			String beginIndex1 = null;
 			String before = null;
 			look:for (int c = 0; c < list.size(); c++) {
-				ruleJson = jsonArray.getJSONObject(c);
+				ruleJson = JSONObject.fromObject(list.get(c));
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
 				String endWord = ruleJson.getString("end");
