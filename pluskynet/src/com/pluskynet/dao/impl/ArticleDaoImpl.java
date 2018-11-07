@@ -212,18 +212,18 @@ public class ArticleDaoImpl extends HibernateDaoSupport implements ArticleDao {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		String hql = null;
 		if (allorre == 1) {
-			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 3 order by id limit 0,1) and states=3 order by id limit " + rows;
+			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 0 order by id limit 0,1) and states=0 order by id limit " + rows;
 		} else if (allorre == 0) {
-			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 3 order by id limit 0,1) and states=3 order by id limit " + rows;
+			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 0 order by id limit 0,1) and states=0 order by id limit " + rows;
 		} else if (allorre == 3) {
-			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 3 order by id limit 0,1) and states=3 order by id limit " + rows;
+			hql = "select * from " + table + " where id>=(select id from "+table+" where states = 0 order by id limit 0,1) and states=0 order by id limit " + rows;
 		}
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		List<Article01> list = s.createSQLQuery(hql).addEntity(Article01.class).list();
 		System.out.println(df.format(new Date()));// new Date()为获取当前系统时间
 		Session session = getHibernateTemplate().getSessionFactory().getCurrentSession();
-		String sql = "update " + table + " set states = 0 where doc_id = ?";
+		String sql = "update " + table + " set states = 3 where doc_id = ?";
 		Connection conn = session.connection();
 		try {
 			PreparedStatement stmt = conn.prepareStatement(sql);

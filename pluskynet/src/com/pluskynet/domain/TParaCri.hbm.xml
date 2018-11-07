@@ -10,13 +10,13 @@
             <column name="pc_id" />
             <generator class="identity" />
         </id>
-        <property name="pcgCauseId" type="java.lang.Integer">
-            <column name="pcg_causeId">
+        <property name="pcCauseId" type="java.lang.Integer">
+            <column name="pc_causeId">
                 <comment>罪行 ID（对应纬度信息的 ID）</comment>
             </column>
         </property>
-        <property name="pcgOrder" type="java.lang.Integer">
-            <column name="pcg_order">
+        <property name="pcOrder" type="java.lang.Integer">
+            <column name="pc_order">
                 <comment>显示顺序</comment>
             </column>
         </property>

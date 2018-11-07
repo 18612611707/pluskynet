@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pluskynet.dao.ParaDao;
 import com.pluskynet.domain.TParaCri;
 import com.pluskynet.domain.TParaCriGrp;
 import com.pluskynet.domain.TParaGrp;
 import com.pluskynet.domain.TParaOne;
+import com.pluskynet.domain.TParaVector;
 
 public class ParaDaoImpl extends HibernateDaoSupport implements ParaDao {
 
@@ -60,11 +62,11 @@ public class ParaDaoImpl extends HibernateDaoSupport implements ParaDao {
 	}
 
 	@Override
-	public Map saveInfoOne(TParaOne tParaOne) {
+	public Integer saveInfoOne(TParaOne tParaOne) {
 		this.getHibernateTemplate().save(tParaOne);
 		Map map = new HashMap();
 		map.put("po_id", tParaOne.getPoId());
-		return map;
+		return tParaOne.getPoId();
 	}
 
 	@Override
@@ -76,7 +78,7 @@ public class ParaDaoImpl extends HibernateDaoSupport implements ParaDao {
 
 	@Override
 	public List<TParaOne> grpInfoList(int pg_id) {
-		String sql = "from TParaOne where pgId = ? and poTier = 0";
+		String sql = "from TParaOne where pgId = ?";
 		List<TParaOne> list = this.getHibernateTemplate().find(sql,pg_id);
 		return list;
 	}
@@ -86,6 +88,47 @@ public class ParaDaoImpl extends HibernateDaoSupport implements ParaDao {
 		String sql = "from TParaCriGrp where pcId = ?";
 		List<TParaCriGrp> list = this.getHibernateTemplate().find(sql,pc_id);
 		return list;
+	}
+
+	@Override
+	public void updatetParaGrp(TParaGrp tParaGrp) {
+		this.getHibernateTemplate().update(tParaGrp);
+	}
+
+	@Override
+	public Integer updateInfoOne(TParaOne tParaOne) {
+		this.getHibernateTemplate().update(tParaOne);
+//		Map map = new HashMap();
+//		map.put("po_id", tParaOne.getPoId());
+		return tParaOne.getPoId();
+	}
+
+	@Override
+	@Transactional
+	public void delete(int pc_id) {
+		String sql = "delete from t_para_cri_grp where pc_id = "+pc_id+"";
+		this.getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+		
+	}
+
+	@Override
+	public List<TParaVector> oneVectorList(int pg_id) {
+		String sql = "from TParaVector where pg_id = ?";
+		List<TParaVector> list = this.getHibernateTemplate().find(sql,pg_id);
+		return list;
+	}
+
+	@Override
+	public void savevector(TParaVector tParaVector) {
+		this.getHibernateTemplate().save(tParaVector);	
+	}
+
+	@Override
+	@Transactional
+	public boolean deletevector(int po_id) {
+		String sql = "delete from t_para_vector where po_id = "+po_id+"";
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().createSQLQuery(sql).executeUpdate();
+		return true;
 	}
 
 }

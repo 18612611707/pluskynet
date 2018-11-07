@@ -65,7 +65,7 @@ public class Bigdatatest extends Thread {
 		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 20; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {

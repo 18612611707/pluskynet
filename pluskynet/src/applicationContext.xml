@@ -35,7 +35,7 @@
 		<property name="hibernateProperties">
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="hibernate.show_sql">true</prop>
+				<!-- <prop key="hibernate.show_sql">true</prop> -->
 				<prop key="hibernate.format_sql">true</prop>
 				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
 				<prop key="hibernate.connection.release_model">after_statement</prop>
@@ -83,6 +83,11 @@
 				<value>com/pluskynet/domain/Docidandruleid.hbm.xml</value>
 				<value>com/pluskynet/domain/User.hbm.xml</value>
 				<value>com/pluskynet/domain/Dictionary.hbm.xml</value>
+				<value>com/pluskynet/domain/TParaCri.hbm.xml</value>
+				<value>com/pluskynet/domain/TParaCriGrp.hbm.xml</value>
+				<value>com/pluskynet/domain/TParaGrp.hbm.xml</value>
+				<value>com/pluskynet/domain/TParaOne.hbm.xml</value>
+				<value>com/pluskynet/domain/TParaVector.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

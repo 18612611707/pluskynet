@@ -24,7 +24,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	@Override
 	@Transactional
 	public List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype) {
-		String hql = "SELECT * FROM "+table+" WHERE id >= ((SELECT MAX(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') "+count+" ;";
+		String hql = "SELECT * FROM "+table+" WHERE id >= ((SELECT MAX(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' limit "+count+" ;";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Article01> list = session.createSQLQuery(hql).addEntity(Article01.class).list();
 		return list;

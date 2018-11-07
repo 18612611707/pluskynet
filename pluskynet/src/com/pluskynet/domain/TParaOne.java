@@ -17,6 +17,7 @@ public class TParaOne implements java.io.Serializable {
 	private Integer pgId;
 	private Integer poRootId;
 	private Integer poTier;
+	private String poRelation;
 
 	// Constructors
 
@@ -26,7 +27,7 @@ public class TParaOne implements java.io.Serializable {
 
 	/** full constructor */
 	public TParaOne(String poName, Integer poPid, Integer poOrder, String poType, Integer poIsPara, Integer pgId,
-			Integer poRootId, Integer poTier) {
+			Integer poRootId, Integer poTier, String poRelation) {
 		this.poName = poName;
 		this.poPid = poPid;
 		this.poOrder = poOrder;
@@ -35,6 +36,7 @@ public class TParaOne implements java.io.Serializable {
 		this.pgId = pgId;
 		this.poRootId = poRootId;
 		this.poTier = poTier;
+		this.poRelation = poRelation;
 	}
 
 	// Property accessors
@@ -109,6 +111,14 @@ public class TParaOne implements java.io.Serializable {
 
 	public void setPoTier(Integer poTier) {
 		this.poTier = poTier;
+	}
+
+	public String getPoRelation() {
+		return this.poRelation;
+	}
+
+	public void setPoRelation(String poRelation) {
+		this.poRelation = poRelation;
 	}
 
 }

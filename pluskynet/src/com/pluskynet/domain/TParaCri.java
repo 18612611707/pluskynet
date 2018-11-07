@@ -9,8 +9,8 @@ public class TParaCri implements java.io.Serializable {
 	// Fields
 
 	private Integer pcId;
-	private Integer pcgCauseId;
-	private Integer pcgOrder;
+	private Integer pcCauseId;
+	private Integer pcOrder;
 
 	// Constructors
 
@@ -19,35 +19,37 @@ public class TParaCri implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public TParaCri(Integer pcgCauseId, Integer pcgOrder) {
-		this.pcgCauseId = pcgCauseId;
-		this.pcgOrder = pcgOrder;
+	public TParaCri(Integer pcCauseId, Integer pcOrder) {
+		this.pcCauseId = pcCauseId;
+		this.pcOrder = pcOrder;
 	}
 
-	// Property accessors
-
 	public Integer getPcId() {
-		return this.pcId;
+		return pcId;
 	}
 
 	public void setPcId(Integer pcId) {
 		this.pcId = pcId;
 	}
 
-	public Integer getPcgCauseId() {
-		return this.pcgCauseId;
+	public Integer getPcCauseId() {
+		return pcCauseId;
 	}
 
-	public void setPcgCauseId(Integer pcgCauseId) {
-		this.pcgCauseId = pcgCauseId;
+	public void setPcCauseId(Integer pcCauseId) {
+		this.pcCauseId = pcCauseId;
 	}
 
-	public Integer getPcgOrder() {
-		return this.pcgOrder;
+	public Integer getPcOrder() {
+		return pcOrder;
 	}
 
-	public void setPcgOrder(Integer pcgOrder) {
-		this.pcgOrder = pcgOrder;
+	public void setPcOrder(Integer pcOrder) {
+		this.pcOrder = pcOrder;
 	}
+
+	// Property accessors
+
+	
 
 }

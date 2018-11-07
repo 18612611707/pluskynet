@@ -7,6 +7,7 @@ import com.pluskynet.domain.TParaCri;
 import com.pluskynet.domain.TParaCriGrp;
 import com.pluskynet.domain.TParaGrp;
 import com.pluskynet.domain.TParaOne;
+import com.pluskynet.domain.TParaVector;
 
 public interface ParaService {
 
@@ -25,5 +26,7 @@ public interface ParaService {
 	Map saveInfoOne(String data);
 
 	List<TParaCriGrp> cri2GrpList(int pc_id);
+
+	List<TParaVector> oneVectorList(int pg_id);
 
 }

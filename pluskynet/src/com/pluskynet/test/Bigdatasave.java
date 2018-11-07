@@ -34,15 +34,16 @@ public class Bigdatasave extends Thread {
 	private String causetable;
 	private int ruleid;
 	private String latitudename;
-	
+
 	volatile int a = 1;
-	
+
 	/*
 	 * public Bigdatasave(String name){ super(name); }
 	 */
 	List<Docsectionandrule> docsectionlist = new Vector<Docsectionandrule>();
 	List<Batchdata> batchlist = new Vector<Batchdata>();
 	List<Docidandruleid> docidlist = new Vector<Docidandruleid>();
+
 	public void run() {
 		String ruleString = JSONArray.fromObject(lists).toString();
 		List<Article01> docList;
@@ -72,12 +73,12 @@ public class Bigdatasave extends Thread {
 				js = jsonArray.getJSONObject(a);
 				String trialRound = js.getString("spcx");
 				String doctype = js.getString("doctype");
-				if (!docList.get(i1).getSpcx().equals("spcx")) {
+				if (!docList.get(i1).getDoctype().equals(doctype)) {
 					continue;
-			}else if (!spcx.equals(trialRound)){
+				} else if (!spcx.equals(trialRound)) {
 					continue;
-			}
-				
+				}
+
 				ruleJson = jsonArray.getJSONObject(a);
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
@@ -85,13 +86,13 @@ public class Bigdatasave extends Thread {
 				String judge = ruleJson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
-//				System.out.println(title.indexOf(doctype));
-				
+				// System.out.println(title.indexOf(doctype));
+
 				for (int j1 = 0; j1 < startWords.length; j1++) {
 					if (startWords[j1].contains("^")) {
-						before = startWords[j1].substring(0,startWords[j1].indexOf("^"));
-						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^")+1);
-					}else{
+						before = startWords[j1].substring(0, startWords[j1].indexOf("^"));
+						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^") + 1);
+					} else {
 						before = null;
 					}
 					Pattern patternstart = startRuleFomat(startWords[j1]);
@@ -100,14 +101,16 @@ public class Bigdatasave extends Thread {
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-//						System.out.println(leftdoc.length());
+						// System.out.println(leftdoc.length());
 						StringBuffer s = new StringBuffer(leftdoc);
 						leftdoc = s.reverse().toString();
-						if (before!=null) {
-							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
+						if (before != null) {
+							start = start + beginIndex1.length() - leftdoc.indexOf(before);
 						}
 						rightdoc = docold.substring(start);
-//						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
+						// rightdoc =
+						// docold.substring(docold.indexOf(beginIndex1) +
+						// beginIndex1.length());
 						break;
 					}
 				}
@@ -121,10 +124,9 @@ public class Bigdatasave extends Thread {
 							if (endWords[x].length() > 0) {
 								// System.out.println(endWords.length);
 								if (judge.equals("之前")) {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex);
 								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()
-											+ beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
 								}
 							} else {
 								end = docold.length();
@@ -147,14 +149,14 @@ public class Bigdatasave extends Thread {
 					batchdata.setEndword(Endword);
 					batchdata.setRuleid(ruleid);
 					batchdata.setStartword(Startword);
-					 batchdataDao.save(batchdata);
+					batchdataDao.save(batchdata);
 					// articleDao.updateArticleState(docid, causetable, 2);
 					docrule.save(docsectionandrule, doctable);
 					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
 					docidandruleidDao.save(docidandruleid);
-//					docidlist.add(docidandruleid);
-//					docsectionlist.add(docsectionandrule);
-//					batchlist.add(batchdata);
+					// docidlist.add(docidandruleid);
+					// docsectionlist.add(docsectionandrule);
+					// batchlist.add(batchdata);
 					break;
 				} else if (end == 0) {
 					docnew = docold.substring(start, docold.length());
@@ -168,22 +170,22 @@ public class Bigdatasave extends Thread {
 					batchdata.setEndword(Endword);
 					batchdata.setRuleid(ruleid);
 					batchdata.setStartword(Startword);
-					 batchdataDao.save(batchdata);
+					batchdataDao.save(batchdata);
 					// articleDao.updateArticleState(docid, causetable, 2);
-					 docrule.save(docsectionandrule, doctable);
+					docrule.save(docsectionandrule, doctable);
 					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
-					 docidandruleidDao.save(docidandruleid);
-//					docidlist.add(docidandruleid);
-//					docsectionlist.add(docsectionandrule);
-//					batchlist.add(batchdata);
+					docidandruleidDao.save(docidandruleid);
+					// docidlist.add(docidandruleid);
+					// docsectionlist.add(docsectionandrule);
+					// batchlist.add(batchdata);
 					break;
 				}
 			}
-//			if (i1 ==  - 1){
-//				docrule.plsave(docsectionlist, doctable);
-//				batchdataDao.plsave(batchlist);
-//				docidandruleidDao.plsave(docidlist);
-//			}
+			// if (i1 == - 1){
+			// docrule.plsave(docsectionlist, doctable);
+			// batchdataDao.plsave(batchlist);
+			// docidandruleidDao.plsave(docidlist);
+			// }
 		}
 	}
 
@@ -202,9 +204,7 @@ public class Bigdatasave extends Thread {
 		this.causetable = causetable;
 		this.latitudename = latitudename;
 		String a = getName();
-		 
-		 
-		 
+
 		/*
 		 * String ruleString = JSONArray.fromObject(lists).toString(); if
 		 * (lists==null) { System.out.println("111111111"); } for (int k = 0; k

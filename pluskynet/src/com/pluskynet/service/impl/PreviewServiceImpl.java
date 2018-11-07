@@ -164,10 +164,9 @@ public class PreviewServiceImpl implements PreviewService {
 							if (endWords[x].length() > 0) {
 								// System.out.println(endWords.length);
 								if (judge.equals("之前")) {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex);
 								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()
-											+ beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
 								}
 							} else {
 								end = htmlString.length();
