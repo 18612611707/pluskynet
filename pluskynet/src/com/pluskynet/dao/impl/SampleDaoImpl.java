@@ -1,5 +1,8 @@
 package com.pluskynet.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 
 import org.hibernate.Session;
@@ -23,9 +26,11 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 
 	@Override
 	@Transactional
-	public List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype) {
-		String hql = "SELECT * FROM "+table+" WHERE id >= ((SELECT MAX(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' limit "+count+" ;";
+	public List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype,User user) {
+//		String hql = "SELECT  * FROM "+table+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
+		String hql = "SELECT * FROM "+table+" WHERE id >= ((SELECT MAX(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and  spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' LIMIT "+count+" ;";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+//		session.createSQLQuery(hql).executeUpdate();
 		List<Article01> list = session.createSQLQuery(hql).addEntity(Article01.class).list();
 		return list;
 	}

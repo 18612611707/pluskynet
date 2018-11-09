@@ -19,7 +19,7 @@ public interface DocSectionAndRuleDao {
 
 	List<Docsectionandrule> getDoc(Docsectionandrule docsectionandrule);
 
-	List<Docsectionandrule> getDocLists(int sectionname,User user);
+	List<Docsectionandrule> getDocLists(User user);
 
 	void saveyl(Docsectionandrule docsectionandrule);
 

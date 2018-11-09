@@ -10,7 +10,7 @@ import com.pluskynet.domain.User;
 
 public interface SampleDao {
 
-	List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype);
+	List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype,User user);
 
 	void save(List<Article01> list,User user);
 

@@ -62,14 +62,39 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				list.add(otherdocrule);
 			} else {
 				for (int j = 0; j < list.size(); j++) {
+					boolean statrstats = true;
+					boolean endstats = true;
 					if (list.get(j).getJudge().equals(judges) && list.get(j).getSpcx().equals(spcx)
 							&& list.get(j).getDoctype().equals(doctype)) {
 						if (!startword.equals("")) {
-							list.get(j).setStart(list.get(j).getStart() + ";" + startword);
+							String[] startwords = list.get(j).getStart().split(";");
+							for (int i = 0; i < startwords.length; i++) {
+								if (!startwords[i].equals(startword)) {
+									statrstats = true;
+								}else{
+									statrstats = false;
+									break;
+								}
+							}
+							if (statrstats) {
+								list.get(j).setStart(list.get(j).getStart() + ";" + startword);
+							}
 						}
 						if (!endword.equals("")) {
-							list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
+							String[] endwords = list.get(j).getEnd().split(";");
+							for (int i = 0; i < endwords.length; i++) {
+								if (!endwords[i].equals(endword)) {
+									endstats = true;
+								}else{
+									endstats = false;
+									break;
+								}
+							}
+							if (endstats) {
+								list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
+							}
 						}
+						
 						break;
 					} else if (j == list.size() - 1) {
 						otherdocrule.setJudge(ruleJson.getString("judge"));
@@ -101,6 +126,9 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			String rightdoc = null;
 			String beginIndex1 = null;
 			String before = null;
+			if (docid.equals("fffe75ab-4c49-4bf4-99fc-a76a009347bb")) {
+				System.out.println("aaaaaaaaa");
+			}
 			look:for (int c = 0; c < list.size(); c++) {
 				ruleJson = JSONObject.fromObject(list.get(c));
 				// System.out.println(ruleJson);
@@ -136,6 +164,11 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				}
 				if (rightdoc != null && start != -1) {
 					for (int x = 0; x < endWords.length; x++) {
+						String endbefore = null;
+						if (endWords[x].contains("^")) {
+							endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
+							endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
+						}
 						Pattern patternend = endRuleFomat(endWords[x]);
 						Matcher matcher = patternend.matcher(rightdoc);
 						if (matcher.find()) {
@@ -143,7 +176,12 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 							if (endWords[x].length() > 0) {
 								// System.out.println(endWords.length);
 								if (judge.equals("之前")) {
+									if (endbefore!=null) {
+										rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
+										end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
+									}else{
 									end = start + rightdoc.indexOf(beginIndex);
+									}
 								} else {
 									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
 								}
@@ -200,7 +238,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				if (reg_charset == null) {
 					reg_charset = start[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + start[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + start[j];
 				}
 			}
 		} else {
@@ -219,7 +257,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				if (reg_charset == null) {
 					reg_charset = end[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + end[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + end[j];
 				}
 			} else {
 				reg_charset = end[j];

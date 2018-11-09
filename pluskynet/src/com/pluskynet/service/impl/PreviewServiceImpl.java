@@ -22,6 +22,7 @@ import com.pluskynet.service.PreviewService;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
 @SuppressWarnings("all")
 public class PreviewServiceImpl implements PreviewService {
 	private PreviewDao previewDao;
@@ -35,30 +36,29 @@ public class PreviewServiceImpl implements PreviewService {
 	public void setArticleylDao(ArticleylDao articleylDao) {
 		this.articleylDao = articleylDao;
 	}
-	private DocSectionAndRuleDao docSectionAndRuleDao;
 
-	
+	private DocSectionAndRuleDao docSectionAndRuleDao;
 
 	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
 		this.docSectionAndRuleDao = docSectionAndRuleDao;
 	}
 
 	@Override
-	public List<StatsDoc> getDocList(Preview preview,User user) {
+	public List<StatsDoc> getDocList(Preview preview, User user) {
 		List<Articleyl> listaArticles = articleylDao.getArticles(user);
 		List<StatsDoc> jsonArray = previewDao.getDocList(preview, listaArticles);
-//		docSectionAndRuleDao.saveyldelete(preview.getDocName());
-//		for (int i = 0; i < jsonArray.size(); i++) {
-//			Docsectionandrule docsectionandrule = new Docsectionandrule();
-//			if(jsonArray.get(i).getStats()=="符合"){
-//				jsonArray.get(i).getDocidAndDoc();
-//				docsectionandrule.setSectionname(preview.getDocName());
-//				docsectionandrule.setSectiontext(jsonArray.get(i).getDocidAndDoc().getDoc());
-//				docsectionandrule.setDocumentsid(jsonArray.get(i).getDocidAndDoc().getDocid());
-//				docsectionandrule.setTitle(jsonArray.get(i).getDocidAndDoc().getTitle());
-//				docSectionAndRuleDao.saveyl(docsectionandrule);
-//			}
-//		}
+		// docSectionAndRuleDao.saveyldelete(preview.getDocName());
+		// for (int i = 0; i < jsonArray.size(); i++) {
+		// Docsectionandrule docsectionandrule = new Docsectionandrule();
+		// if(jsonArray.get(i).getStats()=="符合"){
+		// jsonArray.get(i).getDocidAndDoc();
+		// docsectionandrule.setSectionname(preview.getDocName());
+		// docsectionandrule.setSectiontext(jsonArray.get(i).getDocidAndDoc().getDoc());
+		// docsectionandrule.setDocumentsid(jsonArray.get(i).getDocidAndDoc().getDocid());
+		// docsectionandrule.setTitle(jsonArray.get(i).getDocidAndDoc().getTitle());
+		// docSectionAndRuleDao.saveyl(docsectionandrule);
+		// }
+		// }
 		return jsonArray;
 
 	}
@@ -71,8 +71,8 @@ public class PreviewServiceImpl implements PreviewService {
 			JSONObject jsonObject = JSONObject.fromObject(art.get(0).getDecodeData());
 			String htmlString = jsonObject.getString("jsonHtml");
 			JSONArray jsonArray = JSONArray.fromObject(rule);
-			String matchStart = null; //匹配到的开始词语
-			String matchEnd = null;//匹配到的结束词语
+			String matchStart = null; // 匹配到的开始词语
+			String matchEnd = null;// 匹配到的结束词语
 			String docnew = null;
 			String judge = "包含";
 			String newHtml = null;
@@ -100,14 +100,39 @@ public class PreviewServiceImpl implements PreviewService {
 					list.add(otherdocrule);
 				} else {
 					for (int j = 0; j < list.size(); j++) {
+						boolean statrstats = true;
+						boolean endstats = true;
 						if (list.get(j).getJudge().equals(judges) && list.get(j).getSpcx().equals(spcx)
 								&& list.get(j).getDoctype().equals(doctype)) {
-							if(!startword.equals("")){
-								list.get(j).setStart(list.get(j).getStart() + ";" + startword);
+							if (!startword.equals("")) {
+								String[] startwords = list.get(j).getStart().split(";");
+								for (int i = 0; i < startwords.length; i++) {
+									if (!startwords[i].equals(startword)) {
+										statrstats = true;
+									}else{
+										statrstats = false;
+										break;
+									}
 								}
-								if(!endword.equals("")){
-								list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
+								if (statrstats) {
+									list.get(j).setStart(list.get(j).getStart() + ";" + startword);
 								}
+							}
+							if (!endword.equals("")) {
+								String[] endwords = list.get(j).getEnd().split(";");
+								for (int i = 0; i < endwords.length; i++) {
+									if (!endwords[i].equals(endword)) {
+										endstats = true;
+									}else{
+										endstats = false;
+										break;
+									}
+								}
+								if (endstats) {
+									list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
+								}
+							}
+							
 							break;
 						} else if (j == list.size() - 1) {
 							otherdocrule.setJudge(ruleJson.getString("judge"));
@@ -133,11 +158,12 @@ public class PreviewServiceImpl implements PreviewService {
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
 				String before = null;
+				
 				for (int j = 0; j < startWords.length; j++) {
 					if (startWords[j].contains("^")) {
-						before = startWords[j].substring(0,startWords[j].indexOf("^"));
-						startWords[j] = startWords[j].substring(startWords[j].indexOf("^")+1);
-					}else{
+						before = startWords[j].substring(0, startWords[j].indexOf("^"));
+						startWords[j] = startWords[j].substring(startWords[j].indexOf("^") + 1);
+					} else {
 						before = null;
 					}
 					Pattern patternstart = startRuleFomat(startWords[j]);
@@ -148,8 +174,8 @@ public class PreviewServiceImpl implements PreviewService {
 						leftdoc = htmlString.substring(0, htmlString.indexOf(beginIndex1) + beginIndex1.length());
 						StringBuffer s = new StringBuffer(leftdoc);
 						leftdoc = s.reverse().toString();
-						if (before!=null) {
-							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
+						if (before != null) {
+							start = start + beginIndex1.length() - leftdoc.indexOf(before);
 						}
 						rightdoc = htmlString.substring(start);
 						break;
@@ -157,6 +183,34 @@ public class PreviewServiceImpl implements PreviewService {
 				}
 				if (rightdoc != null && start != -1) {
 					for (int x = 0; x < endWords.length; x++) {
+						String endbefore = null;
+						if (endWords[x].contains("^")) {
+							endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
+							endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
+						}
+						Pattern patternend = endRuleFomat(endWords[x]);
+						Matcher matcher = patternend.matcher(rightdoc);
+						if (matcher.find()) {
+							String beginIndex = matcher.group();
+							if (endWords[x].length() > 0) {
+								// System.out.println(endWords.length);
+								if (judge.equals("之前")) {
+									if (endbefore!=null) {
+										rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
+										end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
+									}else{
+									end = start + rightdoc.indexOf(beginIndex);
+									}
+								} else {
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+								}
+							} else {
+								end = htmlString.length();
+							}
+							break;
+						}
+					}
+				/*	for (int x = 0; x < endWords.length; x++) {
 						Pattern patternend = endRuleFomat(endWords[x]);
 						Matcher matcher = patternend.matcher(rightdoc);
 						if (matcher.find()) {
@@ -167,6 +221,14 @@ public class PreviewServiceImpl implements PreviewService {
 									end = start + rightdoc.indexOf(beginIndex);
 								} else {
 									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+									// end = start +
+									// rightdoc.indexOf(beginIndex) +
+									// beginIndex1.length();
+									// } else {
+									// end = start +
+									// rightdoc.indexOf(beginIndex) +
+									// beginIndex.length()
+									// + beginIndex1.length();
 								}
 							} else {
 								end = htmlString.length();
@@ -174,7 +236,7 @@ public class PreviewServiceImpl implements PreviewService {
 							matchEnd = endWords[x];
 							break;
 						}
-					}
+					}*/
 				}
 				if (end != -1) {
 					docnew = htmlString.substring(start, end);
@@ -189,22 +251,28 @@ public class PreviewServiceImpl implements PreviewService {
 			if (docnew != null) {
 				String[] html = docnew.split("</div>");
 				for (int i = 0; i < html.length; i++) {
-					String start = html[i].substring(0, 1);
+					if (html[i].equals("")) {
+						continue;
+					}
+						String start = html[i].substring(0, 1);
 					String p = "[\\u4e00-\\u9fa5]+";
 					if (start.matches(p)) {
-						newHtml = "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">" + html[i] + "</span></div>";
+						newHtml = "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+								+ html[i] + "</span></div>";
 					} else {
 						Document doc = Jsoup.parse(html[i]);
 						String eles = doc.getElementsByTag("div").text();
 						if (eles.equals("")) {
 							newHtml = newHtml + html[i];
 						} else {
-							if(html[i].indexOf(eles)!=-1){
-							String left = html[i].substring(0, html[i].indexOf(eles));
-							String right = html[i].substring(left.length() + eles.length());
-							newHtml = newHtml + left + "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">" + eles + right + "</span></div>";
+							if (html[i].indexOf(eles) != -1) {
+								String left = html[i].substring(0, html[i].indexOf(eles));
+								String right = html[i].substring(left.length() + eles.length());
+								newHtml = newHtml + left
+										+ "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+										+ eles + right + "</span></div>";
 							}
-							}
+						}
 					}
 				}
 				newHtml = htmlString.replace(docnew, newHtml);

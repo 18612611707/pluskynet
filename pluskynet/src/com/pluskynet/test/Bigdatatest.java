@@ -320,10 +320,39 @@ public class Bigdatatest extends Thread {
 				list.add(otherdocrule);
 			} else {
 				for (int j = 0; j < list.size(); j++) {
+					boolean statrstats = true;
+					boolean endstats = true;
 					if (list.get(j).getJudge().equals(judges) && list.get(j).getSpcx().equals(spcx)
 							&& list.get(j).getDoctype().equals(doctype)) {
-						list.get(j).setStart(list.get(j).getStart() + ";" + startword);
-						list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
+						if (!startword.equals("")) {
+							String[] startwords = list.get(j).getStart().split(";");
+							for (int i = 0; i < startwords.length; i++) {
+								if (!startwords[i].equals(startword)) {
+									statrstats = true;
+								}else{
+									statrstats = false;
+									break;
+								}
+							}
+							if (statrstats) {
+								list.get(j).setStart(list.get(j).getStart() + ";" + startword);
+							}
+						}
+						if (!endword.equals("")) {
+							String[] endwords = list.get(j).getEnd().split(";");
+							for (int i = 0; i < endwords.length; i++) {
+								if (!endwords[i].equals(endword)) {
+									endstats = true;
+								}else{
+									endstats = false;
+									break;
+								}
+							}
+							if (endstats) {
+								list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
+							}
+						}
+						
 						break;
 					} else if (j == list.size() - 1) {
 						otherdocrule.setJudge(ruleJson.getString("judge"));

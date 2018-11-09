@@ -66,12 +66,12 @@ public class SampleServiceImpl implements SampleService{
 					doclists = docSectionAndRuleDao.getDocsectionList(table,year,count,trialRound,doctype,Integer.valueOf(sectionname),latitudeid);
 					doclist.addAll(doclists);
 				}else{
-					articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype);
+					articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype,user);
 					list.addAll(articleyl);
 				}
 				
 			}else{
-			articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype);
+			articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype,user);
 			list.addAll(articleyl);
 			}
 		}
@@ -81,7 +81,7 @@ public class SampleServiceImpl implements SampleService{
 		}
 		if (list.size()>0) {
 			sampleDao.delete(user);
-			sampleDao.save(list,user);
+			sampleDao.save(list, user);
 		}
 		sampleDao.saverule(sample,user);
 	}

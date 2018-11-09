@@ -48,14 +48,14 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public Map save(Latitude latitude,User user) {
-		Map msg = latitudeDao.save(latitude,user);
+	public Map save(Latitude latitude, User user) {
+		Map msg = latitudeDao.save(latitude, user);
 		return msg;
 	}
 
 	@Override
-	public String update(Latitude latitude,User user) {
-		String msg = latitudeDao.update(latitude,user);
+	public String update(Latitude latitude, User user) {
+		String msg = latitudeDao.update(latitude, user);
 		if (msg.equals("成功")) {
 			latitude = latitudeDao.getLatitude(latitude);
 			Latitudeaudit latitudeaudit = new Latitudeaudit();
@@ -73,7 +73,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 		List<Latitude> lists = latitudeDao.getLatitudeList();
 		List<Map> list = new ArrayList<Map>();
 		for (int i = 0; i < lists.size(); i++) {
-			if (lists.get(i).getLatitudefid()!=0) {
+			if (lists.get(i).getLatitudefid() != 0) {
 				continue;
 			}
 			Map<String, Object> treeMap = new HashMap<String, Object>();
@@ -82,22 +82,24 @@ public class LatitudeServiceImpl implements LatitudeService {
 			treeMap.put("latitudename", lists.get(i).getLatitudename());
 			treeMap.put("creator", lists.get(i).getCreateruser());
 			treeMap.put("stat", lists.get(i).getStats());
-			treeMap.put("children", children(lists,lists.get(i).getLatitudeid()));
+			treeMap.put("children", children(lists, lists.get(i).getLatitudeid()));
 			list.add(treeMap);
 		}
-		
-//		List<Treelatitude> friList = latitudeDao.getFirstLevel(user); //获取一级内容
-//
-//		for (int i = 0; i < friList.size(); i++) {
-//			Map<String, Object> treeMap = new HashMap<String, Object>();
-//			treeMap.put("latitudeid", friList.get(i).getLatitudeid());
-//			treeMap.put("latitudefid", friList.get(i).getLatitudefid());
-//			treeMap.put("latitudename", friList.get(i).getLatitudename());
-//			treeMap.put("creator", friList.get(i).getCreator());
-//			treeMap.put("stat", friList.get(i).getStat());
-//			treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
-//			list.add(treeMap);
-//		}
+
+		// List<Treelatitude> friList = latitudeDao.getFirstLevel(user);
+		// //获取一级内容
+		//
+		// for (int i = 0; i < friList.size(); i++) {
+		// Map<String, Object> treeMap = new HashMap<String, Object>();
+		// treeMap.put("latitudeid", friList.get(i).getLatitudeid());
+		// treeMap.put("latitudefid", friList.get(i).getLatitudefid());
+		// treeMap.put("latitudename", friList.get(i).getLatitudename());
+		// treeMap.put("creator", friList.get(i).getCreator());
+		// treeMap.put("stat", friList.get(i).getStat());
+		// treeMap.put("children",
+		// treeList(friList.get(i).getLatitudeid(),user));
+		// list.add(treeMap);
+		// }
 
 		return list;
 
@@ -106,38 +108,39 @@ public class LatitudeServiceImpl implements LatitudeService {
 	private List<Treelatitude> children(List<Latitude> lists, Integer latitudeid) {
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		for (int i = 0; i < lists.size(); i++) {
-			if (lists.get(i).getLatitudefid().intValue()==latitudeid.intValue()) {
+			if (lists.get(i).getLatitudefid().intValue() == latitudeid.intValue()) {
 				Treelatitude treeMap = new Treelatitude();
 				treeMap.setLatitudeid(lists.get(i).getLatitudeid());
 				treeMap.setLatitudefid(lists.get(i).getLatitudefid());
 				treeMap.setLatitudename(lists.get(i).getLatitudename());
 				treeMap.setCreator(lists.get(i).getCreateruser());
 				treeMap.setStat(lists.get(i).getStats());
-				List<Treelatitude> tree = children(lists,lists.get(i).getLatitudeid());
+				List<Treelatitude> tree = children(lists, lists.get(i).getLatitudeid());
 				treeMap.setChildren(tree);
 				list.add(treeMap);
 			}
 		}
 		return list;
 	}
+
 	@Override
 	public List<Treelatitude> treeList(int latitudeid, User user) {
 		List<Latitude> nextSubSet = new ArrayList<Latitude>();
 		Treelatitude voteTree = new Treelatitude();
 		voteTree.setLatitudeid(latitudeid);
-		nextSubSet = latitudeDao.getNextSubSet(voteTree,user);
-		 List<Treelatitude> list = new ArrayList<Treelatitude>();
-	        for (int i = 0; i < nextSubSet.size(); i++) {
-	        	//遍历这个二级目录的集合
-				Treelatitude treelatitude = new Treelatitude();
-				treelatitude.setLatitudeid(nextSubSet.get(i).getLatitudeid());
-				treelatitude.setLatitudefid(nextSubSet.get(i).getLatitudefid());
-				treelatitude.setLatitudename(nextSubSet.get(i).getLatitudename());
-				List<Treelatitude> ts = latitudeDao.getDeeptLevel(nextSubSet.get(i),user);  
-	            //将下面的子集都依次递归进来 
-	            treelatitude.setChildren(ts);
-			    list.add(treelatitude);
-			}
+		nextSubSet = latitudeDao.getNextSubSet(voteTree, user);
+		List<Treelatitude> list = new ArrayList<Treelatitude>();
+		for (int i = 0; i < nextSubSet.size(); i++) {
+			// 遍历这个二级目录的集合
+			Treelatitude treelatitude = new Treelatitude();
+			treelatitude.setLatitudeid(nextSubSet.get(i).getLatitudeid());
+			treelatitude.setLatitudefid(nextSubSet.get(i).getLatitudefid());
+			treelatitude.setLatitudename(nextSubSet.get(i).getLatitudename());
+			List<Treelatitude> ts = latitudeDao.getDeeptLevel(nextSubSet.get(i), user);
+			// 将下面的子集都依次递归进来
+			treelatitude.setChildren(ts);
+			list.add(treelatitude);
+		}
 		return list;
 	}
 
@@ -154,55 +157,106 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	@Override
-	public List<StatsDoc> getDocList(Latitude latitude,User user) {
+	public List<StatsDoc> getDocList(Latitude latitude, User user) {
 		List<StatsDoc> listsDocs = new ArrayList<StatsDoc>();
 		JSONArray jsonArray = new JSONArray().fromObject(latitude.getRule());
 		int b = latitude.getRuletype();
 		if (b == 1) {
-			for (int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
-//				if (!jsonObject.get("state").equals("新录")) {
-//					continue;
-//				}
-				int sectionname = jsonObject.getInt("sectionname"); // 段落名
-				String sectiontext = null;
-				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
-				String contains = jsonObject.getString("contains");
-				String[] contain = contains.split(";");// 包含
-				boolean a = false;
-				for (int j = 0; j < list.size(); j++) {
-					DocidAndDoc docidAndDoc = new DocidAndDoc();
-					StatsDoc statsDoc = new StatsDoc();
-					sectiontext = list.get(j).getSectiontext();
-					for (int x = 0; x < contain.length; x++) {
-						if (sectiontext.contains(contain[x])) {
-							sectiontext = sectiontext.replaceAll(contain[x],
-									"<span style=\"color:red\">" + contain[x] + "</span>");
-							a = true;
-						} else {
+			// int sectionname = jsonObject.getInt("sectionname"); // 段落名
+			String oldsectiontext = null;
+			String newsectiontext = null;
+			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
+			boolean a = false;
+			for (int j = 0; j < list.size(); j++) {
+				if (list.get(j).getDocumentsid().equals("084e5a3e-3936-498f-9ebf-a881017afc63")) {
+					System.out.println("11111");
+				}
+				DocidAndDoc docidAndDoc = new DocidAndDoc();
+				StatsDoc statsDoc = new StatsDoc();
+				oldsectiontext = list.get(j).getSectiontext();
+				look: for (int i = 0; i < jsonArray.size(); i++) {
+					JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
+					// if (!jsonObject.get("state").equals("新录")) {
+					// continue;
+					// }
+					String contains = jsonObject.getString("contains");
+					if (contains.equals("")) {
+						newsectiontext = oldsectiontext;
+						a=true;
+					}else {
+					if (contains.contains("*")) {
+						Pattern containp = startRuleFomat(contains);
+						Matcher matcher = containp.matcher(oldsectiontext);
+						if (matcher.find()){
+							String beginIndex = matcher.group();
+							newsectiontext = oldsectiontext.replaceAll(beginIndex,
+									"<span style=\"color:red\">" + beginIndex + "</span>");
+							a=true;
+							break;
+						}
+					}else if (contains.contains("&")) {
+						String[] contain = contains.split("\\&");// 包含
+						for (int x = 0; x < contain.length; x++) {
+							if (oldsectiontext.contains(contain[x].toString())) {
+								a = true;
+							} else {
+								a = false;
+								break;
+							}
+						}
+						if (a) {
+							for (int x = 0; x < contain.length; x++) {
+									newsectiontext = oldsectiontext.replaceAll(contain[x],
+											"<span style=\"color:red\">" + contain[x] + "</span>");
+							}
+						}else {
+							newsectiontext = oldsectiontext;
 							a = false;
 							break;
 						}
-					}
-					if (a) {
-						String[] notcon = jsonObject.getString("notcon").split(";");
-						for (int k = 0; k < notcon.length; k++) {
-							if (notcon[k] == null || notcon[k].equals("")) {
-								a = true;
-								break;
-							} else {
-								if (!sectiontext.contains(notcon[k])) {
-									a = true;
-								} else {
-									a = false;
-									break;
-								}
-							}
+					}else{
+						if (oldsectiontext.contains(contains)) {
+							newsectiontext = oldsectiontext.replaceAll(contains,
+									"<span style=\"color:red\">" + contains + "</span>");
+							a=true;
+						}else{
+							a=false;
 						}
 					}
+					}
+					if (a) {
+						String[] notcon = jsonObject.getString("notcon").split(";;");
+						for (int k = 0; k < notcon.length; k++) {
+								if(notcon[k].contains("*")){
+									Pattern containp = endRuleFomat(notcon[k]);
+									Matcher matcher = containp.matcher(oldsectiontext);
+									if (!matcher.find()){
+										a = true;
+										if (k==notcon.length-1) {
+											break look;
+										}
+									} else{
+										a=false;
+										break look;
+									}
+								} else if(!oldsectiontext.contains(notcon[k])) {
+									a = true;
+									if (k==notcon.length-1) {
+										break look;
+									}
+								} else if(notcon[k].equals("")){
+									a = true;
+									break look;
+								}else{
+									a=false;
+									break look;
+								}
+						}
+					}
+				}
 					if (a) {
 						statsDoc.setStats("符合");
-						docidAndDoc.setDoc(sectiontext);
+						docidAndDoc.setDoc(newsectiontext);
 						docidAndDoc.setDocid(list.get(j).getDocumentsid());
 						docidAndDoc.setTitle(list.get(j).getTitle());
 						statsDoc.setDocidAndDoc(docidAndDoc);
@@ -210,77 +264,75 @@ public class LatitudeServiceImpl implements LatitudeService {
 						continue;
 					} else {
 						statsDoc.setStats("不符合");
-						docidAndDoc.setDoc(sectiontext);
+						docidAndDoc.setDoc(oldsectiontext);
 						docidAndDoc.setDocid(list.get(j).getDocumentsid());
 						docidAndDoc.setTitle(list.get(j).getTitle());
 						statsDoc.setDocidAndDoc(docidAndDoc);
 						listsDocs.add(statsDoc);
 						continue;
 					}
-				}
 			}
 		} else if (b == 3) {
-			for (int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
-				StatsDoc statsDoc = new StatsDoc();
-				DocidAndDoc docidAndDoc = new DocidAndDoc();
-				int sectionname = jsonObject.getInt("sectionname"); // 段落名
-				String sectiontext = null;
-				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
-				Pattern patPunc = null;
-				for (int k = 0; k < list.size(); k++) {
+
+			// int sectionname = jsonObject.getInt("sectionname"); // 段落名
+			String sectiontext = null;
+			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
+			Pattern patPunc = null;
+			for (int k = 0; k < list.size(); k++) {
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
+					StatsDoc statsDoc = new StatsDoc();
+					DocidAndDoc docidAndDoc = new DocidAndDoc();
 					sectiontext = list.get(k).getSectiontext();
 					if (jsonObject.getString("timeFormat").equals("0")) {
-						patPunc = Pattern
-								.compile("[\u4e00-\u9fa5]{0,4}年[\u4e00-\u9fa5]{0,2}月[\u4e00-\u9fa5]{0,2}日");
-					}else{
-						patPunc = Pattern
-								.compile("[0-9]{0,4}年[0-9]{0,2}月[0-9]{0,2}日");
+						patPunc = Pattern.compile("[\u4e00-\u9fa5]{0,4}年[\u4e00-\u9fa5]{0,2}月[\u4e00-\u9fa5]{0,2}日");
+					} else {
+						patPunc = Pattern.compile("[0-9]{0,4}年[0-9]{0,2}月[0-9]{0,2}日");
 					}
-						int t = jsonObject.getInt("timeIndex");
-						Matcher matcher = patPunc.matcher(sectiontext);
-						while (matcher.find()) {
-							String time = matcher.group();
-							t--;
-							if (t == 0) {
-								statsDoc.setStats("符合");
-								sectiontext = sectiontext.replaceAll(time,"<span style=\"color:red\">" + time + "</span>");
-								docidAndDoc.setDoc(sectiontext);
-								docidAndDoc.setDocid(list.get(k).getDocumentsid());
-								docidAndDoc.setTitle(list.get(k).getTitle());
-								statsDoc.setDocidAndDoc(docidAndDoc);
-								listsDocs.add(statsDoc);
-							} else {
-								statsDoc.setStats("不符合");
-								docidAndDoc.setDoc(list.get(k).getSectiontext());
-								docidAndDoc.setDocid(list.get(k).getDocumentsid());
-								docidAndDoc.setTitle(list.get(k).getTitle());
-								statsDoc.setDocidAndDoc(docidAndDoc);
-								listsDocs.add(statsDoc);
-							}
+					int t = jsonObject.getInt("timeIndex");
+					Matcher matcher = patPunc.matcher(sectiontext);
+					while (matcher.find()) {
+						String time = matcher.group();
+						t--;
+						if (t == 0) {
+							statsDoc.setStats("符合");
+							sectiontext = sectiontext.replaceAll(time, "<span style=\"color:red\">" + time + "</span>");
+							docidAndDoc.setDoc(sectiontext);
+							docidAndDoc.setDocid(list.get(k).getDocumentsid());
+							docidAndDoc.setTitle(list.get(k).getTitle());
+							statsDoc.setDocidAndDoc(docidAndDoc);
+							listsDocs.add(statsDoc);
+						} else {
+							statsDoc.setStats("不符合");
+							docidAndDoc.setDoc(list.get(k).getSectiontext());
+							docidAndDoc.setDocid(list.get(k).getDocumentsid());
+							docidAndDoc.setTitle(list.get(k).getTitle());
+							statsDoc.setDocidAndDoc(docidAndDoc);
+							listsDocs.add(statsDoc);
 						}
+					}
 
-					
 				}
 			}
-		}else{
-			JSONObject ruleJson = new JSONObject();		
+		} else {
+			JSONObject ruleJson = new JSONObject();
 			List<Docsectionandrule> docList = new ArrayList<Docsectionandrule>();
-			for (int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
-				StatsDoc statsDoc = new StatsDoc();
-				DocidAndDoc docidAndDoc = new DocidAndDoc();
-				int sectionname = jsonObject.getInt("sectionname"); // 段落名
-				String sectiontext = null;
-				List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(sectionname,user);
-				docList.addAll(list);
-			}
+			// for (int i = 0; i < jsonArray.size(); i++) {
+			// JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
+			// StatsDoc statsDoc = new StatsDoc();
+			// DocidAndDoc docidAndDoc = new DocidAndDoc();
+			// int sectionname = jsonObject.getInt("sectionname"); // 段落名
+			// String sectiontext = null;
+			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
+			docList.addAll(list);
+			// }
 			for (int i = 0; i < docList.size(); i++) {
 				StatsDoc statsDoc = new StatsDoc();
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				String docid = docList.get(i).getDocumentsid();
 				String docold = docList.get(i).getSectiontext();
 				String doctitle = docList.get(i).getTitle();
+				
 				String docnew = null;
 				int start = -1;
 				int end = -1;
@@ -312,7 +364,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 							if (matcher.find()) {
 								String beginIndex = matcher.group();
 								if (endWords[x].length() > 0) {
-										end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
+									end = start + rightdoc.indexOf(beginIndex) + beginIndex1.length();
 								} else {
 									end = docold.length();
 								}
@@ -360,75 +412,76 @@ public class LatitudeServiceImpl implements LatitudeService {
 		List<Map> list = latitudeDao.getScreeList(latitudeName, latitudeId);
 		return list;
 	}
+
 	// 开始规则格式化
-		public Pattern startRuleFomat(String startWords) {
-			String reg_charset = null;
-			String[] start = startWords.split("\\*");
-			if (start.length > 1) {
-				for (int j = 0; j < start.length; j++) {
-					if (reg_charset == null) {
-						reg_charset = start[j];
-					} else {
-						reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + start[j];
-					}
+	public Pattern startRuleFomat(String startWords) {
+		String reg_charset = null;
+		String[] start = startWords.split("\\*");
+		if (start.length > 1) {
+			for (int j = 0; j < start.length; j++) {
+				if (reg_charset == null) {
+					reg_charset = start[j];
+				} else {
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + start[j];
+				}
+			}
+		} else {
+			reg_charset = startWords;
+		}
+		Pattern pattern = Pattern.compile(reg_charset);
+		return pattern;
+	}
+
+	// 结束规则格式化
+	public Pattern endRuleFomat(String endWords) {
+		String reg_charset = null;
+		String[] end = endWords.split("\\*");
+		for (int j = 0; j < end.length; j++) {
+			if (end.length > 1) {
+				if (reg_charset == null) {
+					reg_charset = end[j];
+				} else {
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + end[j];
 				}
 			} else {
-				reg_charset = startWords;
+				reg_charset = end[j];
 			}
-			Pattern pattern = Pattern.compile(reg_charset);
-			return pattern;
 		}
+		Pattern pattern = Pattern.compile(reg_charset);
+		return pattern;
+	}
 
-		// 结束规则格式化
-		public Pattern endRuleFomat(String endWords) {
-			String reg_charset = null;
-			String[] end = endWords.split("\\*");
-			for (int j = 0; j < end.length; j++) {
-				if (end.length > 1) {
-					if (reg_charset == null) {
-						reg_charset = end[j];
-					} else {
-						reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + end[j];
-					}
-				} else {
-					reg_charset = end[j];
-				}
-			}
-			Pattern pattern = Pattern.compile(reg_charset);
-			return pattern;
+	@Override
+	public List<Map> getLatitudeShow(String latitudename, User user) {
+		List<Latitude> friList = latitudeDao.getLatitudeShow(latitudename, user);
+		List<Map> list = new ArrayList<Map>();
+		for (int i = 0; i < friList.size(); i++) {
+			Map<String, Object> treeMap = new HashMap<String, Object>();
+			treeMap.put("latitudeid", friList.get(i).getLatitudeid());
+			treeMap.put("latitudefid", friList.get(i).getLatitudefid());
+			treeMap.put("latitudename", friList.get(i).getLatitudename());
+			treeMap.put("children", treeList(friList.get(i).getLatitudeid(), user));
+			list.add(treeMap);
 		}
+		return list;
+	}
 
-		@Override
-		public List<Map> getLatitudeShow(String latitudename,User user) {
-			List<Latitude> friList = latitudeDao.getLatitudeShow(latitudename,user);
-			List<Map> list = new ArrayList<Map>();
-			for (int i = 0; i < friList.size(); i++) {
-				Map<String, Object> treeMap = new HashMap<String, Object>();
-				treeMap.put("latitudeid", friList.get(i).getLatitudeid());
-				treeMap.put("latitudefid", friList.get(i).getLatitudefid());
-				treeMap.put("latitudename", friList.get(i).getLatitudename());
-				treeMap.put("children", treeList(friList.get(i).getLatitudeid(),user));
-				list.add(treeMap);
-			}
-			return list;
-		}
+	@Override
+	public List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname) {
+		List<Latitude> list = latitudeDao.getRuleShow(latitudeid, cause, spcx, sectionname);
+		return list;
+	}
 
-		@Override
-		public List<Latitude> getRuleShow(Integer latitudeid, String cause, String spcx, String sectionname) {
-			List<Latitude> list = latitudeDao.getRuleShow(latitudeid,cause,spcx,sectionname);
-			return list;
-		}
+	@Override
+	public String updateName(Latitude latitude, User user) {
+		String msg = latitudeDao.updateName(latitude, user);
+		return msg;
+	}
 
-		@Override
-		public String updateName(Latitude latitude,User user) {
-			String msg = latitudeDao.updateName(latitude,user);
-			return msg;
-		}
-
-		@Override
-		public String approve(Latitude latitude,User user) {
-			String msg = latitudeDao.approve(latitude,user);
-			return msg;
-		}
+	@Override
+	public String approve(Latitude latitude, User user) {
+		String msg = latitudeDao.approve(latitude, user);
+		return msg;
+	}
 
 }

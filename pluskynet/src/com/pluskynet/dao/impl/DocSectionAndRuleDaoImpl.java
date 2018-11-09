@@ -76,8 +76,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 
 	@Override
 	@Transactional
-	public List<Docsectionandrule> getDocLists(int sectionname,User user) {
-		String hql = "select * from docsectionandrule where ruleid = '" + sectionname + "' and belonguser = '"+user.getUsername()+"' and belongid = '"+user.getUserid()+"' ";
+	public List<Docsectionandrule> getDocLists(User user) {
+		String hql = "select * from docsectionandrule where belonguser = '"+user.getUsername()+"' and belongid = '"+user.getUserid()+"' ";
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Docsectionandrule> list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
 		return list;
@@ -185,20 +185,24 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	public List<Docsectionandrule01> getDocsectionList(Cause doctable, String year, int count, String trialRound,
 			String doctype , Integer sectionname, Integer latitudename) {
 //		String hql = "select * from "+doctable.getDoctable()+" a left join "+doctable.getCausetable()+" b on a.documentsid = b.doc_id where b.spcx='"+trialRound+"' and b.doctype='"+doctype+"' and b.date = '"+year+"' LIMIT "+count+";";
-		String hql ="SELECT * FROM "+doctable.getCausetable()+" WHERE id >= ((SELECT MAX(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' limit "+count+" ;"; 
+//		String hql ="SELECT * FROM "+doctable.getCausetable()+" WHERE id >= ((SELECT MAX(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and  spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' LIMIT "+count+" ;"; 
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		List<Article01> lists = session.createSQLQuery(hql).addEntity(Article01.class).list();
-		String sql = null;
-		for (int i = 0; i < lists.size(); i++) {
-			sql = "select * from "+doctable.getDoctable()+" where documentsid in (";
-			if (i==lists.size()-1) {
-				sql = sql + "'"+ lists.get(i).getDocId() +"') and ruleid = "+sectionname+"";
-			}else {
-				sql = sql + "'"+ lists.get(i).getDocId() +"',";
-			}
-		}
-		List<Docsectionandrule01> list = session.createSQLQuery(sql).addEntity(Docsectionandrule01.class).list();
-		return list;
+//		List<Article01> lists = session.createSQLQuery(hql).addEntity(Article01.class).list();
+		String sql = "select * from "+doctable.getDoctable()+" a right join ( SELECT doc_id FROM "+doctable.getCausetable()+" WHERE id >= ((SELECT MAX(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+doctable.getCausetable()+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and  spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' LIMIT "+count+") b on a.documentsid = b.doc_id where ruleid = "+sectionname+"";
+//		for (int i = 0; i < lists.size(); i++) {
+//			if (i==lists.size()-1) {
+//				sql = sql + "'"+ lists.get(i).getDocId() +"') and ruleid = "+sectionname+"";
+//			}else {
+//				sql = sql + "'"+ lists.get(i).getDocId() +"',";
+//			}
+//		}
+//		if (lists.size()>0) {
+			List<Docsectionandrule01> list = session.createSQLQuery(sql).addEntity(Docsectionandrule01.class).list();
+			return list;
+//		}else {
+//			return null;
+//		}
+		
 	}
 
 	// public boolean update(Docsectionandrule docsectionandrule) {
