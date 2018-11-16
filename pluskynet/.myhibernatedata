@@ -1,5 +1,5 @@
 #MyEclipse Hibernate Properties
-#Thu Nov 01 00:26:36 CST 2018
+#Fri Nov 16 16:00:21 CST 2018
 genBasicCompId=false
 sessionFactoryName=
 profile=
@@ -16,5 +16,5 @@ sessionFactoryId=
 basePersistenceClass=
 genAnnotations=false
 reSettingsFile=
-configFile=
+configFile=/pluskynet/src/hibernate.cfg.xml
 createConfigFile=false

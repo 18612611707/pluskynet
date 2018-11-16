@@ -178,66 +178,39 @@ public class PreviewServiceImpl implements PreviewService {
 							start = start + beginIndex1.length() - leftdoc.indexOf(before);
 						}
 						rightdoc = htmlString.substring(start);
-						break;
-					}
-				}
-				if (rightdoc != null && start != -1) {
-					for (int x = 0; x < endWords.length; x++) {
-						String endbefore = null;
-						if (endWords[x].contains("^")) {
-							endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
-							endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
-						}
-						Pattern patternend = endRuleFomat(endWords[x]);
-						Matcher matcher = patternend.matcher(rightdoc);
-						if (matcher.find()) {
-							String beginIndex = matcher.group();
-							if (endWords[x].length() > 0) {
-								// System.out.println(endWords.length);
-								if (judge.equals("之前")) {
-									if (endbefore!=null) {
-										rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
-										end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
-									}else{
-									end = start + rightdoc.indexOf(beginIndex);
+						if (rightdoc != null && start != -1) {
+							for (int x = 0; x < endWords.length; x++) {
+								String endbefore = null;
+								if (endWords[x].contains("^")) {
+									endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
+									endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
+								}
+								Pattern patternend = endRuleFomat(endWords[x]);
+								Matcher matcher1 = patternend.matcher(rightdoc);
+								if (matcher1.find()) {
+									String beginIndex = matcher1.group();
+									if (endWords[x].length() > 0) {
+										// System.out.println(endWords.length);
+										if (judge.equals("之前")) {
+											if (endbefore!=null) {
+												rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
+												end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
+											}else{
+											end = start + rightdoc.indexOf(beginIndex);
+											}
+										} else {
+											end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+										}
+									} else {
+										end = htmlString.length();
 									}
-								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+									break;
 								}
-							} else {
-								end = htmlString.length();
 							}
-							break;
 						}
 					}
-				/*	for (int x = 0; x < endWords.length; x++) {
-						Pattern patternend = endRuleFomat(endWords[x]);
-						Matcher matcher = patternend.matcher(rightdoc);
-						if (matcher.find()) {
-							String beginIndex = matcher.group();
-							if (endWords[x].length() > 0) {
-								// System.out.println(endWords.length);
-								if (judge.equals("之前")) {
-									end = start + rightdoc.indexOf(beginIndex);
-								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
-									// end = start +
-									// rightdoc.indexOf(beginIndex) +
-									// beginIndex1.length();
-									// } else {
-									// end = start +
-									// rightdoc.indexOf(beginIndex) +
-									// beginIndex.length()
-									// + beginIndex1.length();
-								}
-							} else {
-								end = htmlString.length();
-							}
-							matchEnd = endWords[x];
-							break;
-						}
-					}*/
 				}
+				
 				if (end != -1) {
 					docnew = htmlString.substring(start, end);
 					// System.out.println(statsDoc);

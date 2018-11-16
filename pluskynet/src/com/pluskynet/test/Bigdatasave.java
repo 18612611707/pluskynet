@@ -68,7 +68,7 @@ public class Bigdatasave extends Thread {
 			String Startword = null; // 匹配到的开始词语
 			String Endword = null; // 匹配到的结束词语
 			String before = null;
-			look:for (int a = 0; a < jsonArray.size(); a++) {
+			look: for (int a = 0; a < jsonArray.size(); a++) {
 				JSONObject js = new JSONObject();
 				js = jsonArray.getJSONObject(a);
 				String trialRound = js.getString("spcx");
@@ -90,9 +90,9 @@ public class Bigdatasave extends Thread {
 
 				for (int j1 = 0; j1 < startWords.length; j1++) {
 					if (startWords[j1].contains("^")) {
-						before = startWords[j1].substring(0,startWords[j1].indexOf("^"));
-						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^")+1);
-					}else{
+						before = startWords[j1].substring(0, startWords[j1].indexOf("^"));
+						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^") + 1);
+					} else {
 						before = null;
 					}
 					Pattern patternstart = startRuleFomat(startWords[j1]);
@@ -101,47 +101,49 @@ public class Bigdatasave extends Thread {
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-//						System.out.println(leftdoc.length());
+						// System.out.println(leftdoc.length());
 						StringBuffer s = new StringBuffer(leftdoc);
 						leftdoc = s.reverse().toString();
-						if (before!=null) {
-							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
+						if (before != null) {
+							start = start + beginIndex1.length() - leftdoc.indexOf(before);
 						}
 						rightdoc = docold.substring(start);
-//						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
-						break;
-					}
-				}
-				if (rightdoc != null && start != -1) {
-					for (int x = 0; x < endWords.length; x++) {
-						String endbefore = null;
-						if (endWords[x].contains("^")) {
-							endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
-							endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
-						}
-						Pattern patternend = endRuleFomat(endWords[x]);
-						Matcher matcher = patternend.matcher(rightdoc);
-						if (matcher.find()) {
-							String beginIndex = matcher.group();
-							if (endWords[x].length() > 0) {
-								// System.out.println(endWords.length);
-								if (judge.equals("之前")) {
-									if (endbefore!=null) {
-										rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
-										end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
-									}else{
-									end = start + rightdoc.indexOf(beginIndex);
-									}
-								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+						// rightdoc =
+						// docold.substring(docold.indexOf(beginIndex1) +
+						// beginIndex1.length());
+						if (rightdoc != null && start != -1) {
+							for (int x = 0; x < endWords.length; x++) {
+								String endbefore = null;
+								if (endWords[x].contains("^")) {
+									endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
+									endWords[x] = endWords[x].substring(endWords[x].indexOf("^") + 1);
 								}
-							} else {
-								end = docold.length();
+								Pattern patternend = endRuleFomat(endWords[x]);
+								Matcher matcher1 = patternend.matcher(rightdoc);
+								if (matcher1.find()) {
+									String beginIndex = matcher1.group();
+									if (endWords[x].length() > 0) {
+										// System.out.println(endWords.length);
+										if (judge.equals("之前")) {
+											if (endbefore != null) {
+												rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
+												end = start + rightdoc.lastIndexOf(endbefore) + endbefore.length();
+											} else {
+												end = start + rightdoc.indexOf(beginIndex);
+											}
+										} else {
+											end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+										}
+									} else {
+										end = docold.length();
+									}
+									break look;
+								}
 							}
-							break look;
 						}
 					}
 				}
+
 				Docsectionandrule docsectionandrule = new Docsectionandrule();
 				Batchdata batchdata = new Batchdata();
 				if (end != -1) {

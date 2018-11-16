@@ -29,6 +29,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	public List<Article01> getListArticle(String table, String year, int count,String trialRound,String doctype,User user) {
 //		String hql = "SELECT  * FROM "+table+" AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"') - (SELECT MIN(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) + (SELECT MIN(id) FROM "+table+" where spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"')) AS id) AS t2 WHERE t1.id >= t2.id and t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"' ORDER BY  t1.id LIMIT "+count+";";
 		String hql = "SELECT * FROM "+table+" WHERE id >= ((SELECT MAX(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')-(SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"')) * RAND() + (SELECT MIN(id) FROM "+table+" t1 WHERE  t1.spcx='"+trialRound+"' and t1.doctype='"+doctype+"' and t1.date = '"+year+"') and  spcx='"+trialRound+"' and doctype='"+doctype+"' and date = '"+year+"' LIMIT "+count+" ;";
+//		String hql = "{CALL sql_queryData('"+table+"',"+year+","+count+",'"+trialRound+"','"+doctype+"','"+user.getName()+"',"+user.getUserid()+")}";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 //		session.createSQLQuery(hql).executeUpdate();
 		List<Article01> list = session.createSQLQuery(hql).addEntity(Article01.class).list();
@@ -42,8 +43,29 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	 * @see com.pluskynet.dao.SampleDao#save(java.util.List,
 	 * com.pluskynet.domain.User) 保存段落样本
 	 */
+	@Transactional
 	public void save(List<Article01> list, User user) {
+		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		Connection conn = session.connection();
 		for (int i = 0; i < list.size(); i++) {
+			String sql = "INSERT INTO `articleyl` (`doc_id`, `title`, `decode_data`, `belonguser`, `belongid`) VALUES ('"
+					+ list.get(i).getDocId() + "','" + list.get(i).getTitle() + "',?,'" + user.getUsername() + "'," + user.getUserid() + ")";
+			System.out.println(sql);
+			try {
+				PreparedStatement stmt = conn.prepareStatement(sql);
+				stmt.setString(1, list.get(i).getDecodeData());
+				stmt.addBatch();
+				if (i % 100 == 0 || i == list.size() - 1) {
+					stmt.executeBatch();
+					conn.setAutoCommit(false);
+					conn.commit();
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		/*for (int i = 0; i < list.size(); i++) {
 			Articleyl articleyl = new Articleyl();
 			articleyl.setDecodeData(list.get(i).getDecodeData());
 			articleyl.setDocId(list.get(i).getDocId());
@@ -51,7 +73,7 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 			articleyl.setBelongid(user.getUserid());
 			articleyl.setBelonguser(user.getUsername());
 			this.getHibernateTemplate().save(articleyl);
-		}
+		}*/
 	}
 
 	@Override

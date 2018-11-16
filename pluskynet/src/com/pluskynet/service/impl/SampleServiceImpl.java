@@ -44,6 +44,7 @@ public class SampleServiceImpl implements SampleService{
 			return;
 		}
 		JSONArray jsonArray = JSONArray.fromObject(sample.getRule());
+		String sectionname = "";
 		for (int i = 0; i < jsonArray.size(); i++) {
 			List<Docsectionandrule01> doclists = new ArrayList<Docsectionandrule01>();
 			List<Article01> articleyl = new ArrayList<Article01>();
@@ -52,7 +53,7 @@ public class SampleServiceImpl implements SampleService{
 			int count = jsonObject.getInt("count");
 			String trialRound = jsonObject.getString("trialRound");
 			String doctype = jsonObject.getString("doctype");
-			String sectionname = jsonObject.getString("sectionname");
+			sectionname = jsonObject.getString("sectionname");
 			Cause cause = new Cause();
 			cause.setCausename(jsonObject.getString("causet"));
 			Cause table = causeDao.selectCause(cause);
@@ -75,12 +76,17 @@ public class SampleServiceImpl implements SampleService{
 			list.addAll(articleyl);
 			}
 		}
-		if (doclist.size()>0) {
+		if(!sectionname.equals("")){
 			sampleDao.deleteDoc(user);
+		}else{
+			sampleDao.delete(user);
+		}
+		if (doclist.size()>0) {
+			
 			sampleDao.saveDoc(doclist,user);
 		}
 		if (list.size()>0) {
-			sampleDao.delete(user);
+			
 			sampleDao.save(list, user);
 		}
 		sampleDao.saverule(sample,user);

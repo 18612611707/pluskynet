@@ -71,7 +71,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 							for (int i = 0; i < startwords.length; i++) {
 								if (!startwords[i].equals(startword)) {
 									statrstats = true;
-								}else{
+								} else {
 									statrstats = false;
 									break;
 								}
@@ -85,7 +85,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 							for (int i = 0; i < endwords.length; i++) {
 								if (!endwords[i].equals(endword)) {
 									endstats = true;
-								}else{
+								} else {
 									endstats = false;
 									break;
 								}
@@ -94,7 +94,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 								list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
 							}
 						}
-						
+
 						break;
 					} else if (j == list.size() - 1) {
 						otherdocrule.setJudge(ruleJson.getString("judge"));
@@ -107,12 +107,12 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				}
 			}
 		}
-//		for (int c = 0; c < list.size(); c++) {
-//			jsonArray = JSONArray.fromObject(list);
-//			preview.setRule(jsonArray.get(c).toString());
-			docLists = parsing.DocList(listaArticles, preview);
-			docList.addAll(docLists);
-//		}
+		// for (int c = 0; c < list.size(); c++) {
+		// jsonArray = JSONArray.fromObject(list);
+		// preview.setRule(jsonArray.get(c).toString());
+		docLists = parsing.DocList(listaArticles, preview);
+		docList.addAll(docLists);
+		// }
 		for (int i = 0; i < docList.size(); i++) {
 			StatsDoc statsDoc = new StatsDoc();
 			DocidAndDoc docidAndDoc = new DocidAndDoc();
@@ -129,20 +129,20 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			if (docid.equals("fffe75ab-4c49-4bf4-99fc-a76a009347bb")) {
 				System.out.println("aaaaaaaaa");
 			}
-			look:for (int c = 0; c < list.size(); c++) {
+			look: for (int c = 0; c < list.size(); c++) {
 				ruleJson = JSONObject.fromObject(list.get(c));
 				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
 				String endWord = ruleJson.getString("end");
-				
+
 				String judge = ruleJson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
 				for (int j = 0; j < startWords.length; j++) {
 					if (startWords[j].contains("^")) {
-						before = startWords[j].substring(0,startWords[j].indexOf("^"));
-						startWords[j] = startWords[j].substring(startWords[j].indexOf("^")+1);
-					}else{
+						before = startWords[j].substring(0, startWords[j].indexOf("^"));
+						startWords[j] = startWords[j].substring(startWords[j].indexOf("^") + 1);
+					} else {
 						before = null;
 					}
 					Pattern patternstart = startRuleFomat(startWords[j]);
@@ -151,44 +151,45 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-//						System.out.println(leftdoc.length());
+						// System.out.println(leftdoc.length());
 						StringBuffer s = new StringBuffer(leftdoc);
 						leftdoc = s.reverse().toString();
-						if (before!=null) {
-							start = start+beginIndex1.length() - leftdoc.indexOf(before);	
+						if (before != null) {
+							start = start + beginIndex1.length() - leftdoc.indexOf(before);
 						}
 						rightdoc = docold.substring(start);
-//						rightdoc = docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
-						break;
-					}
-				}
-				if (rightdoc != null && start != -1) {
-					for (int x = 0; x < endWords.length; x++) {
-						String endbefore = null;
-						if (endWords[x].contains("^")) {
-							endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
-							endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
-						}
-						Pattern patternend = endRuleFomat(endWords[x]);
-						Matcher matcher = patternend.matcher(rightdoc);
-						if (matcher.find()) {
-							String beginIndex = matcher.group();
-							if (endWords[x].length() > 0) {
-								// System.out.println(endWords.length);
-								if (judge.equals("之前")) {
-									if (endbefore!=null) {
-										rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
-										end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
-									}else{
-									end = start + rightdoc.indexOf(beginIndex);
-									}
-								} else {
-									end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+						// rightdoc =
+						// docold.substring(docold.indexOf(beginIndex1) +
+						// beginIndex1.length());
+						if (rightdoc != null && start != -1) {
+							for (int x = 0; x < endWords.length; x++) {
+								String endbefore = null;
+								if (endWords[x].contains("^")) {
+									endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
+									endWords[x] = endWords[x].substring(endWords[x].indexOf("^") + 1);
 								}
-							} else {
-								end = docold.length();
+								Pattern patternend = endRuleFomat(endWords[x]);
+								Matcher matcher1 = patternend.matcher(rightdoc);
+								if (matcher1.find()) {
+									String beginIndex = matcher.group();
+									if (endWords[x].length() > 0) {
+										// System.out.println(endWords.length);
+										if (judge.equals("之前")) {
+											if (endbefore != null) {
+												rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
+												end = start + rightdoc.lastIndexOf(endbefore) + endbefore.length();
+											} else {
+												end = start + rightdoc.indexOf(beginIndex);
+											}
+										} else {
+											end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+										}
+									} else {
+										end = docold.length();
+									}
+									break look;
+								}
 							}
-							break look;
 						}
 					}
 				}
@@ -238,7 +239,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				if (reg_charset == null) {
 					reg_charset = start[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + start[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + start[j];
 				}
 			}
 		} else {
@@ -257,7 +258,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				if (reg_charset == null) {
 					reg_charset = end[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + end[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + end[j];
 				}
 			} else {
 				reg_charset = end[j];
