@@ -9,17 +9,17 @@ import com.pluskynet.dao.DocidandruleidDao;
 import com.pluskynet.dao.LatitudeKeyDao;
 import com.pluskynet.domain.Batchdata;
 import com.pluskynet.domain.Docidandruleid;
-import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.LatitudedocKey;
 import com.pluskynet.otherdomain.Otherrule;
+import com.sun.star.lib.uno.environments.remote.IReceiver;
 
-import antlr.Lookahead;
 import net.sf.json.JSONObject;
 
 public class OtherRuleSave extends Thread {
 	private List<Otherrule> list = null;
-	private List<Docsectionandrule> docsectionandrulelist = null;
+	private List<Docsectionandrule01> docsectionandrulelist = null;
 	private Latitude latitude = null;
 	private String latitudename = null;
 	private Integer latitudeid = null;
@@ -27,7 +27,7 @@ public class OtherRuleSave extends Thread {
 	private BatchdataDao batchdataDao;
 	private DocidandruleidDao docidandruleidDao;
 
-	public boolean load(List<Otherrule> list, List<Docsectionandrule> docsectionandrulelist, Latitude latitude,String latitudename,int latitudeid
+	public boolean save(List<Otherrule> list, List<Docsectionandrule01> docsectionandrulelist, Latitude latitude,String latitudename,int latitudeid
 			,LatitudeKeyDao latitudeKeyDao,BatchdataDao batchdataDao,DocidandruleidDao docidandruleidDao) {
 		this.list = list;
 		this.docsectionandrulelist = docsectionandrulelist; //文书列表
@@ -37,6 +37,7 @@ public class OtherRuleSave extends Thread {
 		this.latitudeKeyDao = latitudeKeyDao;
 		this.batchdataDao = batchdataDao;
 		this.docidandruleidDao = docidandruleidDao;
+		System.out.println("赋值成功！！！！");
 		return true;
 	}
 
@@ -53,9 +54,11 @@ public class OtherRuleSave extends Thread {
 				}
 				JSONObject jsonObject = JSONObject.fromObject(list.get(j));
 				if (latitude.getRuletype() == 1) {
+					String location = "";
 					String contains = jsonObject.getString("contains");
 					if (contains.equals("")) {
 						a = true;
+						location = "0,0;";
 					} else {
 						if (contains.contains("*")) {
 							Pattern containp = startRuleFomat(contains);
@@ -63,6 +66,7 @@ public class OtherRuleSave extends Thread {
 							if (matcher.find()) {
 								String beginIndex = matcher.group();
 								a = true;
+								location =String.valueOf(oldsectiontext.indexOf(beginIndex))+","+beginIndex.length()+";";
 								break;
 							}
 						} else if (contains.contains("&")) {
@@ -70,14 +74,21 @@ public class OtherRuleSave extends Thread {
 							for (int x = 0; x < contain.length; x++) {
 								if (oldsectiontext.contains(contain[x].toString())) {
 									a = true;
+								if (location.equals("")) {
+									location = String.valueOf(oldsectiontext.indexOf(contain[x].toString()))+","+contain[x].toString().length()+";";
+								}else {
+									location = location + String.valueOf(oldsectiontext.indexOf(contain[x].toString()))+","+contain[x].toString().length()+";";
+								}
 								} else {
 									a = false;
+									location = "";
 									break;
 								}
 							}
 						} else {
 							if (oldsectiontext.contains(contains)) {
 								a = true;
+								location = String.valueOf(oldsectiontext.indexOf(contains))+","+contains.length()+";";
 							} else {
 								a = false;
 							}
@@ -116,6 +127,7 @@ public class OtherRuleSave extends Thread {
 						latitudedocKey.setLatitudename(latitudename);
 						latitudedocKey.setLatitudeid(latitudeid);
 						latitudedocKey.setSectionid(ruleid);
+						latitudedocKey.setLocation(location);
 						latitudeKeyDao.save(latitudedocKey);
 						Batchdata batchdata = new Batchdata();
 						batchdata.setDocumentid(documentid);
@@ -124,7 +136,7 @@ public class OtherRuleSave extends Thread {
 						batchdata.setNotcon(jsonObject.getString("notcon"));
 						batchdataDao.save(batchdata);
 						Docidandruleid docidandruleid = new Docidandruleid(
-								documentid,latitudeid);
+								documentid,latitudeid,1);
 						docidandruleidDao.save(docidandruleid);
 					}
 				}else if (latitude.getRuletype() == 2) {

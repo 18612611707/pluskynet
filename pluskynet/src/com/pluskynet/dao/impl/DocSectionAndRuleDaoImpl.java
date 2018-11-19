@@ -105,10 +105,10 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 
 	@Override
 	@Transactional
-	public List<Docsectionandrule> listdoc(String doctable, int rows) {
+	public List<Docsectionandrule01> listdoc(String doctable, int rows) {
 		String sql = "select * from " + doctable + " where (state = 0 or state is null) limit "+rows+"";
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		List<Docsectionandrule> doclist = session.createSQLQuery(sql).addEntity(Docsectionandrule.class).list();
+		List<Docsectionandrule01> doclist = session.createSQLQuery(sql).addEntity(Docsectionandrule01.class).list();
 		String hql = "update " + doctable + " set state = 1 where id = ?";
 		Connection connection = session.connection();
 		try {
@@ -116,7 +116,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 			for (int i = 0; i < doclist.size(); i++) {
 				stmt.setInt(1, doclist.get(i).getId());
 				stmt.addBatch();
-				if (i % 100 == 0) {
+				if (i % 100 == 0 || i==doclist.size()-1) {
 					stmt.executeBatch();
 					connection.setAutoCommit(false);
 					connection.commit();

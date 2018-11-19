@@ -13,6 +13,8 @@ public class LatitudedocKey implements java.io.Serializable {
 	private String latitudename;
 	private Integer latitudeid;
 	private Integer sectionid;
+	private String updatatime;
+	private String location;
 
 	// Constructors
 
@@ -26,11 +28,14 @@ public class LatitudedocKey implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LatitudedocKey(String documentid, String latitudename, Integer latitudeid, Integer sectionid) {
+	public LatitudedocKey(String documentid, String latitudename, Integer latitudeid, Integer sectionid,
+			String updatatime, String location) {
 		this.documentid = documentid;
 		this.latitudename = latitudename;
 		this.latitudeid = latitudeid;
 		this.sectionid = sectionid;
+		this.updatatime = updatatime;
+		this.location = location;
 	}
 
 	// Property accessors
@@ -73,6 +78,22 @@ public class LatitudedocKey implements java.io.Serializable {
 
 	public void setSectionid(Integer sectionid) {
 		this.sectionid = sectionid;
+	}
+
+	public String getUpdatatime() {
+		return this.updatatime;
+	}
+
+	public void setUpdatatime(String updatatime) {
+		this.updatatime = updatatime;
+	}
+
+	public String getLocation() {
+		return this.location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 }

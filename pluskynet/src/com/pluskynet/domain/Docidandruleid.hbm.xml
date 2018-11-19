@@ -16,5 +16,10 @@
         <property name="ruleid" type="java.lang.Integer">
             <column name="ruleid" not-null="true" />
         </property>
+        <property name="type" type="java.lang.Integer">
+            <column name="type">
+                <comment>1：表示纬度 其他表示段落纬度</comment>
+            </column>
+        </property>
     </class>
 </hibernate-mapping>

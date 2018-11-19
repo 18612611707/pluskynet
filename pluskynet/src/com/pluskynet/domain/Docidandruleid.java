@@ -11,6 +11,7 @@ public class Docidandruleid implements java.io.Serializable {
 	private Integer id;
 	private String docid;
 	private Integer ruleid;
+	private Integer type;
 
 	// Constructors
 
@@ -18,10 +19,17 @@ public class Docidandruleid implements java.io.Serializable {
 	public Docidandruleid() {
 	}
 
-	/** full constructor */
+	/** minimal constructor */
 	public Docidandruleid(String docid, Integer ruleid) {
 		this.docid = docid;
 		this.ruleid = ruleid;
+	}
+
+	/** full constructor */
+	public Docidandruleid(String docid, Integer ruleid, Integer type) {
+		this.docid = docid;
+		this.ruleid = ruleid;
+		this.type = type;
 	}
 
 	// Property accessors
@@ -48,6 +56,14 @@ public class Docidandruleid implements java.io.Serializable {
 
 	public void setRuleid(Integer ruleid) {
 		this.ruleid = ruleid;
+	}
+
+	public Integer getType() {
+		return this.type;
+	}
+
+	public void setType(Integer type) {
+		this.type = type;
 	}
 
 }

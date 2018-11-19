@@ -22,5 +22,11 @@
         <property name="sectionid" type="java.lang.Integer">
             <column name="sectionid" />
         </property>
+        <property name="updatatime" type="java.lang.String">
+            <column name="updatatime" length="30" />
+        </property>
+        <property name="location" type="java.lang.String">
+            <column name="location" length="20" />
+        </property>
     </class>
 </hibernate-mapping>

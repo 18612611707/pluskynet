@@ -19,6 +19,7 @@ import com.pluskynet.domain.Batchdata;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.Docidandruleid;
 import com.pluskynet.domain.Docsectionandrule;
+import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.domain.LatitudedocKey;
@@ -30,7 +31,7 @@ import net.sf.json.JSONObject;
 
 public class OtherRule extends Thread {
 	static ClassPathXmlApplicationContext resource = null;
-	static BatchdataDao batchdataDao;
+	static BatchdataDao batchdataDao = null;
 	// 创建一个静态钥匙
 	static Object ob = "aa";// 值是任意的
 	static ThreadPoolExecutor executor = null;
@@ -47,7 +48,7 @@ public class OtherRule extends Thread {
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		int batchstats = 1;// 1:已审批规则 2:剩余跑批规则
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 1);// 获取已审批过的规则
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 1; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
 			otherrule.start();
 			try {
@@ -70,20 +71,36 @@ public class OtherRule extends Thread {
 		LatitudetimeDao latitudetimeDao = (LatitudetimeDao) resource.getBean("latitudeTimeDao");
 		DocidandruleidDao docidandruleidDao = (DocidandruleidDao) resource.getBean("docidandruleidDao");
 		List<Cause> Causelists = causeDao.getArticleList(1);// 获取表名,0:民事 1:刑事
-		List<Docsectionandrule> docsectionandrulelist = null;
+		List<Docsectionandrule01> docsectionandrulelist = null;
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
 				synchronized (ob) {
 					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows);
 				}
+				if (docsectionandrulelist.size()==0) {
+					System.out.println(Causelists.get(i).getDoctable() + "表无数据！！！");
+					continue;
+				}
 				for (int j = 0; j < Lalist.size(); j++) {
 					latitudeAction.setLatitudeId(Lalist.get(i).getLatitudeid());
 					Latitude latitude = latitudeAction.getLatitudes();
 					List<Otherrule> list = ruleFormat(latitude.getRule(), latitude.getRuletype());// 规则整理
 					OtherRuleSave otherRuleSave[] = new OtherRuleSave[Lalist.size()];
-					otherRuleSave[j].load(list, docsectionandrulelist, latitude, Lalist.get(j).getLatitudename(),
+					System.out.println("--------------------------------------------------------------------------------------");
+					System.out.println(list);
+					System.out.println(docsectionandrulelist);
+					System.out.println(latitude);
+					System.out.println(Lalist.get(j).getLatitudename());
+					System.out.println(Lalist.get(j).getLatitudeid());
+					System.out.println(latitudeKeyDao);
+					System.out.println(batchdataDao);
+					System.out.println(docidandruleidDao);
+					System.out.println("--------------------------------------------------------------------------------------");
+					otherRuleSave[j] = new OtherRuleSave();
+					otherRuleSave[j].save(list, docsectionandrulelist, latitude, Lalist.get(j).getLatitudename(),
 							Lalist.get(j).getLatitudeid(), latitudeKeyDao, batchdataDao, docidandruleidDao);
+					otherRuleSave[j].setName("线程名称:"+getName()+","+"规则线程：" + i + j);
 					otherRuleSave[j].start();
 					if (i == list.size() - 1) {
 						Lalist.get(j).setBatchstats("3");
