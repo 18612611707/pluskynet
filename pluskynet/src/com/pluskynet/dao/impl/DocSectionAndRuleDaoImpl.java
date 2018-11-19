@@ -27,24 +27,27 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		if (docsectionandrule.getSectiontext().indexOf(":") > -1) {
 			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\:", "\\\\:"));
 		}
-//		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-//		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
-//				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "'";
-//		List<Docsectionandrule> list = null;
-//		list = s.createSQLQuery(hql).addEntity(Docsectionandrule.class).list();
+		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
+				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "' and ruleid = "+docsectionandrule.getRuleid()+"";
+		List<Docsectionandrule01> list = null;
+		list = s.createSQLQuery(hql).addEntity(Docsectionandrule01.class).list();
 		Session s1 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		Connection conn = s1.connection();
 		String sql = null;
-//		if (list.size() == 0) {
+		if (list.size() == 0) {
 			sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
 					+ docsectionandrule.getRuleid() + ",'" + docsectionandrule.getDocumentsid() + "','"
 					+ docsectionandrule.getSectionname() + "',?,'"
 					+ docsectionandrule.getTitle() + "')";
-//		}
-//			else {
-//			sql = "update " + table + " set sectiontext = ? where id= "
-//					+ list.get(0).getId();
-//		}
+		}
+			else {
+			sql = "update " + table + " set ruleid= "
+					+ docsectionandrule.getRuleid() + ",documentsid='" + docsectionandrule.getDocumentsid() + "',sectionname = '"
+					+ docsectionandrule.getSectionname() + "',title='"
+					+ docsectionandrule.getTitle() + "' ,sectiontext = ? where id= "
+					+ list.get(0).getId();
+		}
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(sql);

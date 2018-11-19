@@ -65,7 +65,7 @@ public class Bigdatatest extends Thread {
 		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 50; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {
@@ -84,7 +84,7 @@ public class Bigdatatest extends Thread {
 		docrule = (DocsectionandruleAction) resource.getBean("docsectionandruleAction");
 		batchdataDao = (BatchdataDao) resource.getBean("batchdataDao");
 		DocidandruleidDao docidandruleidDao = (DocidandruleidDao) resource.getBean("docidandruleidDao");
-		int allorre = 0;// 1:全部跑批 3:剩余跑批 0：新增跑批
+		int allorre = 5;//0：新增跑批，（ 3：二次跑批 ,5:再次跑批）
 		if (Lalist.size() > 0) {
 			CauseDao causeDao = (CauseDao) resource.getBean("causeDao");
 			// List<Article01> list = causeDao.getArticleList();
@@ -97,11 +97,11 @@ public class Bigdatatest extends Thread {
 			System.out.println(list.get(0).getCausename());
 			List<Article01> articleList = null;
 			for (int i = 0; i < list.size(); i++) {
-				if (allorre == 1) {
-					articleDao.articleState(list.get(i).getCausetable(), 0);
-				} else if (allorre == 3) {
-					articleDao.articleState(list.get(i).getCausetable(), 3);
-				}
+//				if (allorre == 1) {
+//					articleDao.articleState(list.get(i).getCausetable(), 0);
+//				} else if (allorre == 3) {
+//					articleDao.articleState(list.get(i).getCausetable(), 3);
+//				}
 				doctable = list.get(i).getDoctable();
 				boolean runs = true;
 				int rows = 2000;
@@ -118,21 +118,21 @@ public class Bigdatatest extends Thread {
 					Bigdatasave bigdatasave[] = new Bigdatasave[Lalist.size()];
 					for (int j = 0; j < Lalist.size(); j++) {// 循环已审批规则
 						List<Otherdocrule> lists = new ArrayList<Otherdocrule>();
-						if (Lalist.get(j).getReserved()==null) {
+//						if (Lalist.get(j).getReserved()==null) {
 							lists = ruleformat(Lalist.get(j).getRule()); // 规则整理
-						}else{
-							JSONArray jsonArray = JSONArray.fromObject(Lalist.get(j).getRule());
-							for (int k = 0; k < jsonArray.size(); k++) {
-								JSONObject ruleJson = JSONObject.fromObject(jsonArray.get(k));
-								Otherdocrule otherdocrule = new Otherdocrule();
-								otherdocrule.setJudge(ruleJson.getString("judge"));
-								otherdocrule.setSpcx(ruleJson.getString("trialRound"));
-								otherdocrule.setDoctype(ruleJson.getString("doctype"));
-								otherdocrule.setStart(ruleJson.getString("start"));
-								otherdocrule.setEnd(ruleJson.getString("end"));
-								lists.add(otherdocrule);
-							}
-						}
+//						}else{
+//							JSONArray jsonArray = JSONArray.fromObject(Lalist.get(j).getRule());
+//							for (int k = 0; k < jsonArray.size(); k++) {
+//								JSONObject ruleJson = JSONObject.fromObject(jsonArray.get(k));
+//								Otherdocrule otherdocrule = new Otherdocrule();
+//								otherdocrule.setJudge(ruleJson.getString("judge"));
+//								otherdocrule.setSpcx(ruleJson.getString("trialRound"));
+//								otherdocrule.setDoctype(ruleJson.getString("doctype"));
+//								otherdocrule.setStart(ruleJson.getString("start"));
+//								otherdocrule.setEnd(ruleJson.getString("end"));
+//								lists.add(otherdocrule);
+//							}
+//						}
 						int ruleid = Lalist.get(j).getLatitudeid();
 						String latitudename = Lalist.get(j).getLatitudename();
 						String startword = null;
