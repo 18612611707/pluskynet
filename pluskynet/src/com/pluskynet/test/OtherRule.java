@@ -48,6 +48,10 @@ public class OtherRule extends Thread {
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		int batchstats = 1;// 1:已审批规则 2:剩余跑批规则
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 1);// 获取已审批过的规则
+		if(Lalist.size()==0){
+			System.out.println("无规则");
+			return;
+		}
 		for (int i = 0; i < 1; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
 			otherrule.start();
@@ -83,11 +87,11 @@ public class OtherRule extends Thread {
 					System.out.println(Causelists.get(i).getDoctable() + "表无数据！！！");
 					continue;
 				}
+				OtherRuleSave otherRuleSave[] = new OtherRuleSave[Lalist.size()];
 				for (int j = 0; j < Lalist.size(); j++) {
 					latitudeAction.setLatitudeId(Lalist.get(i).getLatitudeid());
 					Latitude latitude = latitudeAction.getLatitudes();
 					List<Otherrule> list = ruleFormat(latitude.getRule(), latitude.getRuletype());// 规则整理
-					OtherRuleSave otherRuleSave[] = new OtherRuleSave[Lalist.size()];
 					System.out.println("--------------------------------------------------------------------------------------");
 					System.out.println(list);
 					System.out.println(docsectionandrulelist);
@@ -107,16 +111,15 @@ public class OtherRule extends Thread {
 						Lalist.get(j).setBatchstats("3");
 						latitudeauditAction.updatebatchestats(Lalist.get(j));
 					}
-					for (int j1 = 0; j1 < otherRuleSave.length; j1++) {
-						try {
-							otherRuleSave[j1].join();
-							System.out.println("线程名称:" + getName() + "," + otherRuleSave[j1] + "结束");
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+				}
+				for (int j1 = 0; j1 < otherRuleSave.length; j1++) {
+					try {
+						otherRuleSave[j1].join();
+						System.out.println("线程名称:" + getName() + "," + otherRuleSave[j1] + "结束");
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-
 				}
 			} while (docsectionandrulelist.size() > 0);
 
