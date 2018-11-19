@@ -75,8 +75,9 @@ public class OtherRule extends Thread {
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
+				int state = 0;//0:新增跑批状态  3、5循环跑批
 				synchronized (ob) {
-					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows);
+					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);
 				}
 				if (docsectionandrulelist.size()==0) {
 					System.out.println(Causelists.get(i).getDoctable() + "表无数据！！！");
