@@ -52,7 +52,7 @@ public class OtherRule extends Thread {
 			System.out.println("无规则");
 			return;
 		}
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < 50; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
 			otherrule.start();
 			try {
@@ -92,7 +92,7 @@ public class OtherRule extends Thread {
 					latitudeAction.setLatitudeId(Lalist.get(i).getLatitudeid());
 					Latitude latitude = latitudeAction.getLatitudes();
 					List<Otherrule> list = ruleFormat(latitude.getRule(), latitude.getRuletype());// 规则整理
-					System.out.println("--------------------------------------------------------------------------------------");
+				/*	System.out.println("--------------------------------------------------------------------------------------");
 					System.out.println(list);
 					System.out.println(docsectionandrulelist);
 					System.out.println(latitude);
@@ -101,7 +101,7 @@ public class OtherRule extends Thread {
 					System.out.println(latitudeKeyDao);
 					System.out.println(batchdataDao);
 					System.out.println(docidandruleidDao);
-					System.out.println("--------------------------------------------------------------------------------------");
+					System.out.println("--------------------------------------------------------------------------------------");*/
 					otherRuleSave[j] = new OtherRuleSave();
 					otherRuleSave[j].save(list, docsectionandrulelist, latitude, Lalist.get(j).getLatitudename(),
 							Lalist.get(j).getLatitudeid(), latitudeKeyDao, batchdataDao, docidandruleidDao);

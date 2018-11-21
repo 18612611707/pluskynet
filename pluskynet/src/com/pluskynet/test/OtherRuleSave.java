@@ -37,7 +37,7 @@ public class OtherRuleSave extends Thread {
 		this.latitudeKeyDao = latitudeKeyDao;
 		this.batchdataDao = batchdataDao;
 		this.docidandruleidDao = docidandruleidDao;
-		System.out.println("赋值成功！！！！");
+//		System.out.println("赋值成功！！！！");
 		return true;
 	}
 
@@ -103,23 +103,23 @@ public class OtherRuleSave extends Thread {
 								if (!matcher.find()) {
 									a = true;
 									if (k == notcon.length - 1) {
-										break look;
+										break;
 									}
 								} else {
 									a = false;
-									break look;
+									break;
 								}
 							} else if (!oldsectiontext.contains(notcon[k])) {
 								a = true;
 								if (k == notcon.length - 1) {
-									break look;
+									break;
 								}
 							} else if (notcon[k].equals("")) {
 								a = true;
-								break look;
+								break;
 							} else {
 								a = false;
-								break look;
+								break;
 							}
 						}
 						LatitudedocKey latitudedocKey = new LatitudedocKey();
@@ -138,6 +138,7 @@ public class OtherRuleSave extends Thread {
 						Docidandruleid docidandruleid = new Docidandruleid(
 								documentid,latitudeid,1);
 						docidandruleidDao.save(docidandruleid);
+						break look;
 					}
 				}else if (latitude.getRuletype() == 2) {
 					
