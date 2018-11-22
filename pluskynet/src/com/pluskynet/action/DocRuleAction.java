@@ -9,6 +9,7 @@ import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Preview;
 import com.pluskynet.domain.StatsDoc;
 import com.pluskynet.domain.User;
+import com.pluskynet.otherdomain.TreeDocrule;
 import com.pluskynet.service.DocRuleService;
 import com.pluskynet.service.PreviewService;
 import com.pluskynet.util.BaseAction;
@@ -236,7 +237,7 @@ public class DocRuleAction extends BaseAction {
 //			outJsonByMsg("未登录");
 //			return;
 //		}
-		List<Map> list = docRuleService.getDcoSectionList();
+		List<TreeDocrule> list = docRuleService.getDcoSectionList();
 		outJsonByMsg(list, "成功");
 	}
 

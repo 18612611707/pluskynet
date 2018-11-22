@@ -74,7 +74,7 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 
 	@Override
 	public List<Docrule> getDcoSectionList() {
-		String hql = "from Docrule where fid = 0";
+		String hql = "from Docrule order by fid";
 		List<Docrule> docrules = this.getHibernateTemplate().find(hql);
 		// if (docrules.size()>0) {
 		// for (int i = 0; i < docrules.size(); i++) {

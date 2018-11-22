@@ -115,7 +115,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		List<Docsectionandrule01> doclist = session.createSQLQuery(sql).addEntity(Docsectionandrule01.class).list();
 		String hql = null;
-		if (state != 5) {
+		if (state != 3) {
 			hql = "update " + doctable + " set state = 3 where id = ?";
 		}else{
 			hql = "update " + doctable + " set state = 5 where id = ?";

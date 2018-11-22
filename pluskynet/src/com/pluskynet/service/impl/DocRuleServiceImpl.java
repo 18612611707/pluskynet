@@ -13,23 +13,29 @@ import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.domain.User;
+import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.otherdomain.TreeDocrule;
 import com.pluskynet.otherdomain.Treelatitude;
 import com.pluskynet.service.DocRuleService;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 @SuppressWarnings("all")
 public class DocRuleServiceImpl implements DocRuleService {
 	private LatitudeauditDao latitudeauditDao;
+
 	public void setLatitudeauditDao(LatitudeauditDao latitudeauditDao) {
 		this.latitudeauditDao = latitudeauditDao;
 	}
 
 	private DocRuleDao docRuleDao;
-	
+
 	public void setDocRuleDao(DocRuleDao docRuleDao) {
 		this.docRuleDao = docRuleDao;
 	}
+
 	public DocSectionAndRuleDao docSectionAndRuleDao;
-	
 
 	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
 		this.docSectionAndRuleDao = docSectionAndRuleDao;
@@ -60,43 +66,72 @@ public class DocRuleServiceImpl implements DocRuleService {
 	}
 
 	@Override
-	public List<Map> getDcoSectionList() {
+	public List<TreeDocrule> getDcoSectionList() {
 		List<Docrule> friList = docRuleDao.getDcoSectionList();
-		List<Map> list = new ArrayList<Map>();
+		List<TreeDocrule> lists = new ArrayList<TreeDocrule>();
 		for (int i = 0; i < friList.size(); i++) {
-			Map<String, Object> treeMap = new HashMap<String, Object>();
-			treeMap.put("ruleid", friList.get(i).getRuleid());
-			treeMap.put("fid", friList.get(i).getFid());
-			treeMap.put("sectionname", friList.get(i).getSectionname());
-			treeMap.put("children", treeList(friList.get(i).getRuleid()));
-			list.add(treeMap);
+			TreeDocrule treeDocrule = new TreeDocrule();
+			treeDocrule.setFid(friList.get(i).getFid());
+			treeDocrule.setRuleid(friList.get(i).getRuleid());
+			treeDocrule.setSectionname(friList.get(i).getSectionname());
+			treeDocrule.setReserved(friList.get(i).getReserved());
+			treeDocrule.setRule(friList.get(i).getRule());
+			lists.add(treeDocrule);
 		}
+		 List<TreeDocrule> list = new ArrayList<TreeDocrule>(); 
+	        for (TreeDocrule tree : lists) { 
+	            if(tree.getFid() == 0){ 
+	            	list.add(tree); 
+	            } 
+	            for (TreeDocrule t : lists) { 
+	                if(t.getFid() == tree.getRuleid()){ 
+	                    if(tree.getChildren() == null){ 
+	                        List<TreeDocrule> myChildrens = new ArrayList<TreeDocrule>(); 
+	                        myChildrens.add(t); 
+	                        tree.setChildren(myChildrens); 
+	                    }else{ 
+	                        tree.getChildren().add(t); 
+	                    } 
+	                } 
+	            } 
+	        } 
 		return list;
 	}
-	
+
+	public Map objByMap(Object object) {
+		Map map = new HashMap();
+		JSONObject jsonObject = JSONObject.fromObject(object);
+		map.put("ruleid", jsonObject.get("ruleid"));
+		map.put("fid", jsonObject.get("fid"));
+		map.put("sectionname", jsonObject.get("sectionname"));
+		map.put("rule", jsonObject.get("rule"));
+		map.put("reserved", jsonObject.get("reserved"));
+		return map;
+	}
+
 	public List<TreeDocrule> treeList(int latitudeid) {
 		List<Docrule> nextSubSet = new ArrayList<Docrule>();
 		TreeDocrule voteTree = new TreeDocrule();
 		voteTree.setRuleid(latitudeid);
 		nextSubSet = docRuleDao.getNextSubSet(voteTree);
-		 List<TreeDocrule> list = new ArrayList<TreeDocrule>();
-	        for (int i = 0; i < nextSubSet.size(); i++) {
-	        	//遍历这个二级目录的集合
-	        	TreeDocrule treelatitude = new TreeDocrule();
-				treelatitude.setRuleid(nextSubSet.get(i).getRuleid());
-				treelatitude.setFid(nextSubSet.get(i).getFid());
-				treelatitude.setSectionname(nextSubSet.get(i).getSectionname());
-				List<TreeDocrule> ts = docRuleDao.getDeeptLevel(nextSubSet.get(i));  
-	            //将下面的子集都依次递归进来 
-	            treelatitude.setChildren(ts);
-			    list.add(treelatitude);
-			}
+		List<TreeDocrule> list = new ArrayList<TreeDocrule>();
+		for (int i = 0; i < nextSubSet.size(); i++) {
+			// 遍历这个二级目录的集合
+			TreeDocrule treelatitude = new TreeDocrule();
+			treelatitude.setRuleid(nextSubSet.get(i).getRuleid());
+			treelatitude.setFid(nextSubSet.get(i).getFid());
+			treelatitude.setSectionname(nextSubSet.get(i).getSectionname());
+			List<TreeDocrule> ts = docRuleDao.getDeeptLevel(nextSubSet.get(i));
+			// 将下面的子集都依次递归进来
+			treelatitude.setChildren(ts);
+			list.add(treelatitude);
+		}
 		return list;
-//		List<TreeDocrule> nextSubSet = new ArrayList<TreeDocrule>();
-//		TreeDocrule voteTree = new TreeDocrule();
-//		voteTree.setRuleid(latitudeid);
-//		nextSubSet = docRuleDao.getNextSubSet(voteTree);
-//		return nextSubSet;
+		// List<TreeDocrule> nextSubSet = new ArrayList<TreeDocrule>();
+		// TreeDocrule voteTree = new TreeDocrule();
+		// voteTree.setRuleid(latitudeid);
+		// nextSubSet = docRuleDao.getNextSubSet(voteTree);
+		// return nextSubSet;
 	}
 
 	@Override
@@ -106,14 +141,14 @@ public class DocRuleServiceImpl implements DocRuleService {
 	}
 
 	@Override
-	public void saveyldelete(String sectionname,User user) {
-		docSectionAndRuleDao.saveyldelete(sectionname,user);
-		
+	public void saveyldelete(String sectionname, User user) {
+		docSectionAndRuleDao.saveyldelete(sectionname, user);
+
 	}
 
 	@Override
 	public void saveyl(Docsectionandrule docsectionandrule) {
-		docSectionAndRuleDao.saveyl(docsectionandrule);		
+		docSectionAndRuleDao.saveyl(docsectionandrule);
 	}
 
 	@Override
@@ -133,7 +168,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 
 	@Override
 	public List<Docrule> getRuleShow(Integer ruleid, String causeo, String causet, String spcx, String doctype) {
-		List<Docrule> list = docRuleDao.getRuleShow(ruleid,causeo,causet,spcx,doctype);
+		List<Docrule> list = docRuleDao.getRuleShow(ruleid, causeo, causet, spcx, doctype);
 		return list;
 	}
 

@@ -46,18 +46,18 @@ public class OtherRule extends Thread {
 		System.gc();
 		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
-		int batchstats = 1;// 1:已审批规则 2:剩余跑批规则
+		int batchstats = 1;// 1:已审批规则 
 		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 1);// 获取已审批过的规则
 		if(Lalist.size()==0){
 			System.out.println("无规则");
 			return;
 		}
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 1; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
 			otherrule.start();
 			try {
 				// 休息一分钟
-				sleep(6000);
+				sleep(30000);
 				// System.out.println("休息一分钟");
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -79,7 +79,7 @@ public class OtherRule extends Thread {
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
-				int state = 0;//0:新增跑批状态  3、5循环跑批
+				int state = 3;//0和3状态改变为5:新增跑批状态  3、5循环跑批
 				synchronized (ob) {
 					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);
 				}
@@ -89,7 +89,7 @@ public class OtherRule extends Thread {
 				}
 				OtherRuleSave otherRuleSave[] = new OtherRuleSave[Lalist.size()];
 				for (int j = 0; j < Lalist.size(); j++) {
-					latitudeAction.setLatitudeId(Lalist.get(i).getLatitudeid());
+					latitudeAction.setLatitudeId(Lalist.get(j).getLatitudeid());
 					Latitude latitude = latitudeAction.getLatitudes();
 					List<Otherrule> list = ruleFormat(latitude.getRule(), latitude.getRuletype());// 规则整理
 				/*	System.out.println("--------------------------------------------------------------------------------------");

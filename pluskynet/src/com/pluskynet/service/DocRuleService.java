@@ -8,6 +8,7 @@ import java.util.Map;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.User;
+import com.pluskynet.otherdomain.TreeDocrule;
 @SuppressWarnings("all")
 public interface DocRuleService {
 
@@ -15,7 +16,7 @@ public interface DocRuleService {
 
 	String update(Docrule docrule);
 
-	List<Map> getDcoSectionList();
+	List<TreeDocrule> getDcoSectionList();
 
 	Map<?, ?> getDcoSection(Docrule docrule);
 

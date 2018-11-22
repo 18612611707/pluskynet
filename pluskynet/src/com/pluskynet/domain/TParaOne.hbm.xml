@@ -53,5 +53,20 @@
         <property name="poRelation" type="java.lang.String">
             <column name="po_relation" length="20" />
         </property>
+        <property name="poLink" type="java.lang.String">
+            <column name="po_link" length="20" />
+        </property>
+        <property name="poProp" type="java.lang.String">
+            <column name="po_prop" length="50" />
+        </property>
+        <property name="poPropRelate" type="java.lang.String">
+            <column name="po_propRelate" length="20" />
+        </property>
+        <property name="poPropValue" type="java.lang.String">
+            <column name="po_propValue" length="65535" />
+        </property>
+        <property name="poRangeType" type="java.lang.String">
+            <column name="po_rangeType" length="20" />
+        </property>
     </class>
 </hibernate-mapping>

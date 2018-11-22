@@ -48,7 +48,9 @@ public class OtherRuleSave extends Thread {
 			String sectionname = docsectionandrulelist.get(i).getSectionname(); //文书段落名称
 			int ruleid = docsectionandrulelist.get(i).getRuleid();//文书段落id
 			String oldsectiontext = docsectionandrulelist.get(i).getSectiontext();//段落内容
+			String rulesec;
 			look: for (int j = 0; j < list.size(); j++) {
+				rulesec = list.get(j).getSectionname();
 				if (ruleid!=Integer.valueOf(list.get(j).getSectionname())) {
 					continue;
 				}
@@ -59,6 +61,7 @@ public class OtherRuleSave extends Thread {
 					if (contains.equals("")) {
 						a = true;
 						location = "0,0;";
+						break;
 					} else {
 						if (contains.contains("*")) {
 							Pattern containp = startRuleFomat(contains);
@@ -126,7 +129,7 @@ public class OtherRuleSave extends Thread {
 						latitudedocKey.setDocumentid(documentid);
 						latitudedocKey.setLatitudename(latitudename);
 						latitudedocKey.setLatitudeid(latitudeid);
-						latitudedocKey.setSectionid(ruleid);
+						latitudedocKey.setSectionid(Integer.valueOf(rulesec));
 						latitudedocKey.setLocation(location);
 						latitudeKeyDao.save(latitudedocKey);
 						Batchdata batchdata = new Batchdata();

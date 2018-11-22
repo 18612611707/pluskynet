@@ -18,6 +18,11 @@ public class TParaOne implements java.io.Serializable {
 	private Integer poRootId;
 	private Integer poTier;
 	private String poRelation;
+	private String poLink;
+	private String poProp;
+	private String poPropRelate;
+	private String poPropValue;
+	private String poRangeType;
 
 	// Constructors
 
@@ -27,7 +32,8 @@ public class TParaOne implements java.io.Serializable {
 
 	/** full constructor */
 	public TParaOne(String poName, Integer poPid, Integer poOrder, String poType, Integer poIsPara, Integer pgId,
-			Integer poRootId, Integer poTier, String poRelation) {
+			Integer poRootId, Integer poTier, String poRelation, String poLink, String poProp, String poPropRelate,
+			String poPropValue, String poRangeType) {
 		this.poName = poName;
 		this.poPid = poPid;
 		this.poOrder = poOrder;
@@ -37,6 +43,11 @@ public class TParaOne implements java.io.Serializable {
 		this.poRootId = poRootId;
 		this.poTier = poTier;
 		this.poRelation = poRelation;
+		this.poLink = poLink;
+		this.poProp = poProp;
+		this.poPropRelate = poPropRelate;
+		this.poPropValue = poPropValue;
+		this.poRangeType = poRangeType;
 	}
 
 	// Property accessors
@@ -119,6 +130,46 @@ public class TParaOne implements java.io.Serializable {
 
 	public void setPoRelation(String poRelation) {
 		this.poRelation = poRelation;
+	}
+
+	public String getPoLink() {
+		return this.poLink;
+	}
+
+	public void setPoLink(String poLink) {
+		this.poLink = poLink;
+	}
+
+	public String getPoProp() {
+		return this.poProp;
+	}
+
+	public void setPoProp(String poProp) {
+		this.poProp = poProp;
+	}
+
+	public String getPoPropRelate() {
+		return this.poPropRelate;
+	}
+
+	public void setPoPropRelate(String poPropRelate) {
+		this.poPropRelate = poPropRelate;
+	}
+
+	public String getPoPropValue() {
+		return this.poPropValue;
+	}
+
+	public void setPoPropValue(String poPropValue) {
+		this.poPropValue = poPropValue;
+	}
+
+	public String getPoRangeType() {
+		return this.poRangeType;
+	}
+
+	public void setPoRangeType(String poRangeType) {
+		this.poRangeType = poRangeType;
 	}
 
 }
