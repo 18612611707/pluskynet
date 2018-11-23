@@ -17,6 +17,7 @@ import com.pluskynet.domain.LatitudedocKey;
 import com.pluskynet.otherdomain.Otherrule;
 import com.sun.star.lib.uno.environments.remote.IReceiver;
 
+import javassist.expr.NewArray;
 import net.sf.json.JSONObject;
 
 public class OtherRuleSave extends Thread {
@@ -63,7 +64,6 @@ public class OtherRuleSave extends Thread {
 					if (contains.equals("")) {
 						a = true;
 						location = "0,0;";
-						break;
 					} else {
 						if (contains.contains("*")) {
 							Pattern containp = startRuleFomat(contains);
@@ -72,7 +72,6 @@ public class OtherRuleSave extends Thread {
 								String beginIndex = matcher.group();
 								a = true;
 								location =String.valueOf(oldsectiontext.indexOf(beginIndex))+","+beginIndex.length()+";";
-								break;
 							}
 						} else if (contains.contains("&")) {
 							String[] contain = contains.split("\\&");// 包含
@@ -87,7 +86,7 @@ public class OtherRuleSave extends Thread {
 								} else {
 									a = false;
 									location = "";
-									break;
+									continue;
 								}
 							}
 						} else {
@@ -96,6 +95,7 @@ public class OtherRuleSave extends Thread {
 								location = String.valueOf(oldsectiontext.indexOf(contains))+","+contains.length()+";";
 							} else {
 								a = false;
+								continue;
 							}
 						}
 					}
@@ -107,46 +107,40 @@ public class OtherRuleSave extends Thread {
 								Matcher matcher = containp.matcher(oldsectiontext);
 								if (!matcher.find()) {
 									a = true;
-									if (k == notcon.length - 1) {
-										break;
-									}
 								} else {
 									a = false;
-									break;
+									continue;
 								}
 							} else if (!oldsectiontext.contains(notcon[k])) {
 								a = true;
-								if (k == notcon.length - 1) {
-									break;
-								}
-							} else if (notcon[k].equals("")) {
+							} else if (!notcon[k].equals("")) {
 								a = true;
-								break;
 							} else {
 								a = false;
-								break;
+								continue;
 							}
 						}
-						SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-						
-						LatitudedocKey latitudedocKey = new LatitudedocKey();
-						latitudedocKey.setDocumentid(documentid);
-						latitudedocKey.setLatitudename(latitudename);
-						latitudedocKey.setLatitudeid(latitudeid);
-						latitudedocKey.setSectionid(Integer.valueOf(rulesec));
-						latitudedocKey.setLocation(location);
-						latitudedocKey.setUpdatatime(df.format(new Date()));
-						latitudeKeyDao.save(latitudedocKey);
-						Batchdata batchdata = new Batchdata();
-						batchdata.setDocumentid(documentid);
-						batchdata.setRuleid(latitudeid);
-						batchdata.setContain(contains);
-						batchdata.setNotcon(jsonObject.getString("notcon"));
-						batchdataDao.save(batchdata);
-						Docidandruleid docidandruleid = new Docidandruleid(
-								documentid,latitudeid,1);
-						docidandruleidDao.save(docidandruleid);
-						break look;
+						if (a) {
+							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+							LatitudedocKey latitudedocKey = new LatitudedocKey();
+							latitudedocKey.setDocumentid(documentid);
+							latitudedocKey.setLatitudename(latitudename);
+							latitudedocKey.setLatitudeid(latitudeid);
+							latitudedocKey.setSectionid(Integer.valueOf(rulesec));
+							latitudedocKey.setLocation(location);
+							latitudedocKey.setUpdatatime(df.format(new Date()));
+							latitudeKeyDao.save(latitudedocKey);
+							Batchdata batchdata = new Batchdata();
+							batchdata.setDocumentid(documentid);
+							batchdata.setRuleid(latitudeid);
+							batchdata.setContain(contains);
+							batchdata.setNotcon(jsonObject.getString("notcon"));
+							batchdataDao.save(batchdata);
+							Docidandruleid docidandruleid = new Docidandruleid(
+									documentid,latitudeid,1);
+							docidandruleidDao.save(docidandruleid);
+							break look;
+						}
 					}
 				}else if (latitude.getRuletype() == 2) {
 					
