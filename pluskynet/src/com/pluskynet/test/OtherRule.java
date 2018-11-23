@@ -81,7 +81,9 @@ public class OtherRule extends Thread {
 				int rows = 2000;
 				int state = 3;//0和3状态改变为5:新增跑批状态  3、5循环跑批
 				synchronized (ob) {
+					System.out.println("线程名称：" + getName()+"开始取数据");
 					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);
+					System.out.println("线程名称：" + getName()+"结束取数据");
 				}
 				if (docsectionandrulelist.size()==0) {
 					System.out.println(Causelists.get(i).getDoctable() + "表无数据！！！");
@@ -92,16 +94,6 @@ public class OtherRule extends Thread {
 					latitudeAction.setLatitudeId(Lalist.get(j).getLatitudeid());
 					Latitude latitude = latitudeAction.getLatitudes();
 					List<Otherrule> list = ruleFormat(latitude.getRule(), latitude.getRuletype());// 规则整理
-				/*	System.out.println("--------------------------------------------------------------------------------------");
-					System.out.println(list);
-					System.out.println(docsectionandrulelist);
-					System.out.println(latitude);
-					System.out.println(Lalist.get(j).getLatitudename());
-					System.out.println(Lalist.get(j).getLatitudeid());
-					System.out.println(latitudeKeyDao);
-					System.out.println(batchdataDao);
-					System.out.println(docidandruleidDao);
-					System.out.println("--------------------------------------------------------------------------------------");*/
 					otherRuleSave[j] = new OtherRuleSave();
 					otherRuleSave[j].save(list, docsectionandrulelist, latitude, Lalist.get(j).getLatitudename(),
 							Lalist.get(j).getLatitudeid(), latitudeKeyDao, batchdataDao, docidandruleidDao);

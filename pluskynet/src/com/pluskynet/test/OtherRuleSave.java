@@ -1,5 +1,7 @@
 package com.pluskynet.test;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -125,12 +127,15 @@ public class OtherRuleSave extends Thread {
 								break;
 							}
 						}
+						SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						
 						LatitudedocKey latitudedocKey = new LatitudedocKey();
 						latitudedocKey.setDocumentid(documentid);
 						latitudedocKey.setLatitudename(latitudename);
 						latitudedocKey.setLatitudeid(latitudeid);
 						latitudedocKey.setSectionid(Integer.valueOf(rulesec));
 						latitudedocKey.setLocation(location);
+						latitudedocKey.setUpdatatime(df.format(new Date()));
 						latitudeKeyDao.save(latitudedocKey);
 						Batchdata batchdata = new Batchdata();
 						batchdata.setDocumentid(documentid);

@@ -16,8 +16,9 @@ public class LatitudeKeyDaoImpl extends HibernateDaoSupport implements LatitudeK
 		String sql = "from LatitudedocKey where documentid = ? and latitudename = ? and latitudeid = ? ";
 		List<LatitudedocKey> list = this.getHibernateTemplate().find(sql,latitudedocKey.getDocumentid(),latitudedocKey.getLatitudename(),latitudedocKey.getLatitudeid());
 		if (list.size()>0) {
-			String hql = "update LatitudedocKey set documentid = ? , latitudename = ?,latitudeid = ?  where id = ?";
-			this.getHibernateTemplate().bulkUpdate(hql,latitudedocKey.getDocumentid(),latitudedocKey.getLatitudename(),latitudedocKey.getLatitudeid(),list.get(0).getId());
+			String hql = "update LatitudedocKey set documentid = ? , latitudename = ?,latitudeid = ?,sectionid = ? ,updatatime = ? ,location = ?  where id = ?";
+			this.getHibernateTemplate().bulkUpdate(hql,latitudedocKey.getDocumentid(),latitudedocKey.getLatitudename(),latitudedocKey.getLatitudeid()
+					,latitudedocKey.getSectionid(),latitudedocKey.getUpdatatime(),latitudedocKey.getLocation(),list.get(0).getId());
 		}else {
 			this.getHibernateTemplate().save(latitudedocKey);
 		}
