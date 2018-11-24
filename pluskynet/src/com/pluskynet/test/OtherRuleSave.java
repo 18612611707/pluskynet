@@ -109,15 +109,15 @@ public class OtherRuleSave extends Thread {
 									a = true;
 								} else {
 									a = false;
-									continue;
+									break;
 								}
 							} else if (!oldsectiontext.contains(notcon[k])) {
 								a = true;
-							} else if (!notcon[k].equals("")) {
+							} else if (notcon[k].equals("")) {
 								a = true;
 							} else {
 								a = false;
-								continue;
+								break;
 							}
 						}
 						if (a) {

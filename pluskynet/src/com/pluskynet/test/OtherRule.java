@@ -79,7 +79,7 @@ public class OtherRule extends Thread {
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
-				int state = 3;//0和3状态改变为5:新增跑批状态  3、5循环跑批
+				int state = 5;//0和3状态改变为5:新增跑批状态  3、5循环跑批
 				synchronized (ob) {
 					System.out.println("线程名称：" + getName()+"开始取数据");
 					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);
@@ -98,8 +98,9 @@ public class OtherRule extends Thread {
 					otherRuleSave[j].save(list, docsectionandrulelist, latitude, Lalist.get(j).getLatitudename(),
 							Lalist.get(j).getLatitudeid(), latitudeKeyDao, batchdataDao, docidandruleidDao);
 					otherRuleSave[j].setName("线程名称:"+getName()+","+"规则线程：" + i + j);
+					System.out.println(otherRuleSave[j].getName());
 					otherRuleSave[j].start();
-					if (i == list.size() - 1) {
+					if (i == Lalist.size() - 1) {
 						Lalist.get(j).setBatchstats("3");
 						latitudeauditAction.updatebatchestats(Lalist.get(j));
 					}
