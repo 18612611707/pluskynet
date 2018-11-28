@@ -64,30 +64,22 @@ public class SampleServiceImpl implements SampleService{
 			}
 			if (jsonObject.has("sectionname")) {
 				if (!jsonObject.getString("sectionname").equals("")) {
+					if (i==0) {
+						sampleDao.deleteDoc(user);
+					}
 					doclists = docSectionAndRuleDao.getDocsectionList(table,year,count,trialRound,doctype,Integer.valueOf(sectionname),latitudeid);
-					doclist.addAll(doclists);
+					sampleDao.saveDoc(doclists,user);
 				}else{
+					if (i==0) {
+						sampleDao.delete(user);
+					}
 					articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype,user);
-					list.addAll(articleyl);
+					sampleDao.save(articleyl, user);
 				}
-				
 			}else{
 			articleyl = sampleDao.getListArticle(table.getCausetable(),year,Integer.valueOf(count),trialRound,doctype,user);
-			list.addAll(articleyl);
+			sampleDao.save(articleyl, user);
 			}
-		}
-		if(!sectionname.equals("")){
-			sampleDao.deleteDoc(user);
-		}else{
-			sampleDao.delete(user);
-		}
-		if (doclist.size()>0) {
-			
-			sampleDao.saveDoc(doclist,user);
-		}
-		if (list.size()>0) {
-			
-			sampleDao.save(list, user);
 		}
 		sampleDao.saverule(sample,user);
 	}
