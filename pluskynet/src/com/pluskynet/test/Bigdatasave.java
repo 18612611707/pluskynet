@@ -7,6 +7,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeanUtils;
 
 import com.pluskynet.action.DocsectionandruleAction;
@@ -23,6 +25,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class Bigdatasave extends Thread {
+	protected final Log logger = LogFactory.getLog(getClass());
 	private List<Article01> articleList;
 	private ArticleDao articleDao;
 	private BatchdataDao batchdataDao;
@@ -88,7 +91,7 @@ public class Bigdatasave extends Thread {
 				String[] endWords = endWord.split(";|；");
 				// System.out.println(title.indexOf(doctype));
 
-				for (int j1 = 0; j1 < startWords.length; j1++) {
+				ss:for (int j1 = 0; j1 < startWords.length; j1++) {
 					if (startWords[j1].contains("^")) {
 						before = startWords[j1].substring(0, startWords[j1].indexOf("^"));
 						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^") + 1);
@@ -117,6 +120,8 @@ public class Bigdatasave extends Thread {
 								if (endWords[x].contains("^")) {
 									endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
 									endWords[x] = endWords[x].substring(endWords[x].indexOf("^") + 1);
+								}else{
+									endbefore = null;
 								}
 								Pattern patternend = endRuleFomat(endWords[x]);
 								Matcher matcher1 = patternend.matcher(rightdoc);
@@ -137,7 +142,7 @@ public class Bigdatasave extends Thread {
 									} else {
 										end = docold.length();
 									}
-									break look;
+									break ss;
 								}
 							}
 						}
@@ -147,7 +152,12 @@ public class Bigdatasave extends Thread {
 				Docsectionandrule docsectionandrule = new Docsectionandrule();
 				Batchdata batchdata = new Batchdata();
 				if (end != -1) {
-					docnew = docold.substring(start, end);
+					try {
+						docnew = docold.substring(start, end);
+					} catch (Exception e) {
+						System.out.println("文书编号："+docid+",规则id："+ruleid);
+					}
+					
 					docsectionandrule.setRuleid(ruleid);
 					docsectionandrule.setSectionname(latitudename);
 					docsectionandrule.setSectiontext(docnew);

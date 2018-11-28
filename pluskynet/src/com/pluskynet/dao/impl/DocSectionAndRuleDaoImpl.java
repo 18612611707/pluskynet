@@ -3,6 +3,8 @@ package com.pluskynet.dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -21,12 +23,13 @@ import com.sun.star.rdf.QueryException;
 public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements DocSectionAndRuleDao {
 	@Transactional
 	public boolean save(Docsectionandrule docsectionandrule, String table) throws QueryException {
-		if (docsectionandrule.getSectiontext().indexOf("'") > -1) {
-			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\'", "\\\\'"));
-		}
-		if (docsectionandrule.getSectiontext().indexOf(":") > -1) {
-			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\:", "\\\\:"));
-		}
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		if (docsectionandrule.getSectiontext().indexOf("'") > -1) {
+//			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\'", "\\\\'"));
+//		}
+//		if (docsectionandrule.getSectiontext().indexOf(":") > -1) {
+//			docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\:", "\\\\:"));
+//		}
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
 				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "' and ruleid = "+docsectionandrule.getRuleid()+"";
@@ -36,16 +39,16 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		Connection conn = s1.connection();
 		String sql = null;
 		if (list.size() == 0) {
-			sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title) values ("
+			sql = "insert into " + table + "(ruleid,documentsid,sectionname,sectiontext,title,createtime) values ("
 					+ docsectionandrule.getRuleid() + ",'" + docsectionandrule.getDocumentsid() + "','"
 					+ docsectionandrule.getSectionname() + "',?,'"
-					+ docsectionandrule.getTitle() + "')";
+					+ docsectionandrule.getTitle() + "','"+df.format(new Date())+"')";
 		}
 			else {
 			sql = "update " + table + " set ruleid= "
 					+ docsectionandrule.getRuleid() + ",documentsid='" + docsectionandrule.getDocumentsid() + "',sectionname = '"
 					+ docsectionandrule.getSectionname() + "',title='"
-					+ docsectionandrule.getTitle() + "' ,sectiontext = ? where id= "
+					+ docsectionandrule.getTitle() + "' ,sectiontext = ?,updatetime = '"+df.format(new Date())+"' where id= "
 					+ list.get(0).getId();
 		}
 		PreparedStatement stmt;
