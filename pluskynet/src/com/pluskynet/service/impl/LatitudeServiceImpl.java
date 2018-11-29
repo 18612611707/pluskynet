@@ -1,6 +1,8 @@
 package com.pluskynet.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 
 	@Override
 	public String update(Latitude latitude, User user) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String msg = latitudeDao.update(latitude, user);
 		if (msg.equals("成功")) {
 			latitude = latitudeDao.getLatitude(latitude);
@@ -62,6 +65,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 			latitudeaudit.setLatitudeid(latitude.getLatitudeid());
 			latitudeaudit.setLatitudename(latitude.getLatitudename());
 			latitudeaudit.setLatitudetype(1);
+			latitudeaudit.setSubuserid(user.getUserid().toString());
 			latitudeaudit.setRule(latitude.getRule());
 			LatitudeauditDao.update(latitudeaudit);
 		}

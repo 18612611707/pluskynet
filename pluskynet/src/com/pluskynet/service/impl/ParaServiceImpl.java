@@ -139,18 +139,18 @@ public class ParaServiceImpl implements ParaService {
 		tParaOne.setPoPid(Integer.valueOf(js.getString("po_pid")));
 		tParaOne.setPoOrder(Integer.valueOf(js.getString("po_order")));
 		tParaOne.setPoType(js.getString("po_type"));
-		if (!js.getString("po_isPara").equals("")) {
+		/*if (!js.getString("po_isPara").equals("")) {
 			tParaOne.setPoIsPara(Integer.valueOf(js.getString("po_isPara")));
-		}
+		}*/
 		tParaOne.setPgId(Integer.valueOf(js.getString("pg_id")));
 		tParaOne.setPoRootId(Integer.valueOf(js.getString("po_rootId")));
 		tParaOne.setPoTier(Integer.valueOf(js.getString("po_tier")));
 		tParaOne.setPoRelation(js.getString("po_relation"));
-		tParaOne.setPoLink(jsonObject.getString("po_link"));
-		tParaOne.setPoProp(jsonObject.getString("po_prop"));
-		tParaOne.setPoPropRelate(jsonObject.getString("po_propRelate"));
-		tParaOne.setPoPropValue(jsonObject.getString("po_propValue"));
-		tParaOne.setPoRangeType("po_rangeType");
+		tParaOne.setPoLink(js.getString("po_link"));
+		tParaOne.setPoProp(js.getString("po_prop"));
+		tParaOne.setPoPropRelate(js.getString("po_propRelate"));
+		tParaOne.setPoPropValue(js.getString("po_propValue"));
+		tParaOne.setPoRangeType(js.getString("po_rangeType"));
 		if (!js.getString("po_id").equals("")) {
 			tParaOne.setPoId(Integer.valueOf(js.getString("po_id")));
 			po_id = paraDao.updateInfoOne(tParaOne);

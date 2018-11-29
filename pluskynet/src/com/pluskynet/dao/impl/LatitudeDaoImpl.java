@@ -1,6 +1,8 @@
 package com.pluskynet.dao.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,25 +46,26 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 
 	@Override
 	public String update(Latitude latitude, User user) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String hql = "from Latitude where latitudeid = ? and createruser = ? and (stats = 'reject' or stats = 'create')";
 		List<Latitude> list = this.getHibernateTemplate().find(hql, latitude.getLatitudeid(), user.getUsername());
 		if (list.size() > 0) {
 			if (latitude.getLatitudename() == null || latitude.getLatitudename().equals("")) {
-				String queryStr = "update Latitude set rule = ? ,ruletype = ? ,reserved =? where latitudeid = ?";
+				String queryStr = "update Latitude set rule = ? ,ruletype = ? ,reserved =?,creatertime = ? where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getRule(), latitude.getRuletype(),
-						latitude.getReserved(), latitude.getLatitudeid());
+						latitude.getReserved(),df.format(new Date()), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			} else if (latitude.getRule() == null || latitude.getRule().equals("")) {
-				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?,reserved =?  where latitudeid = ?";
+				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?,reserved =?,creatertime = ?  where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudename(), latitude.getLatitudefid(),
-						latitude.getReserved(), latitude.getLatitudeid());
+						latitude.getReserved(),df.format(new Date()), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			} else {
-				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ? ,rule = ?,ruletype=? ,reserved =? where latitudeid = ?";
+				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ? ,rule = ?,ruletype=? ,reserved =?,creatertime = ? where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudename(), latitude.getLatitudefid(),
-						latitude.getRule(), latitude.getRuletype(), latitude.getReserved(), latitude.getLatitudeid());
+						latitude.getRule(), latitude.getRuletype(), latitude.getReserved(),df.format(new Date()), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			}

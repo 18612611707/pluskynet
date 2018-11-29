@@ -96,13 +96,17 @@ public class ParaAction extends BaseAction {
 			Map map = new HashMap();
 			map.put("po_id", list.get(i).getPoId());
 			map.put("pg_id", list.get(i).getPgId());
-			map.put("po_isPara", list.get(i).getPoIsPara());
+			map.put("po_prop", list.get(i).getPoProp());
 			map.put("po_name", list.get(i).getPoName());
 			map.put("po_order", list.get(i).getPoOrder());
 			map.put("po_pid", list.get(i).getPoPid());
 			map.put("po_rootId", list.get(i).getPoRootId());
 			map.put("po_tier", list.get(i).getPoTier());
 			map.put("po_type", list.get(i).getPoType());
+			map.put("po_link", list.get(i).getPoLink());
+			map.put("po_propRelate", list.get(i).getPoPropRelate());
+			map.put("po_propValue", list.get(i).getPoPropValue());
+			map.put("po_rangeType", list.get(i).getPoRangeType());
 			lists.add(map);
 		}
 		outJsonByMsg(lists, "成功");
