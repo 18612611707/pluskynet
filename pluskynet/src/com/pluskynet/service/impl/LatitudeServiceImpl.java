@@ -57,7 +57,6 @@ public class LatitudeServiceImpl implements LatitudeService {
 
 	@Override
 	public String update(Latitude latitude, User user) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String msg = latitudeDao.update(latitude, user);
 		if (msg.equals("成功")) {
 			latitude = latitudeDao.getLatitude(latitude);

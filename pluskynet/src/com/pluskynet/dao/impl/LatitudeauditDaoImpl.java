@@ -5,7 +5,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +35,17 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	public void update(Latitudeaudit latitudeaudit) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String hql = "from Latitudeaudit where latitudeid = ?";
 		List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql, latitudeaudit.getLatitudeid());
 		if (latitudeaudits.size() > 0) {
-			hql = "update Latitudeaudit set latitudeid = ? ,latitudetype = ?, latitudename = ? ,rule = ? ,stats = '0',batchstats='0' where id = ?";
+			hql = "update Latitudeaudit set latitudeid = ? ,latitudetype = ?, latitudename = ? ,rule = ? ,stats = '0',batchstats='0',subtime = ?,subuserid = ? where id = ?";
 			this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.getLatitudeid(), latitudeaudit.getLatitudetype(),
-					latitudeaudit.getLatitudename(), latitudeaudit.getRule(), latitudeaudits.get(0).getId());
+					latitudeaudit.getLatitudename(), latitudeaudit.getRule(),Timestamp.valueOf(df.format(new Date())),latitudeaudit.getSubuserid(), latitudeaudits.get(0).getId());
 		} else {
 			latitudeaudit.setStats("0");
 			latitudeaudit.setBatchstats("0");
+			latitudeaudit.setSubtime(Timestamp.valueOf(df.format(new Date())));
 			this.getHibernateTemplate().save(latitudeaudit);
 		}
 	}

@@ -1,5 +1,6 @@
 package com.pluskynet.dao.impl;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -53,19 +54,19 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 			if (latitude.getLatitudename() == null || latitude.getLatitudename().equals("")) {
 				String queryStr = "update Latitude set rule = ? ,ruletype = ? ,reserved =?,creatertime = ? where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getRule(), latitude.getRuletype(),
-						latitude.getReserved(),df.format(new Date()), latitude.getLatitudeid());
+						latitude.getReserved(),Timestamp.valueOf(df.format(new Date())), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			} else if (latitude.getRule() == null || latitude.getRule().equals("")) {
 				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?,reserved =?,creatertime = ?  where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudename(), latitude.getLatitudefid(),
-						latitude.getReserved(),df.format(new Date()), latitude.getLatitudeid());
+						latitude.getReserved(),Timestamp.valueOf(df.format(new Date())), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			} else {
 				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ? ,rule = ?,ruletype=? ,reserved =?,creatertime = ? where latitudeid = ?";
 				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudename(), latitude.getLatitudefid(),
-						latitude.getRule(), latitude.getRuletype(), latitude.getReserved(),df.format(new Date()), latitude.getLatitudeid());
+						latitude.getRule(), latitude.getRuletype(), latitude.getReserved(),Timestamp.valueOf(df.format(new Date())), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			}
