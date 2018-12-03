@@ -107,6 +107,7 @@ public class ParaAction extends BaseAction {
 			map.put("po_propRelate", list.get(i).getPoPropRelate());
 			map.put("po_propValue", list.get(i).getPoPropValue());
 			map.put("po_rangeType", list.get(i).getPoRangeType());
+			map.put("po_propKey", list.get(i).getPoPropKey());
 			lists.add(map);
 		}
 		outJsonByMsg(lists, "成功");
