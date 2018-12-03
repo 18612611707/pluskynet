@@ -23,6 +23,7 @@ public class TParaOne implements java.io.Serializable {
 	private String poPropRelate;
 	private String poPropValue;
 	private String poRangeType;
+	private String poPropKey;
 
 	// Constructors
 
@@ -33,7 +34,7 @@ public class TParaOne implements java.io.Serializable {
 	/** full constructor */
 	public TParaOne(String poName, Integer poPid, Integer poOrder, String poType, Integer poIsPara, Integer pgId,
 			Integer poRootId, Integer poTier, String poRelation, String poLink, String poProp, String poPropRelate,
-			String poPropValue, String poRangeType) {
+			String poPropValue, String poRangeType, String poPropKey) {
 		this.poName = poName;
 		this.poPid = poPid;
 		this.poOrder = poOrder;
@@ -48,6 +49,7 @@ public class TParaOne implements java.io.Serializable {
 		this.poPropRelate = poPropRelate;
 		this.poPropValue = poPropValue;
 		this.poRangeType = poRangeType;
+		this.poPropKey = poPropKey;
 	}
 
 	// Property accessors
@@ -170,6 +172,14 @@ public class TParaOne implements java.io.Serializable {
 
 	public void setPoRangeType(String poRangeType) {
 		this.poRangeType = poRangeType;
+	}
+
+	public String getPoPropKey() {
+		return this.poPropKey;
+	}
+
+	public void setPoPropKey(String poPropKey) {
+		this.poPropKey = poPropKey;
 	}
 
 }

@@ -151,6 +151,7 @@ public class ParaServiceImpl implements ParaService {
 		tParaOne.setPoPropRelate(js.getString("po_propRelate"));
 		tParaOne.setPoPropValue(js.getString("po_propValue"));
 		tParaOne.setPoRangeType(js.getString("po_rangeType"));
+		tParaOne.setPoPropKey(js.getString("po_propKey"));
 		if (!js.getString("po_id").equals("")) {
 			tParaOne.setPoId(Integer.valueOf(js.getString("po_id")));
 			po_id = paraDao.updateInfoOne(tParaOne);

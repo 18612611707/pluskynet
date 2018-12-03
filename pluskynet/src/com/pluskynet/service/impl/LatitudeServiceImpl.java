@@ -169,8 +169,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 			String oldsectiontext = null;
 			String newsectiontext = null;
 			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
-			boolean a = false;
 			for (int j = 0; j < list.size(); j++) {
+				boolean a = false;
 				if (list.get(j).getDocumentsid().equals("084e5a3e-3936-498f-9ebf-a881017afc63")) {
 					System.out.println("11111");
 				}
@@ -195,12 +195,13 @@ public class LatitudeServiceImpl implements LatitudeService {
 							newsectiontext = oldsectiontext.replaceAll(beginIndex,
 									"<span style=\"color:red\">" + beginIndex + "</span>");
 							a=true;
-							break;
 						}
 					}else if (contains.contains("&")) {
 						String[] contain = contains.split("\\&");// 包含
 						for (int x = 0; x < contain.length; x++) {
 							if (oldsectiontext.contains(contain[x].toString())) {
+								newsectiontext = oldsectiontext.replaceAll(contain[x].toString(),
+										"<span style=\"color:red\">" + contain[x].toString() + "</span>");
 								a = true;
 							} else {
 								a = false;

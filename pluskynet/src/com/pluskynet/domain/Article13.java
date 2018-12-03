@@ -27,6 +27,8 @@ public class Article13 implements java.io.Serializable {
 	private String courtcities;
 	private String courtprovinces;
 	private String casename;
+	private Integer docstats;
+	private String level;
 
 	// Constructors
 
@@ -38,7 +40,7 @@ public class Article13 implements java.io.Serializable {
 	public Article13(String docId, String title, String date, String decodeData, Integer states, String spcx,
 			String doctype, String court, String casetype, String reason, String trialdate, String appellor,
 			String legalbase, Integer ccourtid, String caseno, String courtcities, String courtprovinces,
-			String casename) {
+			String casename, Integer docstats, String level) {
 		this.docId = docId;
 		this.title = title;
 		this.date = date;
@@ -57,6 +59,8 @@ public class Article13 implements java.io.Serializable {
 		this.courtcities = courtcities;
 		this.courtprovinces = courtprovinces;
 		this.casename = casename;
+		this.docstats = docstats;
+		this.level = level;
 	}
 
 	// Property accessors
@@ -211,6 +215,22 @@ public class Article13 implements java.io.Serializable {
 
 	public void setCasename(String casename) {
 		this.casename = casename;
+	}
+
+	public Integer getDocstats() {
+		return this.docstats;
+	}
+
+	public void setDocstats(Integer docstats) {
+		this.docstats = docstats;
+	}
+
+	public String getLevel() {
+		return this.level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 }

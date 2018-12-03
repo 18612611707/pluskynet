@@ -68,5 +68,8 @@
         <property name="poRangeType" type="java.lang.String">
             <column name="po_rangeType" length="20" />
         </property>
+        <property name="poPropKey" type="java.lang.String">
+            <column name="po_propKey" length="20" />
+        </property>
     </class>
 </hibernate-mapping>
