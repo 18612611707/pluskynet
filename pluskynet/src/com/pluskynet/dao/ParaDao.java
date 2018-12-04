@@ -42,5 +42,9 @@ public interface ParaDao {
 	void savevector(TParaVector tParaVector);
 
 	boolean deletevector(int po_id);
+	
+	TParaOne getTParaOne(String poname);
+	
+	int getMaxOrder(TParaOne tParaOne);
 
 }

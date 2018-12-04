@@ -131,4 +131,24 @@ public class ParaDaoImpl extends HibernateDaoSupport implements ParaDao {
 		return true;
 	}
 
+	@Override
+	public TParaOne getTParaOne(String poname) {
+		String sql = "from TParaOne where poName = '"+poname+"' and pgId = 9 and (poRootId = 46 or poRootId = 0)";
+		List<TParaOne> list = this.getHibernateTemplate().find(sql);
+		if (list.size()>0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
+	@Override
+	public int getMaxOrder(TParaOne tParaOne) {
+		String sql = "from TParaOne where poPid = "+tParaOne.getPoId()+" order by poId desc";
+		List<TParaOne> list = this.getHibernateTemplate().find(sql);
+		if (list.size()>0) {
+			return list.get(0).getPoOrder();
+		}
+		return 0;
+	}
+
 }
