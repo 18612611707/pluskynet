@@ -132,8 +132,8 @@ public class ParaDaoImpl extends HibernateDaoSupport implements ParaDao {
 	}
 
 	@Override
-	public TParaOne getTParaOne(String poname) {
-		String sql = "from TParaOne where poName = '"+poname+"' and pgId = 9 and (poRootId = 46 or poRootId = 0)";
+	public TParaOne getTParaOne(String poname,int pgid,int rootid) {
+		String sql = "from TParaOne where poName = '"+poname+"' and pgId = "+pgid+" and (poRootId = "+rootid+" or poRootId = 0)";
 		List<TParaOne> list = this.getHibernateTemplate().find(sql);
 		if (list.size()>0) {
 			return list.get(0);

@@ -43,7 +43,7 @@ public interface ParaDao {
 
 	boolean deletevector(int po_id);
 	
-	TParaOne getTParaOne(String poname);
+	TParaOne getTParaOne(String poname,int pgid,int rootid);
 	
 	int getMaxOrder(TParaOne tParaOne);
 
