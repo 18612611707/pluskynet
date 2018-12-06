@@ -7,8 +7,6 @@ public class TreeDocrule {
 	private Integer ruleid;
 	private Integer fid;
 	private String sectionname;
-	private String rule;
-	private String reserved;
 	private List<TreeDocrule> children ;
 	public Integer getRuleid() {
 		return ruleid;
@@ -35,19 +33,4 @@ public class TreeDocrule {
 	public void setChildren(List<TreeDocrule> children) {
 		this.children = children;
 	}
-	public String getRule() {
-		return rule;
-	}
-	public void setRule(String rule) {
-		this.rule = rule;
-	}
-	public String getReserved() {
-		return reserved;
-	}
-	public void setReserved(String reserved) {
-		this.reserved = reserved;
-	}
-	
-	
-
 }

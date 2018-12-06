@@ -8,10 +8,12 @@ import java.util.Map;
 import com.pluskynet.dao.DocRuleDao;
 import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.dao.LatitudeauditDao;
+import com.pluskynet.dao.LatitudenumsDao;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
+import com.pluskynet.domain.Latitudenum;
 import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.otherdomain.TreeDocrule;
@@ -39,6 +41,12 @@ public class DocRuleServiceImpl implements DocRuleService {
 
 	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
 		this.docSectionAndRuleDao = docSectionAndRuleDao;
+	}
+	private LatitudenumsDao latitudenumsDao;
+
+
+	public void setLatitudenumsDao(LatitudenumsDao latitudenumsDao) {
+		this.latitudenumsDao = latitudenumsDao;
 	}
 
 	@Override
@@ -68,14 +76,20 @@ public class DocRuleServiceImpl implements DocRuleService {
 	@Override
 	public List<TreeDocrule> getDcoSectionList() {
 		List<Docrule> friList = docRuleDao.getDcoSectionList();
+		List<Latitudenum> doclist = latitudenumsDao.getnums(0);
 		List<TreeDocrule> lists = new ArrayList<TreeDocrule>();
 		for (int i = 0; i < friList.size(); i++) {
 			TreeDocrule treeDocrule = new TreeDocrule();
 			treeDocrule.setFid(friList.get(i).getFid());
+			treeDocrule.setSectionname(friList.get(i).getSectionname()+","+0);
+			for (int j = 0; j < doclist.size(); j++) {
+				if (doclist.get(j).getLatitudeid()==friList.get(i).getRuleid()) {
+					treeDocrule.setSectionname(friList.get(i).getSectionname()+","+doclist.get(j).getNums());
+					break;
+				}
+			}
 			treeDocrule.setRuleid(friList.get(i).getRuleid());
-			treeDocrule.setSectionname(friList.get(i).getSectionname());
-			treeDocrule.setReserved(friList.get(i).getReserved());
-			treeDocrule.setRule(friList.get(i).getRule());
+			
 			lists.add(treeDocrule);
 		}
 		 List<TreeDocrule> list = new ArrayList<TreeDocrule>(); 

@@ -88,6 +88,7 @@
 				<value>com/pluskynet/domain/TParaGrp.hbm.xml</value>
 				<value>com/pluskynet/domain/TParaOne.hbm.xml</value>
 				<value>com/pluskynet/domain/TParaVector.hbm.xml</value>
+				<value>com/pluskynet/domain/Latitudenum.hbm.xml</value>
 			</list>
 		</property>
 	</bean>
@@ -155,6 +156,7 @@
 		<property name="latitudeDao" ref="latitudeDao" />
 		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
 		<property name="latitudeauditDao" ref="latitudeauditDao" />
+		<property name="latitudenumsDao" ref ="latitudenumsDao"/>
 	</bean>
 	<bean id="articleService" class="com.pluskynet.service.impl.ArticleServiceImpl">
 		<property name="articleDao" ref="articleDao" />
@@ -168,6 +170,7 @@
 		<property name="docRuleDao" ref="docRuleDao" />
 		<property name="latitudeauditDao" ref="latitudeauditDao" />
 		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
+		<property name="latitudenumsDao" ref ="latitudenumsDao"/>
 	</bean>
 	<bean id="previewService" class="com.pluskynet.service.impl.PreviewServiceImpl">
 		<property name="previewDao" ref="previewDao" />
@@ -243,6 +246,9 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<bean id="paraDao" class="com.pluskynet.dao.impl.ParaDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="latitudenumsDao" class="com.pluskynet.dao.impl.LatitudenumsDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<!-- 配合事务管理器 -->
