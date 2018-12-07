@@ -126,9 +126,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			String rightdoc = null;
 			String beginIndex1 = null;
 			String before = null;
-			if (docid.equals("fffe75ab-4c49-4bf4-99fc-a76a009347bb")) {
-				System.out.println("aaaaaaaaa");
-			}
+			int startAndEnd = 0;
 			look: for (int c = 0; c < list.size(); c++) {
 				ruleJson = JSONObject.fromObject(list.get(c));
 				// System.out.println(ruleJson);
@@ -139,6 +137,16 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
 				for (int j = 0; j < startWords.length; j++) {
+					if (startWords[j].contains("#")) {
+						String startandends = startWords[j].substring(0, startWords[j].lastIndexOf("#"));
+						String[] startandend = startandends.split("#");
+						for (int k = 0; k < startandend.length; k++) {
+							if (docold.contains(startandend[k])) {
+								startAndEnd = docold.indexOf(startandend[k]);
+								docold = docold.substring(docold.indexOf(startandend[k]));
+							}
+						}
+					}
 					if (startWords[j].contains("^")) {
 						before = startWords[j].substring(0, startWords[j].indexOf("^"));
 						startWords[j] = startWords[j].substring(startWords[j].indexOf("^") + 1);
@@ -203,9 +211,9 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				statsDocs.add(statsDoc);
 			} else {
 				if (end != -1) {
-					docnew = docold.substring(start, end);
+					docnew = docold.substring(startAndEnd+start, startAndEnd+end);
 				} else if (end == 0) {
-					docnew = docold.substring(start, docold.length());
+					docnew = docold.substring(startAndEnd+start, startAndEnd+docold.length());
 				}
 				statsDoc.setStats("符合");
 				docidAndDoc.setDoc(docnew);

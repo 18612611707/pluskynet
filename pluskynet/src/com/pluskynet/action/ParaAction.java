@@ -169,6 +169,7 @@ public class ParaAction extends BaseAction {
 			map.put("pcg_order",list.get(i).getPcgOrder());
 			map.put("pc_id", list.get(i).getPcId());
 			map.put("pg_id", list.get(i).getPgId());
+			map.put("pg_show", list.get(i).getPgShow());
 			lists.add(map);
 		}
 		outJsonByMsg(lists, "成功");
