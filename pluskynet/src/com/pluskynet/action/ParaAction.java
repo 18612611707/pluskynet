@@ -67,6 +67,7 @@ public class ParaAction extends BaseAction {
 			Map map = new HashMap();
 			map.put("pg_id", list.get(i).getPgId());
 			map.put("pg_name", list.get(i).getPgName());
+			map.put("pg_show", list.get(i).getPgShow());
 			lists.add(map);
 		}
 		outJsonByMsg(lists, "成功");
@@ -169,7 +170,6 @@ public class ParaAction extends BaseAction {
 			map.put("pcg_order",list.get(i).getPcgOrder());
 			map.put("pc_id", list.get(i).getPcId());
 			map.put("pg_id", list.get(i).getPgId());
-			map.put("pg_show", list.get(i).getPgShow());
 			lists.add(map);
 		}
 		outJsonByMsg(lists, "成功");

@@ -93,8 +93,9 @@ public class LatitudeServiceImpl implements LatitudeService {
 			treeMap.put("latitudefid", lists.get(i).getLatitudefid());
 			treeMap.put("latitudename", lists.get(i).getLatitudename()+","+0);
 			for (int j = 0; j < numlist.size(); j++) {
-				if (numlist.get(j).getLatitudeid()==lists.get(i).getLatitudeid()) {
+				if (numlist.get(j).getLatitudeid().intValue()==lists.get(i).getLatitudeid().intValue()) {
 					treeMap.put("latitudename", lists.get(i).getLatitudename()+","+numlist.get(j).getNums());
+					break;
 				}
 			}
 			treeMap.put("creator", lists.get(i).getCreateruser());
@@ -123,16 +124,21 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	private List<Treelatitude> children(List<Latitude> lists, Integer latitudeid) {
+		if (latitudeid.intValue()==1887) {
+			System.out.println("---------------");
+		}
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		for (int i = 0; i < lists.size(); i++) {
 			if (lists.get(i).getLatitudefid().intValue() == latitudeid.intValue()) {
 				Treelatitude treeMap = new Treelatitude();
 				treeMap.setLatitudeid(lists.get(i).getLatitudeid());
 				treeMap.setLatitudefid(lists.get(i).getLatitudefid());
-				treeMap.setLatitudename(lists.get(i).getLatitudename()+","+0);
 				for (int j = 0; j < numlist.size(); j++) {
-					if (numlist.get(j).getLatitudeid()==lists.get(i).getLatitudeid()) {
+					if (numlist.get(j).getLatitudeid().intValue()==lists.get(i).getLatitudeid().intValue()) {
 						treeMap.setLatitudename(lists.get(i).getLatitudename()+","+numlist.get(j).getNums());
+						break;
+					}else if(j==numlist.size()-1){
+						treeMap.setLatitudename(lists.get(i).getLatitudename()+","+0);
 					}
 				}
 				treeMap.setCreator(lists.get(i).getCreateruser());

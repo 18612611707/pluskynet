@@ -12,7 +12,6 @@ public class TParaCriGrp implements java.io.Serializable {
 	private Integer pcId;
 	private Integer pgId;
 	private Integer pcgOrder;
-	private String pgShow;
 
 	// Constructors
 
@@ -21,11 +20,10 @@ public class TParaCriGrp implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public TParaCriGrp(Integer pcId, Integer pgId, Integer pcgOrder, String pgShow) {
+	public TParaCriGrp(Integer pcId, Integer pgId, Integer pcgOrder) {
 		this.pcId = pcId;
 		this.pgId = pgId;
 		this.pcgOrder = pcgOrder;
-		this.pgShow = pgShow;
 	}
 
 	// Property accessors
@@ -60,14 +58,6 @@ public class TParaCriGrp implements java.io.Serializable {
 
 	public void setPcgOrder(Integer pcgOrder) {
 		this.pcgOrder = pcgOrder;
-	}
-
-	public String getPgShow() {
-		return this.pgShow;
-	}
-
-	public void setPgShow(String pgShow) {
-		this.pgShow = pgShow;
 	}
 
 }

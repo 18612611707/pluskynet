@@ -10,6 +10,7 @@ public class TParaGrp implements java.io.Serializable {
 
 	private Integer pgId;
 	private String pgName;
+	private String pgShow;
 
 	// Constructors
 
@@ -18,8 +19,9 @@ public class TParaGrp implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public TParaGrp(String pgName) {
+	public TParaGrp(String pgName, String pgShow) {
 		this.pgName = pgName;
+		this.pgShow = pgShow;
 	}
 
 	// Property accessors
@@ -38,6 +40,14 @@ public class TParaGrp implements java.io.Serializable {
 
 	public void setPgName(String pgName) {
 		this.pgName = pgName;
+	}
+
+	public String getPgShow() {
+		return this.pgShow;
+	}
+
+	public void setPgShow(String pgShow) {
+		this.pgShow = pgShow;
 	}
 
 }

@@ -73,7 +73,6 @@ public class ParaServiceImpl implements ParaService {
 				criGrp.setPcgOrder(i);
 				criGrp.setPcId((Integer) map.get("pc_id"));
 				criGrp.setPgId(Integer.valueOf(jsonObject2.getString("pg_id")));
-				criGrp.setPgShow(jsonObject2.getString("pg_show"));
 				int pcg_id = paraDao.saveCri(criGrp);
 			}
 		}
@@ -93,6 +92,7 @@ public class ParaServiceImpl implements ParaService {
 		// JSONObject tparaJsonObject =
 		// JSONObject.fromObject(jsonObject.getString("data"));
 		tParaGrp.setPgName(jsonObject.getString("pg_name"));
+		tParaGrp.setPgShow(jsonObject.getString("pg_show"));
 		if (!jsonObject.getString("pg_id").equals("")) {
 			tParaGrp.setPgId(Integer.valueOf(jsonObject.getString("pg_id")));
 			paraDao.updatetParaGrp(tParaGrp);
