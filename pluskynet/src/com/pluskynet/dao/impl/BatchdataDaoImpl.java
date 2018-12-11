@@ -58,4 +58,13 @@ public class BatchdataDaoImpl extends HibernateDaoSupport implements BatchdataDa
 		return true;
 		
 	}
+
+	@Override
+	public void delete(Batchdata batchdata) {
+		String hql = "from Batchdata where documentid = '"+batchdata.getDocumentid()+"' and ruleid = '"+batchdata.getRuleid()+"'";
+		List<Batchdata> list = this.getHibernateTemplate().find(hql);
+		if (list.size()>0) {
+			this.getHibernateTemplate().delete(batchdata);
+		}
+	}
 }

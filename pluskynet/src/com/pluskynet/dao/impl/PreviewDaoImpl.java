@@ -14,6 +14,7 @@ import com.pluskynet.domain.Preview;
 import com.pluskynet.domain.StatsDoc;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.parsing.Parsing;
+import com.pluskynet.rule.DocRule;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -29,6 +30,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 	 * java.util.List) 检索符合规则的文书 和 不符合规则的文书列表
 	 */
 	public List<StatsDoc> getDocList(Preview preview, List<Articleyl> listaArticles) {
+		DocRule docRule = new DocRule();
 		Parsing parsing = new Parsing();
 		// 文书拆分，返回docid和文书主文章信息
 		List<DocidAndDoc> docList = new ArrayList<DocidAndDoc>();
@@ -37,13 +39,15 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 		JSONArray jsonArray = new JSONArray();
 		JSONObject ruleJson = new JSONObject();
 		jsonArray = jsonArray.fromObject(preview.getRule());
-		String startword = null;
+		Integer fhnum = 0;
+		Integer bfhnum = 0;
+		List<Otherdocrule> list = docRule.ruleFormat(jsonArray);
+		/*String startword = null;
 		String endword = null;
 		String judges = null;
 		String spcx = null;
 		String doctype = null;
-		Integer fhnum = 0;
-		Integer bfhnum = 0;
+		
 		List<Otherdocrule> list = new ArrayList<Otherdocrule>();
 		for (int b = 0; b < jsonArray.size(); b++) {
 			Otherdocrule otherdocrule = new Otherdocrule();
@@ -106,13 +110,14 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 					}
 				}
 			}
-		}
+		}*/
 		// for (int c = 0; c < list.size(); c++) {
 		// jsonArray = JSONArray.fromObject(list);
 		// preview.setRule(jsonArray.get(c).toString());
 		docLists = parsing.DocList(listaArticles, preview);
 		docList.addAll(docLists);
 		// }
+		
 		for (int i = 0; i < docList.size(); i++) {
 			StatsDoc statsDoc = new StatsDoc();
 			DocidAndDoc docidAndDoc = new DocidAndDoc();
@@ -120,9 +125,16 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			String docold = docList.get(i).getDoc();
 			String doctitle = docList.get(i).getTitle();
 			String docnew = null;
-			int start = -1;
-			int end = -1;
-			String leftdoc = null;
+			if (docid.equals("ff04275d-f7ba-4679-9b5b-5b056ce64b3a")) {
+				System.out.println("aaaaaaaaaaaaa");
+			}
+			List<Integer> intlist = new ArrayList<Integer>();
+			intlist.add(-1);
+			intlist.add(-1);
+			docRule.doclist(docold,intlist);
+			int start = intlist.get(0);
+			int end = intlist.get(1);
+			/*String leftdoc = null;
 			String rightdoc = null;
 			String beginIndex1 = null;
 			String before = null;
@@ -201,7 +213,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 						}
 					}
 				}
-			}
+			}*/
 			if (end == -1) {
 				statsDoc.setStats("不符合");
 				docidAndDoc.setDocid(docid);
@@ -211,9 +223,9 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 				statsDocs.add(statsDoc);
 			} else {
 				if (end != -1) {
-					docnew = docold.substring(startAndEnd+start, startAndEnd+end);
+					docnew = docold.substring(start, end);
 				} else if (end == 0) {
-					docnew = docold.substring(startAndEnd+start, startAndEnd+docold.length());
+					docnew = docold.substring(start, docold.length());
 				}
 				statsDoc.setStats("符合");
 				docidAndDoc.setDoc(docnew);

@@ -13,8 +13,8 @@ public class LatitudeKeyDaoImpl extends HibernateDaoSupport implements LatitudeK
 
 	@Override
 	public void save(LatitudedocKey latitudedocKey) {
-		String sql = "from LatitudedocKey where documentid = ? and latitudename = ? and latitudeid = ? ";
-		List<LatitudedocKey> list = this.getHibernateTemplate().find(sql,latitudedocKey.getDocumentid(),latitudedocKey.getLatitudename(),latitudedocKey.getLatitudeid());
+		String sql = "from LatitudedocKey where documentid = ? latitudeid = ? ";
+		List<LatitudedocKey> list = this.getHibernateTemplate().find(sql,latitudedocKey.getDocumentid(),latitudedocKey.getLatitudeid());
 		if (list.size()>0) {
 			String hql = "update LatitudedocKey set documentid = ? , latitudename = ?,latitudeid = ?,sectionid = ? ,updatatime = ? ,location = ?  where id = ?";
 			this.getHibernateTemplate().bulkUpdate(hql,latitudedocKey.getDocumentid(),latitudedocKey.getLatitudename(),latitudedocKey.getLatitudeid()
@@ -22,6 +22,12 @@ public class LatitudeKeyDaoImpl extends HibernateDaoSupport implements LatitudeK
 		}else {
 			this.getHibernateTemplate().save(latitudedocKey);
 		}
+	}
+
+	@Override
+	public void delete(LatitudedocKey latitudedocKey) {
+		
+		
 	}
 
 }

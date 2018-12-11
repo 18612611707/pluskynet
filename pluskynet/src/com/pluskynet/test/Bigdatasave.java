@@ -3,7 +3,6 @@ package com.pluskynet.test;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,16 +36,10 @@ public class Bigdatasave extends Thread {
 	private String causetable;
 	private int ruleid;
 	private String latitudename;
-
 	volatile int a = 1;
-
 	/*
 	 * public Bigdatasave(String name){ super(name); }
 	 */
-	List<Docsectionandrule> docsectionlist = new Vector<Docsectionandrule>();
-	List<Batchdata> batchlist = new Vector<Batchdata>();
-	List<Docidandruleid> docidlist = new Vector<Docidandruleid>();
-
 	public void run() {
 		String ruleString = JSONArray.fromObject(lists).toString();
 		List<Article01> docList;
@@ -81,16 +74,12 @@ public class Bigdatasave extends Thread {
 				} else if (!spcx.equals(trialRound)) {
 					continue;
 				}
-
 				ruleJson = jsonArray.getJSONObject(a);
-				// System.out.println(ruleJson);
 				String startWord = ruleJson.getString("start");
 				String endWord = ruleJson.getString("end");
 				String judge = ruleJson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
-				// System.out.println(title.indexOf(doctype));
-
 				ss:for (int j1 = 0; j1 < startWords.length; j1++) {
 					if (startWords[j1].contains("^")) {
 						before = startWords[j1].substring(0, startWords[j1].indexOf("^"));
@@ -104,16 +93,12 @@ public class Bigdatasave extends Thread {
 						beginIndex1 = matcher.group();
 						start = docold.indexOf(beginIndex1);
 						leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
-						// System.out.println(leftdoc.length());
 						StringBuffer s = new StringBuffer(leftdoc);
 						leftdoc = s.reverse().toString();
 						if (before != null) {
 							start = start + beginIndex1.length() - leftdoc.indexOf(before);
 						}
 						rightdoc = docold.substring(start);
-						// rightdoc =
-						// docold.substring(docold.indexOf(beginIndex1) +
-						// beginIndex1.length());
 						if (rightdoc != null && start != -1) {
 							for (int x = 0; x < endWords.length; x++) {
 								String endbefore = null;
@@ -148,7 +133,6 @@ public class Bigdatasave extends Thread {
 						}
 					}
 				}
-
 				Docsectionandrule docsectionandrule = new Docsectionandrule();
 				Batchdata batchdata = new Batchdata();
 				if (end != -1) {
@@ -157,7 +141,6 @@ public class Bigdatasave extends Thread {
 					} catch (Exception e) {
 						System.out.println("文书编号："+docid+",规则id："+ruleid);
 					}
-					
 					docsectionandrule.setRuleid(ruleid);
 					docsectionandrule.setSectionname(latitudename);
 					docsectionandrule.setSectiontext(docnew);
@@ -169,13 +152,9 @@ public class Bigdatasave extends Thread {
 					batchdata.setRuleid(ruleid);
 					batchdata.setStartword(Startword);
 					batchdataDao.save(batchdata);
-					// articleDao.updateArticleState(docid, causetable, 2);
 					docrule.save(docsectionandrule, doctable);
 					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
 					docidandruleidDao.save(docidandruleid);
-					// docidlist.add(docidandruleid);
-					// docsectionlist.add(docsectionandrule);
-					// batchlist.add(batchdata);
 					break;
 				} else if (end == 0) {
 					docnew = docold.substring(start, docold.length());
@@ -190,21 +169,12 @@ public class Bigdatasave extends Thread {
 					batchdata.setRuleid(ruleid);
 					batchdata.setStartword(Startword);
 					batchdataDao.save(batchdata);
-					// articleDao.updateArticleState(docid, causetable, 2);
 					docrule.save(docsectionandrule, doctable);
-					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
+					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid,0);
 					docidandruleidDao.save(docidandruleid);
-					// docidlist.add(docidandruleid);
-					// docsectionlist.add(docsectionandrule);
-					// batchlist.add(batchdata);
 					break;
 				}
 			}
-			// if (i1 == - 1){
-			// docrule.plsave(docsectionlist, doctable);
-			// batchdataDao.plsave(batchlist);
-			// docidandruleidDao.plsave(docidlist);
-			// }
 		}
 	}
 
@@ -223,79 +193,6 @@ public class Bigdatasave extends Thread {
 		this.causetable = causetable;
 		this.latitudename = latitudename;
 		String a = getName();
-
-		/*
-		 * String ruleString = JSONArray.fromObject(lists).toString(); if
-		 * (lists==null) { System.out.println("111111111"); } for (int k = 0; k
-		 * < lists.size(); k++) { List<Article01> docList; try { docList =
-		 * breakup(articleList, ruleString); // 获取符合审判程序的文书 JSONArray jsonArray
-		 * = JSONArray.fromObject(lists);; JSONObject ruleJson = null; for (int
-		 * i1 = 0; i1 < docList.size(); i1++) { String docid =
-		 * docList.get(i1).getDocId(); String docold =
-		 * getTextFromHtml(docList.get(i1).getDecodeData()); String docnew =
-		 * null; int start = -1; int end = -1; String leftdoc = null; String
-		 * rightdoc = null; String beginIndex1 = null; String Startword = null;
-		 * // 匹配到的开始词语 String Endword = null; // 匹配到的结束词语 for (int a = 0; a <
-		 * jsonArray.size(); a++) { ruleJson = jsonArray.getJSONObject(a); //
-		 * System.out.println(ruleJson); String startWord =
-		 * ruleJson.getString("start"); String endWord =
-		 * ruleJson.getString("end"); String judge =
-		 * ruleJson.getString("judge"); String[] startWords =
-		 * startWord.split(";|；"); String[] endWords = endWord.split(";|；"); for
-		 * (int j1 = 0; j1 < startWords.length; j1++) { Pattern patternstart =
-		 * startRuleFomat(startWords[j1]); Matcher matcher =
-		 * patternstart.matcher(docold); if (matcher.find()) { Startword =
-		 * startWords[j1]; beginIndex1 = matcher.group(); start =
-		 * docold.indexOf(beginIndex1); leftdoc = docold.substring(0,
-		 * docold.indexOf(beginIndex1) + beginIndex1.length()); rightdoc =
-		 * docold.substring(docold.indexOf(beginIndex1) + beginIndex1.length());
-		 * break; } } if (rightdoc != null && start != -1) { for (int x = 0; x <
-		 * endWords.length; x++) { Endword = endWords[x]; Pattern patternend =
-		 * endRuleFomat(endWords[x]); Matcher matcher =
-		 * patternend.matcher(rightdoc); if (matcher.find()) { String beginIndex
-		 * = matcher.group(); if (endWords[x].length() > 0) { //
-		 * System.out.println(endWords.length); if (judge.equals("之前")) { end =
-		 * start + rightdoc.indexOf(beginIndex) + beginIndex1.length(); } else {
-		 * end = start + rightdoc.indexOf(beginIndex) + beginIndex.length() +
-		 * beginIndex1.length(); } } else { end = docold.length(); } break; } }
-		 * } Docsectionandrule docsectionandrule = new Docsectionandrule();
-		 * Batchdata batchdata = new Batchdata(); if (end != -1) { docnew =
-		 * docold.substring(start, end); docsectionandrule.setRuleid(ruleid);
-		 * docsectionandrule.setSectionname(latitudename);
-		 * docsectionandrule.setSectiontext(docnew);
-		 * docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-		 * docsectionandrule.setTitle(docList.get(i1).getTitle());
-		 * batchdata.setCause(causename);
-		 * batchdata.setDocumentid(docList.get(i1).getDocId());
-		 * batchdata.setEndword(Endword); batchdata.setRuleid(ruleid);
-		 * batchdata.setStartword(Startword); batchdataDao.save(batchdata);
-		 * articleDao.updateArticleState(docid, causetable, 2);
-		 * docrule.save(docsectionandrule, doctable); Docidandruleid
-		 * docidandruleid = new Docidandruleid(docList.get(i1).getDocId(),
-		 * ruleid); docidandruleidDao.save(docidandruleid);
-		 * 
-		 * break; } else if (end == 0) { docnew = docold.substring(start,
-		 * docold.length()); docsectionandrule.setRuleid(ruleid);
-		 * docsectionandrule.setSectionname(latitudename);
-		 * docsectionandrule.setSectiontext(docnew);
-		 * docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-		 * docsectionandrule.setTitle(docList.get(i1).getTitle());
-		 * batchdata.setCause(causename);
-		 * batchdata.setDocumentid(docList.get(i1).getDocId());
-		 * batchdata.setEndword(Endword); batchdata.setRuleid(ruleid);
-		 * batchdata.setStartword(Startword); batchdataDao.save(batchdata);
-		 * articleDao.updateArticleState(docid, causetable, 2);
-		 * docrule.save(docsectionandrule, doctable); Docidandruleid
-		 * docidandruleid = new Docidandruleid(docList.get(i1).getDocId(),
-		 * ruleid); docidandruleidDao.save(docidandruleid);
-		 * 
-		 * break; } } if (i1%10==0) { System.out.println(docid); } } } catch
-		 * (InvocationTargetException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (IllegalAccessException e) { // TODO
-		 * Auto-generated catch block e.printStackTrace(); }
-		 * 
-		 * }
-		 */
 		return true;
 	}
 
@@ -398,11 +295,6 @@ public class Bigdatasave extends Thread {
 		for (int i = articleList.size() - 1; i >= 0; i--) {
 			Article01 article01 = new Article01();
 			BeanUtils.copyProperties(articleList.get(i), article01);
-			// article01.setDocId(articleList.get(i).getDocId());
-			// JSONObject jsonObject4 =
-			// JSONObject.fromObject(articleList.get(i));
-			// String docid = jsonObject4.getString("docId");
-			// articleDao.updateArticleState(article01.getDocId(), table, 1);
 			for (int j = 0; j < jsonArray.size(); j++) {
 				JSONObject js = new JSONObject();
 				js = jsonArray.getJSONObject(j);
@@ -414,18 +306,12 @@ public class Bigdatasave extends Thread {
 				title = jsonObject2.getString("Title");
 				spcx = jsonObject3.getString("审判程序");
 				if (title.indexOf(doctype) != -1 && spcx.equals(trialRound)) {
-					// article01.setDate(articleList.get(i).getDate());
 					article01.setDecodeData(jsonObject2.getString("Html"));
-					// article01.setId(articleList.get(i).getId());
-					// article01.setTitle(articleList.get(i).getTitle());
 					list.add(article01);
 					break;
 
 				}
 			}
-			// if (title.indexOf(doctype) == -1 && !spcx.equals(trialRound)){
-			// articleList.remove(i);
-			// }
 		}
 		return list;
 

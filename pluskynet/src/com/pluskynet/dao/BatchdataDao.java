@@ -8,6 +8,8 @@ public interface BatchdataDao {
 	void save(Batchdata batchdata);
 
 	Boolean plsave(List<Batchdata> batchlist);
+
+	void delete(Batchdata batchdata);
 	
 
 }

@@ -120,25 +120,30 @@ public class OtherRuleSave extends Thread {
 								break;
 							}
 						}
+						SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+						LatitudedocKey latitudedocKey = new LatitudedocKey();
+						latitudedocKey.setDocumentid(documentid);
+						latitudedocKey.setLatitudename(latitudename);
+						latitudedocKey.setLatitudeid(latitudeid);
+						latitudedocKey.setSectionid(Integer.valueOf(rulesec));
+						latitudedocKey.setLocation(location);
+						latitudedocKey.setUpdatatime(df.format(new Date()));
+						Batchdata batchdata = new Batchdata();
+						batchdata.setDocumentid(documentid);
+						batchdata.setRuleid(latitudeid);
+						batchdata.setContain(contains);
+						batchdata.setNotcon(jsonObject.getString("notcon"));
+						Docidandruleid docidandruleid = new Docidandruleid(
+								documentid,latitudeid,1);
 						if (a) {
-							SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-							LatitudedocKey latitudedocKey = new LatitudedocKey();
-							latitudedocKey.setDocumentid(documentid);
-							latitudedocKey.setLatitudename(latitudename);
-							latitudedocKey.setLatitudeid(latitudeid);
-							latitudedocKey.setSectionid(Integer.valueOf(rulesec));
-							latitudedocKey.setLocation(location);
-							latitudedocKey.setUpdatatime(df.format(new Date()));
 							latitudeKeyDao.save(latitudedocKey);
-							Batchdata batchdata = new Batchdata();
-							batchdata.setDocumentid(documentid);
-							batchdata.setRuleid(latitudeid);
-							batchdata.setContain(contains);
-							batchdata.setNotcon(jsonObject.getString("notcon"));
 							batchdataDao.save(batchdata);
-							Docidandruleid docidandruleid = new Docidandruleid(
-									documentid,latitudeid,1);
 							docidandruleidDao.save(docidandruleid);
+							break look;
+						}else {
+							latitudeKeyDao.delete(latitudedocKey);
+							batchdataDao.delete(batchdata);
+							docidandruleidDao.delete(docidandruleid);
 							break look;
 						}
 					}
