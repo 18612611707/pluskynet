@@ -37,6 +37,7 @@ public class Bigdatasave extends Thread {
 	private int ruleid;
 	private String latitudename;
 	volatile int a = 1;
+
 	/*
 	 * public Bigdatasave(String name){ super(name); }
 	 */
@@ -80,7 +81,7 @@ public class Bigdatasave extends Thread {
 				String judge = ruleJson.getString("judge");
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
-				ss:for (int j1 = 0; j1 < startWords.length; j1++) {
+				ss: for (int j1 = 0; j1 < startWords.length; j1++) {
 					if (startWords[j1].contains("^")) {
 						before = startWords[j1].substring(0, startWords[j1].indexOf("^"));
 						startWords[j1] = startWords[j1].substring(startWords[j1].indexOf("^") + 1);
@@ -105,7 +106,7 @@ public class Bigdatasave extends Thread {
 								if (endWords[x].contains("^")) {
 									endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
 									endWords[x] = endWords[x].substring(endWords[x].indexOf("^") + 1);
-								}else{
+								} else {
 									endbefore = null;
 								}
 								Pattern patternend = endRuleFomat(endWords[x]);
@@ -136,43 +137,45 @@ public class Bigdatasave extends Thread {
 				Docsectionandrule docsectionandrule = new Docsectionandrule();
 				Batchdata batchdata = new Batchdata();
 				if (end != -1) {
-					try {
-						docnew = docold.substring(start, end);
-					} catch (Exception e) {
-						System.out.println("文书编号："+docid+",规则id："+ruleid);
+					if (end == 0) {
+						docnew = docold.substring(start, docold.length());
+						docsectionandrule.setRuleid(ruleid);
+						docsectionandrule.setSectionname(latitudename);
+						docsectionandrule.setSectiontext(docnew);
+						docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
+						docsectionandrule.setTitle(docList.get(i1).getTitle());
+						batchdata.setCause(causename);
+						batchdata.setDocumentid(docList.get(i1).getDocId());
+						batchdata.setEndword(Endword);
+						batchdata.setRuleid(ruleid);
+						batchdata.setStartword(Startword);
+						batchdataDao.save(batchdata);
+						docrule.save(docsectionandrule, doctable);
+						Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid, 0);
+						docidandruleidDao.save(docidandruleid);
+						break;
+					} else {
+						try {
+							docnew = docold.substring(start, end);
+						} catch (Exception e) {
+							System.out.println("文书编号：" + docid + ",规则id：" + ruleid);
+						}
+						docsectionandrule.setRuleid(ruleid);
+						docsectionandrule.setSectionname(latitudename);
+						docsectionandrule.setSectiontext(docnew);
+						docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
+						docsectionandrule.setTitle(docList.get(i1).getTitle());
+						batchdata.setCause(causename);
+						batchdata.setDocumentid(docList.get(i1).getDocId());
+						batchdata.setEndword(Endword);
+						batchdata.setRuleid(ruleid);
+						batchdata.setStartword(Startword);
+						batchdataDao.save(batchdata);
+						docrule.save(docsectionandrule, doctable);
+						Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid, 0);
+						docidandruleidDao.save(docidandruleid);
+						break;
 					}
-					docsectionandrule.setRuleid(ruleid);
-					docsectionandrule.setSectionname(latitudename);
-					docsectionandrule.setSectiontext(docnew);
-					docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-					docsectionandrule.setTitle(docList.get(i1).getTitle());
-					batchdata.setCause(causename);
-					batchdata.setDocumentid(docList.get(i1).getDocId());
-					batchdata.setEndword(Endword);
-					batchdata.setRuleid(ruleid);
-					batchdata.setStartword(Startword);
-					batchdataDao.save(batchdata);
-					docrule.save(docsectionandrule, doctable);
-					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid);
-					docidandruleidDao.save(docidandruleid);
-					break;
-				} else if (end == 0) {
-					docnew = docold.substring(start, docold.length());
-					docsectionandrule.setRuleid(ruleid);
-					docsectionandrule.setSectionname(latitudename);
-					docsectionandrule.setSectiontext(docnew);
-					docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-					docsectionandrule.setTitle(docList.get(i1).getTitle());
-					batchdata.setCause(causename);
-					batchdata.setDocumentid(docList.get(i1).getDocId());
-					batchdata.setEndword(Endword);
-					batchdata.setRuleid(ruleid);
-					batchdata.setStartword(Startword);
-					batchdataDao.save(batchdata);
-					docrule.save(docsectionandrule, doctable);
-					Docidandruleid docidandruleid = new Docidandruleid(docList.get(i1).getDocId(), ruleid,0);
-					docidandruleidDao.save(docidandruleid);
-					break;
 				}
 			}
 		}
