@@ -94,8 +94,8 @@ public class PreviewServiceImpl implements PreviewService {
 						String[] startandend = startandends.split("#");
 						for (int k = 0; k < startandend.length; k++) {
 							if (htmlString.contains(startandend[k])) {
-								olddoc = htmlString.substring(0,
-										htmlString.indexOf(startandend[k]) + startandend[k].length());
+								olddoc = htmlString
+										.substring(0,htmlString.indexOf(startandend[k]) + startandend[k].length());
 								htmlString = htmlString
 										.substring(htmlString.indexOf(startandend[k]) + startandend[k].length());
 							}
@@ -156,41 +156,61 @@ public class PreviewServiceImpl implements PreviewService {
 						}
 					}
 				}
-
-				/* if (end != -1) { */
-				docnew = htmlString.replaceAll(matchStart,
-						"<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
-								+ matchStart + "</span></div>");
-				newHtml = docnew.replaceAll(matchStart,
-						"<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
-								+ matchEnd + "</span></div>");
-				// System.out.println(statsDoc);
-				break;
-				/*
-				 * } else if (end == 0) { docnew = htmlString.substring(start,
-				 * htmlString.length()); // System.out.println(statsDoc); break;
-				 * }
-				 */
+				
+				if (end != -1) {
+					docnew = htmlString.substring(start, end);
+					// System.out.println(statsDoc);
+					break;
+				} else if (end == 0) {
+					docnew = htmlString.substring(start, htmlString.length());
+					// System.out.println(statsDoc);
+					break;
+				}
 			}
-			/*
-			 * if (docnew != null) { String[] html = docnew.split("</div>"); for
-			 * (int i = 0; i < html.length; i++) { if (html[i].equals("")) {
-			 * continue; } String start = html[i].substring(0, 1); String p =
-			 * "[\\u4e00-\\u9fa5]+"; if (start.matches(p)) { newHtml =
-			 * "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
-			 * + html[i] + "</span></div>"; } else { Document doc =
-			 * Jsoup.parse(html[i]); String eles =
-			 * doc.getElementsByTag("div").text(); if (eles.equals("")) {
-			 * newHtml = newHtml + html[i]; } else { if (html[i].indexOf(eles)
-			 * != -1) { String left = html[i].substring(0,
-			 * html[i].indexOf(eles)); String right =
-			 * html[i].substring(left.length() + eles.length()); newHtml =
-			 * newHtml + left +
-			 * "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
-			 * + eles + right + "</span></div>"; } } } } newHtml =
-			 * htmlString.replace(docnew, newHtml); } else { newHtml =
-			 * htmlString; }
-			 */
+			
+			if (docnew != null) {
+				if (!matchStart.equals("")) {
+					newHtml = docnew.replace(matchStart, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+							+ matchStart + "</span>");
+				}else{
+					newHtml = docnew;
+				}
+				if (!matchEnd.equals("")) {
+					newHtml = newHtml.replace(matchEnd, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+							+ matchEnd + "</span>");
+				}else{
+					newHtml = newHtml;
+				}
+				/*String[] html = docnew.split("</div>");
+				for (int i = 0; i < html.length; i++) {
+					if (html[i].equals("")) {
+						continue;
+					}
+						String start = html[i].substring(0, 1);
+					String p = "[\\u4e00-\\u9fa5]+";
+					if (start.matches(p)) {
+						newHtml = "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+								+ html[i] + "</span></div>";
+					} else {
+						Document doc = Jsoup.parse(html[i]);
+						String eles = doc.getElementsByTag("div").text();
+						if (eles.equals("")) {
+							newHtml = newHtml + html[i];
+						} else {
+							if (html[i].indexOf(eles) != -1) {
+								String left = html[i].substring(0, html[i].indexOf(eles));
+								String right = html[i].substring(left.length() + eles.length());
+								newHtml = newHtml + left
+										+ "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+										+ eles + right + "</span></div>";
+							}
+						}
+					}
+				}*/
+				newHtml = htmlString.replace(docnew, newHtml);
+			} else {
+				newHtml = htmlString;
+			}
 			map.put("data", newHtml);
 		}
 		return map;
