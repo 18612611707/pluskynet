@@ -18,6 +18,7 @@ import com.pluskynet.domain.Preview;
 import com.pluskynet.domain.StatsDoc;
 import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.Otherdocrule;
+import com.pluskynet.rule.DocRule;
 import com.pluskynet.service.PreviewService;
 
 import net.sf.json.JSONArray;
@@ -47,24 +48,13 @@ public class PreviewServiceImpl implements PreviewService {
 	public List<StatsDoc> getDocList(Preview preview, User user) {
 		List<Articleyl> listaArticles = articleylDao.getArticles(user);
 		List<StatsDoc> jsonArray = previewDao.getDocList(preview, listaArticles);
-		// docSectionAndRuleDao.saveyldelete(preview.getDocName());
-		// for (int i = 0; i < jsonArray.size(); i++) {
-		// Docsectionandrule docsectionandrule = new Docsectionandrule();
-		// if(jsonArray.get(i).getStats()=="符合"){
-		// jsonArray.get(i).getDocidAndDoc();
-		// docsectionandrule.setSectionname(preview.getDocName());
-		// docsectionandrule.setSectiontext(jsonArray.get(i).getDocidAndDoc().getDoc());
-		// docsectionandrule.setDocumentsid(jsonArray.get(i).getDocidAndDoc().getDocid());
-		// docsectionandrule.setTitle(jsonArray.get(i).getDocidAndDoc().getTitle());
-		// docSectionAndRuleDao.saveyl(docsectionandrule);
-		// }
-		// }
 		return jsonArray;
 
 	}
 
 	@Override
 	public Map<String, Object> getDoc(String docid, String rule) {
+		DocRule docRule = new DocRule();
 		List<Articleyl> art = articleylDao.getArt(docid);
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (art.size() > 0) {
@@ -82,69 +72,8 @@ public class PreviewServiceImpl implements PreviewService {
 			String judges = null;
 			String spcx = null;
 			String doctype = null;
-			List<Otherdocrule> list = new ArrayList<Otherdocrule>();
-			for (int b = 0; b < jsonArray.size(); b++) {
-				Otherdocrule otherdocrule = new Otherdocrule();
-				ruleJson = jsonArray.getJSONObject(b);
-				judges = ruleJson.getString("judge");
-				startword = ruleJson.getString("start");
-				endword = ruleJson.getString("end");
-				spcx = ruleJson.getString("trialRound");
-				doctype = ruleJson.getString("doctype");
-				if (list.size() == 0) {
-					otherdocrule.setJudge(ruleJson.getString("judge"));
-					otherdocrule.setSpcx(ruleJson.getString("trialRound"));
-					otherdocrule.setDoctype(ruleJson.getString("doctype"));
-					otherdocrule.setStart(ruleJson.getString("start"));
-					otherdocrule.setEnd(ruleJson.getString("end"));
-					list.add(otherdocrule);
-				} else {
-					for (int j = 0; j < list.size(); j++) {
-						boolean statrstats = true;
-						boolean endstats = true;
-						if (list.get(j).getJudge().equals(judges) && list.get(j).getSpcx().equals(spcx)
-								&& list.get(j).getDoctype().equals(doctype)) {
-							if (!startword.equals("")) {
-								String[] startwords = list.get(j).getStart().split(";");
-								for (int i = 0; i < startwords.length; i++) {
-									if (!startwords[i].equals(startword)) {
-										statrstats = true;
-									}else{
-										statrstats = false;
-										break;
-									}
-								}
-								if (statrstats) {
-									list.get(j).setStart(list.get(j).getStart() + ";" + startword);
-								}
-							}
-							if (!endword.equals("")) {
-								String[] endwords = list.get(j).getEnd().split(";");
-								for (int i = 0; i < endwords.length; i++) {
-									if (!endwords[i].equals(endword)) {
-										endstats = true;
-									}else{
-										endstats = false;
-										break;
-									}
-								}
-								if (endstats) {
-									list.get(j).setEnd(list.get(j).getEnd() + ";" + endword);
-								}
-							}
-							
-							break;
-						} else if (j == list.size() - 1) {
-							otherdocrule.setJudge(ruleJson.getString("judge"));
-							otherdocrule.setSpcx(ruleJson.getString("trialRound"));
-							otherdocrule.setDoctype(ruleJson.getString("doctype"));
-							otherdocrule.setStart(ruleJson.getString("start"));
-							otherdocrule.setEnd(ruleJson.getString("end"));
-							list.add(otherdocrule);
-						}
-					}
-				}
-			}
+			String olddoc = null;
+			List<Otherdocrule> list = docRule.ruleFormat(jsonArray);
 			for (int i = 0; i < list.size(); i++) {
 				JSONObject rulejson = JSONObject.fromObject(list.get(i));
 				int start = -1;
@@ -158,8 +87,22 @@ public class PreviewServiceImpl implements PreviewService {
 				String[] startWords = startWord.split(";|；");
 				String[] endWords = endWord.split(";|；");
 				String before = null;
-				
 				for (int j = 0; j < startWords.length; j++) {
+					if (startWords[j].contains("#")) {
+						String startandends = startWords[j].substring(0, startWords[j].lastIndexOf("#") + 1);
+						startWords[j] = startWords[j].substring(startWords[j].lastIndexOf("#"));
+						String[] startandend = startandends.split("#");
+						for (int k = 0; k < startandend.length; k++) {
+							if (htmlString.contains(startandend[k])) {
+								olddoc = htmlString.substring(0,
+										htmlString.indexOf(startandend[k]) + startandend[k].length());
+								htmlString = htmlString
+										.substring(htmlString.indexOf(startandend[k]) + startandend[k].length());
+							}
+						}
+					} else {
+						htmlString = jsonObject.getString("jsonHtml");
+					}
 					if (startWords[j].contains("^")) {
 						before = startWords[j].substring(0, startWords[j].indexOf("^"));
 						startWords[j] = startWords[j].substring(startWords[j].indexOf("^") + 1);
@@ -170,6 +113,7 @@ public class PreviewServiceImpl implements PreviewService {
 					Matcher matcher = patternstart.matcher(htmlString);
 					if (matcher.find()) {
 						beginIndex1 = matcher.group();
+						matchStart = beginIndex1;
 						start = htmlString.indexOf(beginIndex1);
 						leftdoc = htmlString.substring(0, htmlString.indexOf(beginIndex1) + beginIndex1.length());
 						StringBuffer s = new StringBuffer(leftdoc);
@@ -183,20 +127,21 @@ public class PreviewServiceImpl implements PreviewService {
 								String endbefore = null;
 								if (endWords[x].contains("^")) {
 									endbefore = endWords[x].substring(0, endWords[x].indexOf("^"));
-									endWords[x] = endWords[x].substring(endWords[x].indexOf("^")+1);
+									endWords[x] = endWords[x].substring(endWords[x].indexOf("^") + 1);
 								}
 								Pattern patternend = endRuleFomat(endWords[x]);
 								Matcher matcher1 = patternend.matcher(rightdoc);
 								if (matcher1.find()) {
 									String beginIndex = matcher1.group();
+									matchEnd = beginIndex;
 									if (endWords[x].length() > 0) {
 										// System.out.println(endWords.length);
 										if (judge.equals("之前")) {
-											if (endbefore!=null) {
+											if (endbefore != null) {
 												rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
-												end = start + rightdoc.lastIndexOf(endbefore)+endbefore.length();
-											}else{
-											end = start + rightdoc.indexOf(beginIndex);
+												end = start + rightdoc.lastIndexOf(endbefore) + endbefore.length();
+											} else {
+												end = start + rightdoc.indexOf(beginIndex);
 											}
 										} else {
 											end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
@@ -207,51 +152,45 @@ public class PreviewServiceImpl implements PreviewService {
 									break;
 								}
 							}
+							break;
 						}
 					}
 				}
-				
-				if (end != -1) {
-					docnew = htmlString.substring(start, end);
-					// System.out.println(statsDoc);
-					break;
-				} else if (end == 0) {
-					docnew = htmlString.substring(start, htmlString.length());
-					// System.out.println(statsDoc);
-					break;
-				}
+
+				/* if (end != -1) { */
+				docnew = htmlString.replaceAll(matchStart,
+						"<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+								+ matchStart + "</span></div>");
+				newHtml = docnew.replaceAll(matchStart,
+						"<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+								+ matchEnd + "</span></div>");
+				// System.out.println(statsDoc);
+				break;
+				/*
+				 * } else if (end == 0) { docnew = htmlString.substring(start,
+				 * htmlString.length()); // System.out.println(statsDoc); break;
+				 * }
+				 */
 			}
-			if (docnew != null) {
-				String[] html = docnew.split("</div>");
-				for (int i = 0; i < html.length; i++) {
-					if (html[i].equals("")) {
-						continue;
-					}
-						String start = html[i].substring(0, 1);
-					String p = "[\\u4e00-\\u9fa5]+";
-					if (start.matches(p)) {
-						newHtml = "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
-								+ html[i] + "</span></div>";
-					} else {
-						Document doc = Jsoup.parse(html[i]);
-						String eles = doc.getElementsByTag("div").text();
-						if (eles.equals("")) {
-							newHtml = newHtml + html[i];
-						} else {
-							if (html[i].indexOf(eles) != -1) {
-								String left = html[i].substring(0, html[i].indexOf(eles));
-								String right = html[i].substring(left.length() + eles.length());
-								newHtml = newHtml + left
-										+ "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
-										+ eles + right + "</span></div>";
-							}
-						}
-					}
-				}
-				newHtml = htmlString.replace(docnew, newHtml);
-			} else {
-				newHtml = htmlString;
-			}
+			/*
+			 * if (docnew != null) { String[] html = docnew.split("</div>"); for
+			 * (int i = 0; i < html.length; i++) { if (html[i].equals("")) {
+			 * continue; } String start = html[i].substring(0, 1); String p =
+			 * "[\\u4e00-\\u9fa5]+"; if (start.matches(p)) { newHtml =
+			 * "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+			 * + html[i] + "</span></div>"; } else { Document doc =
+			 * Jsoup.parse(html[i]); String eles =
+			 * doc.getElementsByTag("div").text(); if (eles.equals("")) {
+			 * newHtml = newHtml + html[i]; } else { if (html[i].indexOf(eles)
+			 * != -1) { String left = html[i].substring(0,
+			 * html[i].indexOf(eles)); String right =
+			 * html[i].substring(left.length() + eles.length()); newHtml =
+			 * newHtml + left +
+			 * "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+			 * + eles + right + "</span></div>"; } } } } newHtml =
+			 * htmlString.replace(docnew, newHtml); } else { newHtml =
+			 * htmlString; }
+			 */
 			map.put("data", newHtml);
 		}
 		return map;
