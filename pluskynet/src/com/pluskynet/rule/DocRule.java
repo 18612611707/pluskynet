@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.tools.ant.taskdefs.Length;
+
 import com.pluskynet.domain.DocidAndDoc;
 import com.pluskynet.domain.StatsDoc;
 import com.pluskynet.otherdomain.Otherdocrule;
@@ -96,6 +98,7 @@ public class DocRule {
 		String leftdoc = null;
 		String rightdoc = null;
 		String beginIndex1 = null;
+		int startj = 0; //开始词#前长度
 		look: for (int c = 0; c < list.size(); c++) {
 			ruleJson = JSONObject.fromObject(list.get(c));
 			String startWord = ruleJson.getString("start");
@@ -111,10 +114,13 @@ public class DocRule {
 					String[] startandend = startandends.split("#");
 					for (int k = 0; k < startandend.length; k++) {
 						if (docold.contains(startandend[k])) {
+							startj = docold.substring(0,docold.indexOf(startandend[k]) + startandend[k].length()).length();
 							docold = docold.substring(docold.indexOf(startandend[k]) + startandend[k].length());
+							break;
 						}
 					}
 				} else {
+					startj = 0;
 					docold = olddoc;
 				}
 				if (startWords[j].contains("^")) {
@@ -132,7 +138,6 @@ public class DocRule {
 					leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
 					// System.out.println(leftdoc.length());
 					StringBuffer s = new StringBuffer(leftdoc);
-
 					if (before != null) {
 						leftdoc = s.reverse().toString();
 						start = start + beginIndex1.length() - leftdoc.indexOf(before);
@@ -148,6 +153,7 @@ public class DocRule {
 								for (int k = 0; k < endandstarts.length; k++) {
 									if (rightdoc.contains(endandstarts[k])) {
 										rightdoc = rightdoc.substring(0, rightdoc.indexOf(endandstarts[k]));
+										break;
 									}
 								}
 							} else {
@@ -185,7 +191,7 @@ public class DocRule {
 				}
 			}
 		}
-		intlist.set(0, String.valueOf(start));
+		intlist.set(0, String.valueOf(start + startj));
 		intlist.set(1, String.valueOf(end));
 		intlist.add(2, matchStart);
 		intlist.add(3, matchEnd);
