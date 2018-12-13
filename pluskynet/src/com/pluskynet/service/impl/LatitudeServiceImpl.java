@@ -346,22 +346,14 @@ public class LatitudeServiceImpl implements LatitudeService {
 		} else {
 			JSONObject ruleJson = new JSONObject();
 			List<Docsectionandrule> docList = new ArrayList<Docsectionandrule>();
-			// for (int i = 0; i < jsonArray.size(); i++) {
-			// JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
-			// StatsDoc statsDoc = new StatsDoc();
-			// DocidAndDoc docidAndDoc = new DocidAndDoc();
-			// int sectionname = jsonObject.getInt("sectionname"); // 段落名
-			// String sectiontext = null;
 			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
 			docList.addAll(list);
-			// }
 			for (int i = 0; i < docList.size(); i++) {
 				StatsDoc statsDoc = new StatsDoc();
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				String docid = docList.get(i).getDocumentsid();
 				String docold = docList.get(i).getSectiontext();
 				String doctitle = docList.get(i).getTitle();
-
 				String docnew = null;
 				int start = -1;
 				int end = -1;
@@ -370,7 +362,6 @@ public class LatitudeServiceImpl implements LatitudeService {
 				String beginIndex1 = null;
 				for (int a = 0; a < jsonArray.size(); a++) {
 					ruleJson = jsonArray.getJSONObject(a);
-					// System.out.println(ruleJson);
 					String startWord = ruleJson.getString("start");
 					String endWord = ruleJson.getString("end");
 					String[] startWords = startWord.split(";|；");
@@ -448,10 +439,24 @@ public class LatitudeServiceImpl implements LatitudeService {
 		String[] start = startWords.split("\\*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
+				int wordnum = 50;
+				for (int i = 0; i < start[j].length(); i++) {
+					if (start[j].charAt(i) == '(') {
+						start[j] = start[j].substring(start[j].indexOf("(") + 1);
+					} else if (start[j].charAt(i) == '（') {
+						start[j] = start[j].substring(start[j].indexOf("（") + 1);
+					} else if (start[j].charAt(i) == ')') {
+						wordnum = Integer.valueOf(start[j].substring(0, start[j].indexOf(")")));
+						start[j] = start[j].substring(start[j].indexOf(")") + 1);
+					} else if (start[j].charAt(i) == '）') {
+						wordnum = Integer.valueOf(start[j].substring(0, start[j].indexOf("）")));
+						start[j] = start[j].substring(start[j].indexOf("）") + 1);
+					}
+				}
 				if (reg_charset == null) {
 					reg_charset = start[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + start[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})" + start[j];
 				}
 			}
 		} else {
@@ -467,10 +472,24 @@ public class LatitudeServiceImpl implements LatitudeService {
 		String[] end = endWords.split("\\*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
+				int wordnum = 50;
+				for (int i = 0; i < end[j].length(); i++) {
+					if (end[j].charAt(i) == '(') {
+						end[j] = end[j].substring(end[j].indexOf("(") + 1);
+					} else if (end[j].charAt(i) == '（') {
+						end[j] = end[j].substring(end[j].indexOf("（") + 1);
+					} else if (end[j].charAt(i) == ')') {
+						wordnum = Integer.valueOf(end[j].substring(0, end[j].indexOf(")")));
+						end[j] = end[j].substring(end[j].indexOf(")") + 1);
+					} else if (end[j].charAt(i) == '）') {
+						wordnum = Integer.valueOf(end[j].substring(0, end[j].indexOf("）")));
+						end[j] = end[j].substring(end[j].indexOf("）") + 1);
+					}
+				}
 				if (reg_charset == null) {
 					reg_charset = end[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + end[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})" + end[j];
 				}
 			} else {
 				reg_charset = end[j];

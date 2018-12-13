@@ -86,9 +86,11 @@ public class DocRule {
 		return list;
 	}
 
-	public boolean doclist(String docold,List<Integer> intlist) {
-		int start = intlist.get(0);
-		int end = intlist.get(1);
+	public boolean doclist(String docold, List<String> intlist) {
+		String matchStart = ""; // 匹配到的开始词语
+		String matchEnd = "";// 匹配到的结束词语
+		int start = Integer.valueOf(intlist.get(0));
+		int end = Integer.valueOf(intlist.get(1));
 		String olddoc = docold;
 		JSONObject ruleJson = null;
 		String leftdoc = null;
@@ -125,11 +127,12 @@ public class DocRule {
 				Matcher matcher = patternstart.matcher(docold);
 				if (matcher.find()) {
 					beginIndex1 = matcher.group();
+					matchStart = beginIndex1;
 					start = docold.indexOf(beginIndex1);
 					leftdoc = docold.substring(0, docold.indexOf(beginIndex1) + beginIndex1.length());
 					// System.out.println(leftdoc.length());
 					StringBuffer s = new StringBuffer(leftdoc);
-					
+
 					if (before != null) {
 						leftdoc = s.reverse().toString();
 						start = start + beginIndex1.length() - leftdoc.indexOf(before);
@@ -144,8 +147,7 @@ public class DocRule {
 								String[] endandstarts = endandstart.split("#");
 								for (int k = 0; k < endandstarts.length; k++) {
 									if (rightdoc.contains(endandstarts[k])) {
-										rightdoc = rightdoc.substring(0,
-												rightdoc.indexOf(endandstarts[k]));
+										rightdoc = rightdoc.substring(0, rightdoc.indexOf(endandstarts[k]));
 									}
 								}
 							} else {
@@ -160,6 +162,7 @@ public class DocRule {
 							Matcher matcher1 = patternend.matcher(rightdoc);
 							if (matcher1.find()) {
 								String beginIndex = matcher1.group();
+								matchEnd = beginIndex;
 								if (endWords[x].length() > 0) {
 									// System.out.println(endWords.length);
 									if (judge.equals("之前")) {
@@ -182,8 +185,10 @@ public class DocRule {
 				}
 			}
 		}
-		intlist.set(0, start);
-		intlist.set(1, end);
+		intlist.set(0, String.valueOf(start));
+		intlist.set(1, String.valueOf(end));
+		intlist.add(2, matchStart);
+		intlist.add(3, matchEnd);
 		return true;
 	}
 
@@ -193,10 +198,24 @@ public class DocRule {
 		String[] start = startWords.split("\\*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
+				int wordnum = 50;
+				for (int i = 0; i < start[j].length(); i++) {
+					if (start[j].charAt(i) == '(') {
+						start[j] = start[j].substring(start[j].indexOf("(") + 1);
+					} else if (start[j].charAt(i) == '（') {
+						start[j] = start[j].substring(start[j].indexOf("（") + 1);
+					} else if (start[j].charAt(i) == ')') {
+						wordnum = Integer.valueOf(start[j].substring(0, start[j].indexOf(")")));
+						start[j] = start[j].substring(start[j].indexOf(")") + 1);
+					} else if (start[j].charAt(i) == '）') {
+						wordnum = Integer.valueOf(start[j].substring(0, start[j].indexOf("）")));
+						start[j] = start[j].substring(start[j].indexOf("）") + 1);
+					}
+				}
 				if (reg_charset == null) {
 					reg_charset = start[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + start[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0," + wordnum + "})" + start[j];
 				}
 			}
 		} else {
@@ -212,10 +231,24 @@ public class DocRule {
 		String[] end = endWords.split("\\*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
+			int wordnum = 50;
+				for (int i = 0; i < end[j].length(); i++) {
+					if (end[j].charAt(i) == '(') {
+						end[j] = end[j].substring(end[j].indexOf("(") + 1);
+					} else if (end[j].charAt(i) == '（') {
+						end[j] = end[j].substring(end[j].indexOf("（") + 1);
+					} else if (end[j].charAt(i) == ')') {
+						wordnum = Integer.valueOf(end[j].substring(0, end[j].indexOf(")")));
+						end[j] = end[j].substring(end[j].indexOf(")") + 1);
+					} else if (end[j].charAt(i) == '）') {
+						wordnum = Integer.valueOf(end[j].substring(0, end[j].indexOf("）")));
+						end[j] = end[j].substring(end[j].indexOf("）") + 1);
+					}
+				}
 				if (reg_charset == null) {
 					reg_charset = end[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0,50})" + end[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP]{0," + wordnum + "})" + end[j];
 				}
 			} else {
 				reg_charset = end[j];

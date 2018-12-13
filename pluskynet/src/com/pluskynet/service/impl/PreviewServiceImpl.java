@@ -73,8 +73,18 @@ public class PreviewServiceImpl implements PreviewService {
 			String spcx = null;
 			String doctype = null;
 			String olddoc = null;
+			String docold = getTextFromHtml(htmlString);
 			List<Otherdocrule> list = docRule.ruleFormat(jsonArray);
-			for (int i = 0; i < list.size(); i++) {
+			List<String> intlist = new ArrayList<String>();
+			intlist.add(0,"-1");
+			intlist.add(1,"-1");
+			docRule.doclist(docold, intlist);
+			matchStart = intlist.get(2);
+			matchEnd = intlist.get(3);
+			String leftdoc = htmlString.substring(0,htmlString.indexOf(matchStart)+ matchStart.length());
+			String rightdoc = htmlString.substring(htmlString.indexOf(matchStart)+ matchStart.length());
+//			String innerdoc = htmlString.substring(leftdoc.length(), htmlString.indexOf(matchEnd)+ matchEnd.length());
+			/*for (int i = 0; i < list.size(); i++) {
 				JSONObject rulejson = JSONObject.fromObject(list.get(i));
 				int start = -1;
 				int end = -1;
@@ -138,10 +148,10 @@ public class PreviewServiceImpl implements PreviewService {
 										// System.out.println(endWords.length);
 										if (judge.equals("之前")) {
 											if (endbefore != null) {
-												rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
-												end = start + rightdoc.lastIndexOf(endbefore) + endbefore.length();
+												rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex)+ beginIndex.length());
+												end = start + rightdoc.length();
 											} else {
-												end = start + rightdoc.indexOf(beginIndex);
+												end = start + rightdoc.indexOf(beginIndex)+ beginIndex.length();
 											}
 										} else {
 											end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
@@ -166,11 +176,46 @@ public class PreviewServiceImpl implements PreviewService {
 					// System.out.println(statsDoc);
 					break;
 				}
+			}*/
+			if (!matchStart.equals("")) {
+				for (int i = 0; i < matchStart.length(); i++) {
+					String leftstart = matchStart.substring(0,matchStart.length() - i);
+					String rightstart = matchStart.substring(matchStart.length() - i);
+					if (leftdoc.contains(leftstart)) {
+						leftdoc = leftdoc.replace(leftstart, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+								+ leftstart + "</span>");
+						if (i==0) {
+							break;
+						}else{
+							leftdoc.replace(rightstart, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+									+ rightstart + "</span>");
+							break;
+						}
+					}
+				}
 			}
+			if (!matchEnd.equals("")) {
+				for (int i = 0; i < matchEnd.length(); i++) {
+					String leftend = matchEnd.substring(0,matchEnd.length() - i);
+					String rightend = matchEnd.substring(matchEnd.length() - i);
+					if (rightdoc.contains(leftend)) {
+						rightdoc = rightdoc.replaceFirst(leftend, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+								+ leftend + "</span>");
+						if (i==0) {
+							break;
+						}else{
+							rightdoc = rightdoc.replaceFirst(rightend, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+									+ rightend + "</span>");
+							break;
+						}
+					}
+				}
+			}
+			newHtml = leftdoc + rightdoc;
 			
-			if (docnew != null) {
+			/*	if (docnew != null) {
 				if (!matchStart.equals("")) {
-					newHtml = docnew.replace(matchStart, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
+					newHtml = docnew.replaceFirst(matchStart, "<span style=\"LINE-HEIGHT: 25pt;TEXT-ALIGN:justify;TEXT-JUSTIFY:inter-ideograph; TEXT-INDENT: 30pt; MARGIN: 0.5pt 0cm;FONT-FAMILY: 仿宋; FONT-SIZE: 16pt;color:red;\">"
 							+ matchStart + "</span>");
 				}else{
 					newHtml = docnew;
@@ -181,7 +226,7 @@ public class PreviewServiceImpl implements PreviewService {
 				}else{
 					newHtml = newHtml;
 				}
-				/*String[] html = docnew.split("</div>");
+				String[] html = docnew.split("</div>");
 				for (int i = 0; i < html.length; i++) {
 					if (html[i].equals("")) {
 						continue;
@@ -206,11 +251,11 @@ public class PreviewServiceImpl implements PreviewService {
 							}
 						}
 					}
-				}*/
+				}
 				newHtml = htmlString.replace(docnew, newHtml);
 			} else {
 				newHtml = htmlString;
-			}
+			}*/
 			map.put("data", newHtml);
 		}
 		return map;
@@ -252,5 +297,36 @@ public class PreviewServiceImpl implements PreviewService {
 		}
 		Pattern pattern = Pattern.compile(reg_charset);
 		return pattern;
+	}
+	private static final String regEx_script = "<script[^>]*?>[\\s\\S]*?<\\/script>"; // 定义script的正则表达式
+	private static final String regEx_style = "<style[^>]*?>[\\s\\S]*?<\\/style>"; // 定义style的正则表达式
+	private static final String regEx_html = "<[^>]+>"; // 定义HTML标签的正则表达式
+	private static final String regEx_space = "\\s*|\t|\r|\n";// 定义空格回车换行符
+
+	public static String delHTMLTag(String htmlStr) {
+		Pattern p_script = Pattern.compile(regEx_script, Pattern.CASE_INSENSITIVE);
+		Matcher m_script = p_script.matcher(htmlStr);
+		htmlStr = m_script.replaceAll(""); // 过滤script标签
+
+		Pattern p_style = Pattern.compile(regEx_style, Pattern.CASE_INSENSITIVE);
+		Matcher m_style = p_style.matcher(htmlStr);
+		htmlStr = m_style.replaceAll(""); // 过滤style标签
+
+		Pattern p_html = Pattern.compile(regEx_html, Pattern.CASE_INSENSITIVE);
+		Matcher m_html = p_html.matcher(htmlStr);
+		htmlStr = m_html.replaceAll(""); // 过滤html标签
+
+		Pattern p_space = Pattern.compile(regEx_space, Pattern.CASE_INSENSITIVE);
+		Matcher m_space = p_space.matcher(htmlStr);
+		htmlStr = m_space.replaceAll(""); // 过滤空格回车标签
+		htmlStr = htmlStr.replace(" ", "");
+		return htmlStr.replaceAll("　　", ""); // 返回文本字符串
+	}
+
+	public static String getTextFromHtml(String htmlStr) {
+		htmlStr = delHTMLTag(htmlStr);
+		htmlStr = htmlStr.replaceAll("&nbsp;", "");
+		// htmlStr = htmlStr.substring(0, htmlStr.indexOf("。")+1);
+		return htmlStr;
 	}
 }

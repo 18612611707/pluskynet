@@ -128,12 +128,12 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			if (docid.equals("ff04275d-f7ba-4679-9b5b-5b056ce64b3a")) {
 				System.out.println("aaaaaaaaaaaaa");
 			}
-			List<Integer> intlist = new ArrayList<Integer>();
-			intlist.add(-1);
-			intlist.add(-1);
+			List<String> intlist = new ArrayList<String>();
+			intlist.add(0,"-1");
+			intlist.add(1,"-1");
 			docRule.doclist(docold,intlist);
-			int start = intlist.get(0);
-			int end = intlist.get(1);
+			int start = Integer.valueOf(intlist.get(0));
+			int end = Integer.valueOf(intlist.get(1));
 			/*String leftdoc = null;
 			String rightdoc = null;
 			String beginIndex1 = null;
