@@ -192,7 +192,7 @@ public class DocRule {
 			}
 		}
 		intlist.set(0, String.valueOf(start + startj));
-		intlist.set(1, String.valueOf(end));
+		intlist.set(1, String.valueOf(end + startj));
 		intlist.add(2, matchStart);
 		intlist.add(3, matchEnd);
 		return true;
