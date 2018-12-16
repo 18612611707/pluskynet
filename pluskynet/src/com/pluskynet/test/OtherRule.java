@@ -79,7 +79,7 @@ public class OtherRule extends Thread {
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
-				int state = 5;//0和5状态改变为3:新增跑批状态  3、5循环跑批
+				int state = 3;//0和5状态改变为3:新增跑批状态  3、5循环跑批
 				synchronized (ob) {
 					System.out.println("线程名称：" + getName()+"开始取数据");
 					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);

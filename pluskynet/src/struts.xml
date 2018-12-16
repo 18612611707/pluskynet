@@ -83,6 +83,18 @@
 		<action name="ParaAction" class="com.pluskynet.action.ParaAction"
 			method="{1}">
 		</action>
+		<action name="LatitudenumAction" class="com.pluskynet.action.LatitudenumAction"
+			method="{1}">
+			<result name="sucess" type="json">
+				<param name="reason">jsonObject</param>
+			</result>
+		</action>
+		<action name="ReasonnumAction" class="com.pluskynet.action.ReasonnumAction"
+			method="{1}">
+			<!-- <result name="sucess" type="json">
+				<param name="reason">jsonObject</param>
+			</result> -->
+		</action>
 	</package>
 
 </struts>
