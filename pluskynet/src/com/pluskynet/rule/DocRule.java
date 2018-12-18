@@ -15,9 +15,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 public class DocRule {
-	List<Otherdocrule> list = new ArrayList<Otherdocrule>();
+	
 
 	public List<Otherdocrule> ruleFormat(JSONArray jsonArray) {
+		List<Otherdocrule> list = new ArrayList<Otherdocrule>();
 		JSONObject ruleJson = new JSONObject();
 		String startword = null;
 		String endword = null;
@@ -88,7 +89,7 @@ public class DocRule {
 		return list;
 	}
 
-	public boolean doclist(String docold, List<String> intlist) {
+	public boolean doclist(String docold, List<String> intlist,List<Otherdocrule> list,String spcx,String doctype) {
 		String matchStart = ""; // 匹配到的开始词语
 		String matchEnd = "";// 匹配到的结束词语
 		int start = Integer.valueOf(intlist.get(0));
@@ -100,6 +101,19 @@ public class DocRule {
 		String beginIndex1 = null;
 		int startj = 0; //开始词#前长度
 		look: for (int c = 0; c < list.size(); c++) {
+			if (!doctype.equals("") && !spcx.equals("")) {
+				if (list.get(c).getDoctype().equals(doctype)) {
+					if (!list.get(c).getSpcx().equals(spcx)) {
+						intlist.add(2, matchStart);
+						intlist.add(3, matchEnd);
+						return true;	
+					}
+				}else{
+					intlist.add(2, matchStart);
+					intlist.add(3, matchEnd);
+					return true;
+				}
+			}
 			ruleJson = JSONObject.fromObject(list.get(c));
 			String startWord = ruleJson.getString("start");
 			String endWord = ruleJson.getString("end");
@@ -174,15 +188,15 @@ public class DocRule {
 									if (judge.equals("之前")) {
 										if (endbefore != null) {
 											rightdoc = rightdoc.substring(0, rightdoc.indexOf(beginIndex));
-											end = start + rightdoc.lastIndexOf(endbefore) + endbefore.length();
+											end = start + rightdoc.lastIndexOf(endbefore) + endbefore.length()+ startj;
 										} else {
-											end = start + rightdoc.indexOf(beginIndex);
+											end = start + rightdoc.indexOf(beginIndex)+ startj;
 										}
 									} else {
-										end = start + rightdoc.indexOf(beginIndex) + beginIndex.length();
+										end = start + rightdoc.indexOf(beginIndex) + beginIndex.length()+ startj;
 									}
 								} else {
-									end = docold.length();
+									end = rightdoc.length();
 								}
 								break look;
 							}
@@ -192,7 +206,7 @@ public class DocRule {
 			}
 		}
 		intlist.set(0, String.valueOf(start + startj));
-		intlist.set(1, String.valueOf(end + startj));
+		intlist.set(1, String.valueOf(end));
 		intlist.add(2, matchStart);
 		intlist.add(3, matchEnd);
 		return true;
