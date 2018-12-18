@@ -131,7 +131,7 @@ public class PreviewDaoImpl extends HibernateDaoSupport implements PreviewDao {
 			List<String> intlist = new ArrayList<String>();
 			intlist.add(0,"-1");
 			intlist.add(1,"-1");
-			docRule.doclist(docold,intlist);
+			docRule.doclist(docold,intlist,list,"","");
 			int start = Integer.valueOf(intlist.get(0));
 			int end = Integer.valueOf(intlist.get(1));
 			/*String leftdoc = null;

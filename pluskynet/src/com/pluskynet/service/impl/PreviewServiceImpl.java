@@ -78,7 +78,7 @@ public class PreviewServiceImpl implements PreviewService {
 			List<String> intlist = new ArrayList<String>();
 			intlist.add(0,"-1");
 			intlist.add(1,"-1");
-			docRule.doclist(docold, intlist);
+			docRule.doclist(docold, intlist,list,"","");
 			matchStart = intlist.get(2);
 			matchEnd = intlist.get(3);
 			String leftdoc = htmlString.substring(0,htmlString.indexOf(matchStart)+ matchStart.length());
