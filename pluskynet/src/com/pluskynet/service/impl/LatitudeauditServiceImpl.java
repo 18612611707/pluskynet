@@ -43,8 +43,8 @@ public class LatitudeauditServiceImpl implements LatitudeauditService {
 	}
 
 	@Override
-	public String updateStats(Latitudeaudit latitudeaudit) {
-		String msg = latitudeauditDao.updateState(latitudeaudit);
+	public String updateStats(String latitudeids) {
+		String msg = latitudeauditDao.updateState(latitudeids);
 		return msg;
 	}
 

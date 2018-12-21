@@ -57,12 +57,12 @@ public class DocidandruleidDaoImpl extends HibernateDaoSupport implements Docida
 	}
 
 	@Override
-	public void delete(Docidandruleid docidandruleid) {
-		String sql = "from Docidandruleid where docid = ? and ruleid = ? where type = "+docidandruleid.getType()+"";
+	public boolean delete(Docidandruleid docidandruleid) {
+		String sql = "from Docidandruleid where docid = ? and ruleid = ? and type = "+docidandruleid.getType()+"";
 		List<Docidandruleid> list = this.getHibernateTemplate().find(sql,docidandruleid.getDocid(),docidandruleid.getRuleid());
-		if (list.size()>0) {
-			this.getHibernateTemplate().delete(docidandruleid);
+		for (int i = 0; i < list.size(); i++) {
+			this.getHibernateTemplate().delete(list.get(i));
 		}
-		
+		return true;
 	}
 }

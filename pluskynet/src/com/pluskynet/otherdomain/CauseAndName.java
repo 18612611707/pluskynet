@@ -1,6 +1,7 @@
 package com.pluskynet.otherdomain;
 
 public class CauseAndName {
+	private int id;//审批id
 	private String latitudeid; //规则id
 	private int latitudetype;//规则类型 
 	private String causetable;//案由表名
@@ -11,6 +12,12 @@ public class CauseAndName {
 	private String rulestats;
 	private String batchstat;
 	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public String getLatitudeid() {
 		return latitudeid;
 	}

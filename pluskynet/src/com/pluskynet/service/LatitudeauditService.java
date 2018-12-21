@@ -13,7 +13,7 @@ public interface LatitudeauditService {
 
 	int getCountBy();
 
-	String updateStats(Latitudeaudit latitudeaudit);
+	String updateStats(String latitudeids);
 
 	List<Latitudeaudit> getLatitude(String batchstats,int latitudetype);
 

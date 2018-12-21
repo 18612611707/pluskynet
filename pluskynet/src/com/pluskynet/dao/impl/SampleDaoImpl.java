@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,16 +47,17 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 	public void save(List<Article01> list, User user) {
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		Connection conn = session.connection();
+		Transaction tx = session.beginTransaction();
 		for (int i = 0; i < list.size(); i++) {
 			String sql = "INSERT INTO `articleyl` (`doc_id`, `title`, `decode_data`, `belonguser`, `belongid`) VALUES ('"
 					+ list.get(i).getDocId() + "','" + list.get(i).getTitle() + "',?,'" + user.getUsername() + "'," + user.getUserid() + ")";
-			System.out.println(sql);
 			try {
 				PreparedStatement stmt = conn.prepareStatement(sql);
 				stmt.setString(1, list.get(i).getDecodeData());
+				System.out.println(sql);
 				stmt.addBatch();
+				stmt.executeBatch();
 				if (i % 100 == 0 || i == list.size() - 1) {
-					stmt.executeBatch();
 					conn.setAutoCommit(false);
 					conn.commit();
 				}

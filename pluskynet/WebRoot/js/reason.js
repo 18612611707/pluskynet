@@ -8,7 +8,7 @@ function pageInit(){
 			{
 				url : '../ReasonnumAction!select.action',//组件创建完成之后请求数据的url
 				datatype : "json",//请求数据返回的类型。可选json,xml,txt
-				colNames : [ 'id', 'Reason', 'Num' ],//jqGrid的列显示名字
+				colNames : [ 'id', '案由名称', '数量' ],//jqGrid的列显示名字
 				colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				             {name : 'id',index : 'id',width : 55,sortable : false}, 
 				             {name : 'reason',index : 'reason',width : 200,sortable : false}, 
@@ -22,9 +22,10 @@ function pageInit(){
 				loadonce : true,
 				scroll:true,
 				height:"600",
+				width:"1000",
 				jsonReader:{
 						root:'data'},
-				caption : "Reason count"//表格的标题名字
+				caption : "案由统计"//表格的标题名字
 			});
 	/*创建jqGrid的操作按钮容器*/
 	/*可以控制界面上增删改查的按钮是否显示*/

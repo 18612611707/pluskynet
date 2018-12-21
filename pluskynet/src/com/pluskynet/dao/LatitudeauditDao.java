@@ -17,7 +17,7 @@ public interface LatitudeauditDao {
 
 	int getCountBy();
 
-	String updateState(Latitudeaudit latitudeaudit);
+	String updateState(String latitudeids);
 
 	List<Latitudeaudit> getLatitude(String batchstats,int latitudetype);
 

@@ -8,7 +8,7 @@ import com.pluskynet.util.BaseAction;
 
 public class ReasonnumAction extends BaseAction{
 	/**
-	 * 
+	 * 获取各个案由的文书数量
 	 */
 	private static final long serialVersionUID = 1L;
 	private ReasonnumService reasonnumService;

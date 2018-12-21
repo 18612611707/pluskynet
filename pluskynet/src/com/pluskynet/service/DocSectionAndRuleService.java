@@ -16,4 +16,6 @@ public interface DocSectionAndRuleService {
 
 	void plsave(List<Docsectionandrule> docsectionlist, String doctable);
 
+	void delete(Docsectionandrule docsectionandrule, String doctable);
+
 }

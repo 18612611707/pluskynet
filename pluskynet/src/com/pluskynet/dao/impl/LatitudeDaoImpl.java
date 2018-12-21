@@ -48,7 +48,12 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 	@Override
 	public String update(Latitude latitude, User user) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String hql = "from Latitude where latitudeid = ? and createruser = ? and (stats = 'reject' or stats = 'create')";
+		String hql = null;
+		if (user.getRolecode()== null || !user.getRolecode().equals("admin")) {
+			hql = "from Latitude where latitudeid = ? and createruser = ? and (stats = 'reject' or stats = 'create')";
+		}else{
+			hql = "from Latitude where latitudeid = ? and createruser = ? ";
+		}
 		List<Latitude> list = this.getHibernateTemplate().find(hql, latitude.getLatitudeid(), user.getUsername());
 		if (list.size() > 0) {
 			if (latitude.getLatitudename() == null || latitude.getLatitudename().equals("")) {

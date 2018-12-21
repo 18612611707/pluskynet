@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.pluskynet.core.DatabaseContextHolder;
 import com.pluskynet.dao.DocRuleDao;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Latitude;
@@ -74,6 +76,7 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 
 	@Override
 	public List<Docrule> getDcoSectionList() {
+//		DatabaseContextHolder.setCustomerType("dataSourceww");
 		String hql = "from Docrule order by fid";
 		List<Docrule> docrules = this.getHibernateTemplate().find(hql);
 		// if (docrules.size()>0) {

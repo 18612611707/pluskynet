@@ -9,6 +9,6 @@ public interface DocidandruleidDao {
 
 	void plsave(List<Docidandruleid> docidlist);
 
-	void delete(Docidandruleid docidandruleid);
+	boolean delete(Docidandruleid docidandruleid);
 
 }

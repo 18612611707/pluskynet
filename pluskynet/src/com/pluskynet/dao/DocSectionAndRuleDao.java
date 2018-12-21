@@ -33,4 +33,6 @@ public interface DocSectionAndRuleDao {
 	List<Docsectionandrule01> getDocsectionList(Cause cause, String year, int valueOf, String trialRound,
 			String doctype, Integer sectionname, Integer latitudename);
 
+	boolean delete(Docsectionandrule docsectionandrule, String doctable);
+
 }

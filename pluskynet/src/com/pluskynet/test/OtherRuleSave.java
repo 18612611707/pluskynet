@@ -132,7 +132,6 @@ public class OtherRuleSave extends Thread {
 						batchdata.setDocumentid(documentid);
 						batchdata.setRuleid(latitudeid);
 						batchdata.setContain(contains);
-						batchdata.setNotcon(jsonObject.getString("notcon"));
 						Docidandruleid docidandruleid = new Docidandruleid(
 								documentid,latitudeid,1);
 						if (a) {
@@ -162,10 +161,24 @@ public class OtherRuleSave extends Thread {
 		String[] start = startWords.split("\\*");
 		if (start.length > 1) {
 			for (int j = 0; j < start.length; j++) {
+				int wordnum = 50;
+				for (int i = 0; i < start[j].length(); i++) {
+					if (start[j].charAt(i) == '(') {
+						start[j] = start[j].substring(start[j].indexOf("(") + 1);
+					} else if (start[j].charAt(i) == '（') {
+						start[j] = start[j].substring(start[j].indexOf("（") + 1);
+					} else if (start[j].charAt(i) == ')') {
+						wordnum = Integer.valueOf(start[j].substring(0, start[j].indexOf(")")));
+						start[j] = start[j].substring(start[j].indexOf(")") + 1);
+					} else if (start[j].charAt(i) == '）') {
+						wordnum = Integer.valueOf(start[j].substring(0, start[j].indexOf("）")));
+						start[j] = start[j].substring(start[j].indexOf("）") + 1);
+					}
+				}
 				if (reg_charset == null) {
 					reg_charset = start[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + start[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})" + start[j];
 				}
 			}
 		} else {
@@ -181,10 +194,24 @@ public class OtherRuleSave extends Thread {
 		String[] end = endWords.split("\\*");
 		for (int j = 0; j < end.length; j++) {
 			if (end.length > 1) {
+				int wordnum = 50;
+				for (int i = 0; i < end[j].length(); i++) {
+					if (end[j].charAt(i) == '(') {
+						end[j] = end[j].substring(end[j].indexOf("(") + 1);
+					} else if (end[j].charAt(i) == '（') {
+						end[j] = end[j].substring(end[j].indexOf("（") + 1);
+					} else if (end[j].charAt(i) == ')') {
+						wordnum = Integer.valueOf(end[j].substring(0, end[j].indexOf(")")));
+						end[j] = end[j].substring(end[j].indexOf(")") + 1);
+					} else if (end[j].charAt(i) == '）') {
+						wordnum = Integer.valueOf(end[j].substring(0, end[j].indexOf("）")));
+						end[j] = end[j].substring(end[j].indexOf("）") + 1);
+					}
+				}
 				if (reg_charset == null) {
 					reg_charset = end[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0,50})" + end[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})" + end[j];
 				}
 			} else {
 				reg_charset = end[j];

@@ -216,6 +216,9 @@ public class LatitudeAction extends BaseAction{
 		}
 		outJsonByMsg(msg);
 	}
+	/*
+	 * 送审
+	 */
 	public void approve(){
 		User user = isLogined();
 		if (user == null) {

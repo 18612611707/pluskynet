@@ -46,11 +46,24 @@ public class LatitudeauditAction extends BaseAction {
 		// outJsonByMsg(map,"成功");
 	}
 
+	private String latitudeids;
+
+	public String getLatitudeids() {
+		return latitudeids;
+	}
+
+	public void setLatitudeids(String latitudeids) {
+		this.latitudeids = latitudeids;
+	}
+
 	public void updateStats() {
-		String msg = latitudeauditService.updateStats(latitudeaudit);
+		String msg = latitudeauditService.updateStats(latitudeids);
 		outJsonByMsg(msg);
 	}
 
+	/*
+	 * 跑批修改状态
+	 */
 	public void updatebatchestats(Latitudeaudit latitudeaudit) {
 		latitudeauditService.updatebatchestats(latitudeaudit);
 		// outJsonByMsg("成功");

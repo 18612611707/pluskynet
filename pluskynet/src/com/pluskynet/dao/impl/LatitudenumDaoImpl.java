@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pluskynet.dao.LatitudenumDao;
 import com.pluskynet.domain.Latitudenum;
-import com.sun.org.apache.bcel.internal.generic.LALOAD;
 
 public class LatitudenumDaoImpl extends HibernateDaoSupport implements LatitudenumDao {
 	@Override
@@ -43,6 +42,17 @@ public class LatitudenumDaoImpl extends HibernateDaoSupport implements Latituden
 				this.getHibernateTemplate().save(list.get(i));
 			}
 		}
+	}
+	@Override
+	public List<Latitudenum> getnums(int type) {
+		String sql = null;
+		if (type == -1) {
+			sql = "from Latitudenum ";
+		}else {
+			sql = "from Latitudenum where type = "+type+"";
+		}
+		List<Latitudenum> list = this.getHibernateTemplate().find(sql);
+		return list;
 	}
 
 }

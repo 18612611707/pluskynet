@@ -24,18 +24,9 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 	@Transactional
 	public boolean save(Docsectionandrule docsectionandrule, String table) throws QueryException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		// if (docsectionandrule.getSectiontext().indexOf("'") > -1) {
-		// docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\'",
-		// "\\\\'"));
-		// }
-		// if (docsectionandrule.getSectiontext().indexOf(":") > -1) {
-		// docsectionandrule.setSectiontext(docsectionandrule.getSectiontext().replaceAll("\\:",
-		// "\\\\:"));
-		// }
 		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String hql = "select * from " + table + " where documentsid = '" + docsectionandrule.getDocumentsid()
-				+ "' and sectionName = '" + docsectionandrule.getSectionname() + "' and ruleid = "
-				+ docsectionandrule.getRuleid() + "";
+				+ "' and ruleid = " + docsectionandrule.getRuleid() + "";
 		List<Docsectionandrule01> list = null;
 		list = s.createSQLQuery(hql).addEntity(Docsectionandrule01.class).list();
 		Session s1 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
@@ -132,8 +123,8 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 			for (int i = 0; i < doclist.size(); i++) {
 				stmt.setInt(1, doclist.get(i).getId());
 				stmt.addBatch();
+				stmt.executeBatch();
 				if (i % 100 == 0 || i == doclist.size() - 1) {
-					stmt.executeBatch();
 					connection.setAutoCommit(false);
 					connection.commit();
 				}
@@ -248,6 +239,21 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		List<Docsectionandrule01> list = session.createSQLQuery(sql).addEntity(Docsectionandrule01.class).list();
 		return list;
 
+	}
+
+	@Override
+	@Transactional
+	public boolean delete(Docsectionandrule docsectionandrule, String doctable) {
+		Session s = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
+		String hql = "select * from " + doctable + " where documentsid = '" + docsectionandrule.getDocumentsid()
+				+ "' and ruleid = " + docsectionandrule.getRuleid() + "";
+		List<Docsectionandrule01> list = null;
+		list = s.createSQLQuery(hql).addEntity(Docsectionandrule01.class).list();
+		for (int i = 0; i < list.size(); i++) {
+			String sql = "delete from " + doctable + " where id = " + list.get(i).getId() + "";
+			int reasult = s.createSQLQuery(sql).executeUpdate();
+		}
+		return true;
 	}
 
 }

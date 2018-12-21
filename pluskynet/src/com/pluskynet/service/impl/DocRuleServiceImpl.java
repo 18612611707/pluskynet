@@ -8,7 +8,7 @@ import java.util.Map;
 import com.pluskynet.dao.DocRuleDao;
 import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.dao.LatitudeauditDao;
-import com.pluskynet.dao.LatitudenumsDao;
+import com.pluskynet.dao.LatitudenumDao;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitude;
@@ -42,11 +42,10 @@ public class DocRuleServiceImpl implements DocRuleService {
 	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
 		this.docSectionAndRuleDao = docSectionAndRuleDao;
 	}
-	private LatitudenumsDao latitudenumsDao;
+	private LatitudenumDao latitudenumDao;
 
-
-	public void setLatitudenumsDao(LatitudenumsDao latitudenumsDao) {
-		this.latitudenumsDao = latitudenumsDao;
+	public void setLatitudenumDao(LatitudenumDao latitudenumDao) {
+		this.latitudenumDao = latitudenumDao;
 	}
 
 	@Override
@@ -76,7 +75,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 	@Override
 	public List<TreeDocrule> getDcoSectionList() {
 		List<Docrule> friList = docRuleDao.getDcoSectionList();
-		List<Latitudenum> doclist = latitudenumsDao.getnums(0);
+		List<Latitudenum> doclist = latitudenumDao.getnums(0);
 		List<TreeDocrule> lists = new ArrayList<TreeDocrule>();
 		for (int i = 0; i < friList.size(); i++) {
 			TreeDocrule treeDocrule = new TreeDocrule();

@@ -91,4 +91,10 @@ public class DocSectionAndRuleServiceImpl implements DocSectionAndRuleService {
 		docSectionAndRuleDao.plsave(docsectionlist,doctable);
 		
 	}
+
+	@Override
+	public void delete(Docsectionandrule docsectionandrule, String doctable) {
+		docSectionAndRuleDao.delete(docsectionandrule,doctable);
+		
+	}
 }

@@ -14,7 +14,7 @@ import org.apache.struts2.components.Else;
 import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.dao.LatitudeDao;
 import com.pluskynet.dao.LatitudeauditDao;
-import com.pluskynet.dao.LatitudenumsDao;
+import com.pluskynet.dao.LatitudenumDao;
 import com.pluskynet.domain.DocidAndDoc;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitude;
@@ -32,10 +32,10 @@ import net.sf.json.JSONObject;
 
 @SuppressWarnings("all")
 public class LatitudeServiceImpl implements LatitudeService {
-	private LatitudenumsDao latitudenumsDao;
-
-	public void setLatitudenumsDao(LatitudenumsDao latitudenumsDao) {
-		this.latitudenumsDao = latitudenumsDao;
+	private LatitudenumDao latitudenumDao;
+	
+	public void setLatitudenumDao(LatitudenumDao latitudenumDao) {
+		this.latitudenumDao = latitudenumDao;
 	}
 
 	private DocSectionAndRuleDao docSectionAndRuleDao;
@@ -82,7 +82,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 	@Override
 	public List<Map> getLatitudeList(User user) {
 		List<Latitude> lists = latitudeDao.getLatitudeList();
-		numlist = latitudenumsDao.getnums(1);
+		numlist = latitudenumDao.getnums(1);
 		List<Map> list = new ArrayList<Map>();
 		for (int i = 0; i < lists.size(); i++) {
 			if (lists.get(i).getLatitudefid() != 0) {
@@ -124,9 +124,6 @@ public class LatitudeServiceImpl implements LatitudeService {
 	}
 
 	private List<Treelatitude> children(List<Latitude> lists, Integer latitudeid) {
-		if (latitudeid.intValue()==1887) {
-			System.out.println("---------------");
-		}
 		List<Treelatitude> list = new ArrayList<Treelatitude>();
 		for (int i = 0; i < lists.size(); i++) {
 			if (lists.get(i).getLatitudefid().intValue() == latitudeid.intValue()) {

@@ -9,7 +9,7 @@ public interface BatchdataDao {
 
 	Boolean plsave(List<Batchdata> batchlist);
 
-	void delete(Batchdata batchdata);
+	boolean delete(Batchdata batchdata);
 	
 
 }

@@ -65,4 +65,7 @@ public class DocsectionandruleAction extends BaseAction{
 		docSectionAndRuleService.plsave(docsectionlist,doctable);
 		
 	}
+	public void delete(Docsectionandrule docsectionandrule,String doctable){
+		docSectionAndRuleService.delete(docsectionandrule,doctable);
+	}
 }
