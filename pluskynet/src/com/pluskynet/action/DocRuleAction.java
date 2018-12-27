@@ -12,6 +12,7 @@ import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.TreeDocrule;
 import com.pluskynet.service.DocRuleService;
 import com.pluskynet.service.PreviewService;
+import com.pluskynet.test.Bigdatatest;
 import com.pluskynet.util.BaseAction;
 
 import javassist.expr.NewArray;
@@ -298,5 +299,21 @@ public class DocRuleAction extends BaseAction {
 			msg = "成功";
 			outJsonByMsg(list.get(0), msg);
 		}
+	}
+	/*
+	 * 循环跑批开始
+	 */
+	public void Docrun(){
+		Bigdatatest bigdatatest = new Bigdatatest("runs");
+		bigdatatest.main(-1);
+		outJsonByMsg("成功");
+	}
+	/*
+	 * 增量跑批开始
+	 */
+	public void newDocrun(){
+		Bigdatatest bigdatatest = new Bigdatatest("runs");
+		bigdatatest.main(-1);
+		outJsonByMsg("成功");
 	}
 }

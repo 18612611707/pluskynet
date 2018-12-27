@@ -22,6 +22,7 @@ public class Latitudeaudit implements java.io.Serializable {
 	private Timestamp aduitime;
 	private String batchstats;
 	private String reserved;
+	private Integer casetype;
 
 	// Constructors
 
@@ -32,7 +33,7 @@ public class Latitudeaudit implements java.io.Serializable {
 	/** full constructor */
 	public Latitudeaudit(Integer latitudeid, Integer latitudetype, String latitudename, String rule, String stats,
 			String subuserid, Timestamp subtime, String aduituser, Timestamp aduitime, String batchstats,
-			String reserved) {
+			String reserved, Integer casetype) {
 		this.latitudeid = latitudeid;
 		this.latitudetype = latitudetype;
 		this.latitudename = latitudename;
@@ -44,6 +45,7 @@ public class Latitudeaudit implements java.io.Serializable {
 		this.aduitime = aduitime;
 		this.batchstats = batchstats;
 		this.reserved = reserved;
+		this.casetype = casetype;
 	}
 
 	// Property accessors
@@ -142,6 +144,14 @@ public class Latitudeaudit implements java.io.Serializable {
 
 	public void setReserved(String reserved) {
 		this.reserved = reserved;
+	}
+
+	public Integer getCasetype() {
+		return this.casetype;
+	}
+
+	public void setCasetype(Integer casetype) {
+		this.casetype = casetype;
 	}
 
 }

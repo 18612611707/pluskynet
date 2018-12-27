@@ -68,6 +68,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 			latitudeaudit.setLatitudetype(0);
 			latitudeaudit.setReserved(docrule.getReserved());
 			latitudeauditDao.update(latitudeaudit);
+			latitudeauditDao.wwupdate(latitudeaudit);
 		}
 		return msg;
 	}

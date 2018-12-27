@@ -15,9 +15,9 @@ public interface LatitudeauditService {
 
 	String updateStats(String latitudeids);
 
-	List<Latitudeaudit> getLatitude(String batchstats,int latitudetype);
+	List<Latitudeaudit> getLatitude(int latitudetype);
 
-	void updatebatchestats(Latitudeaudit latitudeaudit);
+	void updatebatchestats(List<Latitudeaudit> latitudeaudit);
 
 	List<DocidAndDoc> getDocList(String causename, int latitudetype, int num,int rows,int page,int ruleid);
 

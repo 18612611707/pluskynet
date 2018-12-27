@@ -40,20 +40,24 @@ public class OtherRule extends Thread {
 	static ThreadPoolExecutor executor = null;
 	static List<Latitudeaudit> Lalist = null;
 	static LatitudeauditAction latitudeauditAction = null;
-
+	int state = -1;//0 增量跑批， -1 循环跑批
 	public OtherRule(String name) {
 		super(name);// 给线程起名字
 	}
 
-	public static void main(String[] args) {
+	public void main(int batchstats) {
 		System.gc();
 		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
-		int batchstats = 1;// 1:已审批规则 
-		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 1);// 获取已审批过的规则
+		Lalist = latitudeauditAction.getLatitude(1);// 获取已审批过的规则
 		if(Lalist.size()==0){
 			System.out.println("无规则");
 			return;
+		}
+		if (batchstats == -1 ) {
+			state = Integer.valueOf(Lalist.get(0).getBatchstats());
+		}else{
+			state = 0;
 		}
 		for (int i = 0; i < 60; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
@@ -84,7 +88,6 @@ public class OtherRule extends Thread {
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
-				int state = 5;//0和5状态改变为3:新增跑批状态  3、5循环跑批
 				synchronized (ob) {
 					System.out.println("线程名称：" + getName()+"开始取数据;"+df.format(new Date())+"");
 					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);
@@ -105,9 +108,13 @@ public class OtherRule extends Thread {
 					otherRuleSave[j].setName("线程名称:"+getName()+","+"规则线程：" + i + j);
 					System.out.println(otherRuleSave[j].getName());
 					otherRuleSave[j].start();
-					if (i == Lalist.size() - 1) {
-						Lalist.get(j).setBatchstats("3");
-						latitudeauditAction.updatebatchestats(Lalist.get(j));
+					if (i == Causelists.size() - 1) {
+						if (state==3) {
+							Lalist.get(j).setBatchstats("5");
+						}else{
+							Lalist.get(j).setBatchstats("3");
+						}
+						Lalist.get(j).setStats("3");
 					}
 				}
 				for (int j1 = 0; j1 < otherRuleSave.length; j1++) {
@@ -119,9 +126,10 @@ public class OtherRule extends Thread {
 						e.printStackTrace();
 					}
 				}
+				latitudeauditAction.updatebatchestats(Lalist);
 			} while (docsectionandrulelist.size() > 0);
 		}
-		latitudenumDao.countlat(0);
+		latitudenumDao.countlat(1);
 	}
 
 	static List<Otherrule> ruleFormat(String rule, int ruletype) {

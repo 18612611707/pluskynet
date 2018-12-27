@@ -8,6 +8,7 @@ import com.pluskynet.domain.DocidAndDoc;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.otherdomain.CauseAndName;
 import com.pluskynet.service.LatitudeauditService;
+import com.pluskynet.test.OtherRule;
 import com.pluskynet.util.BaseAction;
 
 import javassist.expr.NewArray;
@@ -64,30 +65,18 @@ public class LatitudeauditAction extends BaseAction {
 	/*
 	 * 跑批修改状态
 	 */
-	public void updatebatchestats(Latitudeaudit latitudeaudit) {
+	public void updatebatchestats(List<Latitudeaudit> latitudeaudit) {
 		latitudeauditService.updatebatchestats(latitudeaudit);
 		// outJsonByMsg("成功");
 	}
 
-	public void updateBatchStats() {
-		System.out.println(batchstat);
-		JSONArray jsonArray = new JSONArray().fromObject(batchstat);
-		for (int i = 0; i < jsonArray.size(); i++) {
-			JSONObject jsonObject = new JSONObject().fromObject(jsonArray.get(i));
-			latitudeaudit.setBatchstats(jsonObject.getString("batchstats"));
-			latitudeaudit.setLatitudeid(jsonObject.getInt("latitudeid"));
-			latitudeaudit.setLatitudetype(jsonObject.getInt("latitudetype"));
-			latitudeauditService.updatebatchestats(latitudeaudit);
-
-		}
-		outJsonByMsg("成功");
-	}
+	
 
 	/*
 	 * 获取已审批规则
 	 */
-	public List<Latitudeaudit> getLatitude(String batchstats, int latitudetype) {
-		List<Latitudeaudit> list = latitudeauditService.getLatitude(batchstats, latitudetype);
+	public List<Latitudeaudit> getLatitude(int latitudetype) {
+		List<Latitudeaudit> list = latitudeauditService.getLatitude(latitudetype);
 		return list;
 	}
 
@@ -159,5 +148,22 @@ public class LatitudeauditAction extends BaseAction {
 		map.put("data", htmlString);
 		outJsonByMsg(map, "成功");
 	}
+	/*
+	 * 循环跑批控制
+	 */
+	public void latitudeRun(){
+		OtherRule otherRule = new OtherRule("runs");
+		otherRule.main(-1);
+		outJsonByMsg("成功");
+	}
+	/*
+	 * 增量跑批控制
+	 */
+	public void newlatitudeRun(){
+		OtherRule otherRule = new OtherRule("runs");
+		otherRule.main(0);
+		outJsonByMsg("成功");
+	}
+	
 
 }

@@ -59,21 +59,25 @@ public class Bigdatatest extends Thread {
 
 	static List<Latitudeaudit> Lalist = null;
 	static LatitudeauditAction latitudeauditAction;
-
+	int allorre = -1;// 0：新增跑批，（ 3：二次跑批 ,5:再次跑批）
 	public Bigdatatest(String name) {
 		super(name);// 给线程起名字
 	}
 
-	public static void main(String[] args) {
+	public void main(int batchstats) {
 		executor = new ThreadPoolExecutor(100, Integer.MAX_VALUE, 200, TimeUnit.MILLISECONDS,
 				new LinkedBlockingQueue<Runnable>());
 		System.gc();
 		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
-		int batchstats = 1;// 1:全部跑批规则 2:剩余跑批规则
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		latitudenumDao = (LatitudenumDao) resource.getBean("latitudenumDao");
-		Lalist = latitudeauditAction.getLatitude(String.valueOf(batchstats), 0);// 获取已审批过的规则
-		for (int i = 0; i < 1; i++) {
+		Lalist = latitudeauditAction.getLatitude(0);// 获取已审批过的规则
+		if (batchstats == -1 ) {
+			allorre = Integer.valueOf(Lalist.get(0).getBatchstats());
+		}else{
+			allorre = 0;
+		}
+		for (int i = 0; i < 40; i++) {
 			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
 			bigdatatest.start();
 			try {
@@ -92,7 +96,7 @@ public class Bigdatatest extends Thread {
 		docrule = (DocsectionandruleAction) resource.getBean("docsectionandruleAction");
 		batchdataDao = (BatchdataDao) resource.getBean("batchdataDao");
 		DocidandruleidDao docidandruleidDao = (DocidandruleidDao) resource.getBean("docidandruleidDao");
-		int allorre = 5;// 0：新增跑批，（ 3：二次跑批 ,5:再次跑批）
+		
 		if (Lalist.size() > 0) {
 			CauseDao causeDao = (CauseDao) resource.getBean("causeDao");
 			// List<Article01> list = causeDao.getArticleList();
@@ -142,12 +146,14 @@ public class Bigdatatest extends Thread {
 						// }
 						bigdatasave[j].start();
 						if (i == list.size() - 1) {
-						for (int k = 0; k < list.size(); k++) {
-							Lalist.get(k).setBatchstats("3");
+						for (int k = 0; k < Lalist.size(); k++) {
+							if (allorre == 3) {
+								Lalist.get(k).setBatchstats("5");
+							}else{
+								Lalist.get(k).setBatchstats("3");
+							}
 							Lalist.get(k).setStats("3");
-							latitudeauditAction.updatebatchestats(Lalist.get(k));
-						}
-							
+						}	
 						}
 					}
 					for (int j = 0; j < bigdatasave.length; j++) {
@@ -161,11 +167,11 @@ public class Bigdatatest extends Thread {
 					}
 				}
 			}
-
+			latitudeauditAction.updatebatchestats(Lalist);
 		} else {
 			System.out.println("无规则");
 		}
-		latitudenumDao.countlat(1);
+		latitudenumDao.countlat(0);
 	}
 
 	public static List<Cause> getValue() {

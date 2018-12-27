@@ -36,7 +36,7 @@ public class LatitudenumAction extends BaseAction{
 	 */
 	public void countlat(){
 		List<Latitudenum> list= latitudenumService.countlat(latitudenum.getType());
-		outJsonByMsg(list, "成功");
+		outJsonByMsg(list,list.size(),"成功","");
 	}
 
 }

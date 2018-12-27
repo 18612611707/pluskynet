@@ -95,6 +95,9 @@
 				<param name="reason">jsonObject</param>
 			</result> -->
 		</action>
+		<action name="BatchStatisticalAction" class="com.pluskynet.action.BatchStatisticalAction"
+			method="{1}">
+		</action>
 	</package>
 
 </struts>

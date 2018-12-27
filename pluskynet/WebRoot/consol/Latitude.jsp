@@ -26,12 +26,19 @@
 <script type="text/javascript" src="../js/latitude.js"></script>
 </head>
 <body>
-<button id="m1" class="layui-btn" type="button">保存</button>
-	<form action="LoginAction!login.action" method="post">
+<button id="m1" class="layui-btn" type="button">审核</button>&nbsp;&nbsp;
+<button id="m4" class="layui-btn" type="button" disabled="true">段落增量跑批</button>&nbsp;&nbsp;
+<button id="m2" class="layui-btn" type="button" disabled="true">段落跑批</button>&nbsp;&nbsp;
+<button id="m5" class="layui-btn" type="button" disabled="true">维度增量跑批</button>&nbsp;&nbsp;
+<button id="m3" class="layui-btn" type="button" disabled="true">维度跑批</button>&nbsp;&nbsp;
+	<!-- <form action="LoginAction!login.action" method="post">
 		<input type="submit" value="段落跑批">
-	</form>
+	</form> -->
 	<table id="list2"></table>
 	<div id="pager2"></div>
 	<br>
+	<label >分段已跑批数 ：</label><input id="docnum" type="text" value="" readonly/><label >文书总数 ：</label><input id="docnums" type="text" value="" readonly/>
+	<br>
+	<label >维度已跑批数 ：</label><input id="lanum" type="text" value="" readonly/><label >段落总数 ：</label><input id="lanums" type="text" value="" readonly/>
 </body>
 </html>

@@ -1,10 +1,15 @@
 package com.pluskynet.dao.impl;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.hibernate.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pluskynet.core.DatabaseContextHolder;
 import com.pluskynet.dao.DocRuleDao;
@@ -76,17 +81,9 @@ public class DocRuleDaoImpl extends HibernateDaoSupport implements DocRuleDao {
 
 	@Override
 	public List<Docrule> getDcoSectionList() {
-//		DatabaseContextHolder.setCustomerType("dataSourceww");
+//		DatabaseContextHolder.setCustomerType("dataSourceww"); //多数据源手动切换
 		String hql = "from Docrule order by fid";
 		List<Docrule> docrules = this.getHibernateTemplate().find(hql);
-		// if (docrules.size()>0) {
-		// for (int i = 0; i < docrules.size(); i++) {
-		// Map<String, Object> result=new HashMap<String, Object>();
-		// result.put("ruleid",docrules.get(i).getRuleid());
-		// result.put("sectionName", docrules.get(i).getSectionName());
-		// list.add(result);
-		// }
-		// }
 		return docrules;
 	}
 

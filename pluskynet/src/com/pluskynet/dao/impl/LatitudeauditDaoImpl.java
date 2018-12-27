@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -20,13 +21,14 @@ import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.pluskynet.core.DatabaseContextHolder;
 import com.pluskynet.dao.LatitudeauditDao;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.DocidAndDoc;
+import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.otherdomain.CauseAndName;
 import com.pluskynet.util.PageNoUtil;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -35,17 +37,30 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	public void update(Latitudeaudit latitudeaudit) {
+		if (latitudeaudit.getRule().contains("刑事")) {
+			latitudeaudit.setCasetype(1);
+		} else {
+			latitudeaudit.setCasetype(0);
+		}
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String hql = "from Latitudeaudit where latitudeid = ?";
-		List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql, latitudeaudit.getLatitudeid());
+		String hql = "from Latitudeaudit where latitudeid = ? and latitudetype = ?";
+		List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql, latitudeaudit.getLatitudeid(),
+				latitudeaudit.getLatitudetype());
 		if (latitudeaudits.size() > 0) {
-			hql = "update Latitudeaudit set latitudeid = ? ,latitudetype = ?, latitudename = ? ,rule = ? ,stats = '0',batchstats='0',subtime = ?,subuserid = ? where id = ?";
+			hql = "update Latitudeaudit set latitudeid = ? ,latitudetype = ?, latitudename = ? ,rule = ? ,stats = '0',subtime = ?,subuserid = ?,casetype = ? where id = ?";
 			this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.getLatitudeid(), latitudeaudit.getLatitudetype(),
 					latitudeaudit.getLatitudename(), latitudeaudit.getRule(), Timestamp.valueOf(df.format(new Date())),
-					latitudeaudit.getSubuserid(), latitudeaudits.get(0).getId());
+					latitudeaudit.getSubuserid(), latitudeaudit.getCasetype(), latitudeaudits.get(0).getId());
 		} else {
+			String sql = "from Latitudeaudit where latitudetype = ? and casetype = ?";
+			List<Latitudeaudit> list = this.getHibernateTemplate().find(sql, latitudeaudit.getLatitudetype(),
+					latitudeaudit.getCasetype());
+			if (list.size() > 0) {
+				latitudeaudit.setBatchstats(list.get(0).getBatchstats());
+			} else {
+				latitudeaudit.setBatchstats("0");
+			}
 			latitudeaudit.setStats("0");
-			latitudeaudit.setBatchstats("0");
 			latitudeaudit.setSubtime(Timestamp.valueOf(df.format(new Date())));
 			this.getHibernateTemplate().save(latitudeaudit);
 		}
@@ -60,7 +75,7 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		ResultSet resultSet = null;
 		int toatl = 0;
 		toatl = (page - 1) * rows;
-		String sql = "select id,latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit order by latitudeid asc";
+		String sql = "select id,latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit order by id asc";
 		List<CauseAndName> list = new ArrayList<CauseAndName>();
 		statement = conn.prepareStatement(sql);
 		resultSet = statement.executeQuery();
@@ -74,42 +89,34 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 			causeAndName.setBatchstat(resultSet.getString("batchstats"));
 			list.add(causeAndName);
 		}
-		String hql = "select SUM(num) as num from (select COUNT(1) as num from article11 union all "
-				+ "select COUNT(1) as num from article12 union all "
-				+ "select COUNT(1) as num from article13 union all "
-				+ "select COUNT(1) as num from article14 union all "
-				+ "select COUNT(1) as num from article15 union all "
-				+ "select COUNT(1) as num from article16 union all "
-				+ "select COUNT(1) as num from article17 union all "
-				+ "select COUNT(1) as num from article18 union all "
-				+ "select COUNT(1) as num from article19 union all " + "select COUNT(1) as num from article20 )a ;";// 民事文书总数
-		statement = conn.prepareStatement(hql);
-		resultSet = statement.executeQuery();
-		int znum = 0;
-		while (resultSet.next()) {
-			znum = resultSet.getInt("num");
-		}
-		String hqlString = "select latitudeid,nums as fhnum from latitudenum";
-		statement = conn.prepareStatement(hqlString);
-		resultSet = statement.executeQuery();
-		while (resultSet.next()) {
-			for (int i = 0; i < list.size(); i++) {
-				list.get(i).setSunnum(znum);
-				if (list.get(i).getLatitudeid().equals(resultSet.getString("latitudeid"))) {
-					Integer cornum = resultSet.getInt("fhnum");
-					list.get(i).setCornum(cornum);
-					Integer ncornum = znum - cornum;
-					list.get(i).setNcornum(ncornum);
-					continue;
-				}
-			}
-
-		}
+		/*
+		 * String hql =
+		 * "select SUM(num) as num from (select COUNT(1) as num from article11 union all "
+		 * + "select COUNT(1) as num from article12 union all " +
+		 * "select COUNT(1) as num from article13 union all " +
+		 * "select COUNT(1) as num from article14 union all " +
+		 * "select COUNT(1) as num from article15 union all " +
+		 * "select COUNT(1) as num from article16 union all " +
+		 * "select COUNT(1) as num from article17 union all " +
+		 * "select COUNT(1) as num from article18 union all " +
+		 * "select COUNT(1) as num from article19 union all " +
+		 * "select COUNT(1) as num from article20 )a ;";// 民事文书总数 statement =
+		 * conn.prepareStatement(hql); resultSet = statement.executeQuery(); int
+		 * znum = 0; while (resultSet.next()) { znum = resultSet.getInt("num");
+		 * } String hqlString =
+		 * "select latitudeid,nums as fhnum from latitudenum"; statement =
+		 * conn.prepareStatement(hqlString); resultSet =
+		 * statement.executeQuery(); while (resultSet.next()) { for (int i = 0;
+		 * i < list.size(); i++) { list.get(i).setSunnum(znum); if
+		 * (list.get(i).getLatitudeid().equals(resultSet.getString("latitudeid")
+		 * )) { Integer cornum = resultSet.getInt("fhnum");
+		 * list.get(i).setCornum(cornum); Integer ncornum = znum - cornum;
+		 * list.get(i).setNcornum(ncornum); continue; } } }
+		 */
 		session.flush();
 		session.clear();
 		return list;
-	}
-
+	}	
 	@Override
 	@Transactional
 	public int getCountBy() {
@@ -121,8 +128,7 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 
 	@Override
 	public String updateState(String latitudeids) {
-		if (latitudeids.length() != 0) {
-
+		if (StringUtils.isNotBlank(latitudeids)) {
 			String hql = "from Latitudeaudit where id in (";
 			String[] latitudeid = latitudeids.split(",");
 			for (int a = 0; a < latitudeid.length; a++) {
@@ -134,7 +140,7 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 			}
 			List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql);
 			for (int i = 0; i < latitudeaudits.size(); i++) {
-				hql = "update Latitudeaudit set stats = 1,batchstats = 1 where id = ?";
+				hql = "update Latitudeaudit set stats = 1 where id = ?";
 				this.getHibernateTemplate().bulkUpdate(hql, latitudeaudits.get(i).getId());
 				if (i == latitudeaudits.size() - 1) {
 					return "成功";
@@ -169,23 +175,26 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 	}
 
 	@Override
-	public List<Latitudeaudit> getLatitude(String batchstats, int latitudetype) {
+	public List<Latitudeaudit> getLatitude(int latitudetype) {
 		String hql = "from Latitudeaudit where stats = '1' and latitudetype=" + latitudetype;
 		List<Latitudeaudit> list = this.getHibernateTemplate().find(hql);
 		return list;
 	}
 
 	@Override
-	public void updatebatchestats(Latitudeaudit latitudeaudit) {
-		String hql = "from Latitudeaudit where latitudeid = ? and latitudetype = ?";
-		List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql, latitudeaudit.getLatitudeid(),
-				latitudeaudit.getLatitudetype());
-		if (latitudeaudits.size() > 0) {
-			hql = "update Latitudeaudit set batchstats = ?,stats=? where id = ?";
-			this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.getBatchstats(), latitudeaudits.get(0).getStats(),
-					latitudeaudits.get(0).getId());
+	public void updatebatchestats(List<Latitudeaudit> latitudeaudit) {
+		for (int i = 0; i < latitudeaudit.size(); i++) {
+			String hql = "from Latitudeaudit where latitudeid = ? and latitudetype = ? and casetype = 1";
+			List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql,
+					latitudeaudit.get(i).getLatitudeid(), latitudeaudit.get(i).getLatitudetype());
+			if (latitudeaudits.size() > 0) {
+				hql = "update Latitudeaudit set batchstats = ?,stats=? where id = ?";
+				this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.get(i).getBatchstats(),
+						latitudeaudits.get(0).getStats(), latitudeaudits.get(0).getId());
+			}
 		}
-
+		String sql = "update Latitudeaudit set batchstats = ? where casetype = 1";
+		this.getHibernateTemplate().bulkUpdate(sql, latitudeaudit.get(0).getBatchstats());
 	}
 
 	@Override
@@ -364,4 +373,35 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		return html;
 	}
 
+	@Override
+	public void wwupdate(Latitudeaudit latitudeaudit) {
+		DatabaseContextHolder.setCustomerType("dataSourceww"); // 多数据源手动切换
+		if (latitudeaudit.getRule().contains("刑事")) {
+			latitudeaudit.setCasetype(1);
+		} else {
+			latitudeaudit.setCasetype(0);
+		}
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String hql = "from Latitudeaudit where latitudeid = ? and latitudetype = ?";
+		List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql, latitudeaudit.getLatitudeid(),
+				latitudeaudit.getLatitudetype());
+		if (latitudeaudits.size() > 0) {
+			hql = "update Latitudeaudit set latitudeid = ? ,latitudetype = ?, latitudename = ? ,rule = ? ,stats = '0',subtime = ?,subuserid = ?,casetype = ? where id = ?";
+			this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.getLatitudeid(), latitudeaudit.getLatitudetype(),
+					latitudeaudit.getLatitudename(), latitudeaudit.getRule(), Timestamp.valueOf(df.format(new Date())),
+					latitudeaudit.getSubuserid(), latitudeaudit.getCasetype(), latitudeaudits.get(0).getId());
+		} else {
+			String sql = "from Latitudeaudit where latitudetype = ? and casetype = ?";
+			List<Latitudeaudit> list = this.getHibernateTemplate().find(sql, latitudeaudit.getLatitudetype(),
+					latitudeaudit.getCasetype());
+			if (list.size() > 0) {
+				latitudeaudit.setBatchstats(list.get(0).getBatchstats());
+			} else {
+				latitudeaudit.setBatchstats("0");
+			}
+			latitudeaudit.setStats("0");
+			latitudeaudit.setSubtime(Timestamp.valueOf(df.format(new Date())));
+			this.getHibernateTemplate().save(latitudeaudit);
+		}
+	}
 }

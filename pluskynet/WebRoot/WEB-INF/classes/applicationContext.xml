@@ -64,7 +64,7 @@
 				<!-- <prop key="hibernate.show_sql">true</prop> -->
 				<prop key="hibernate.format_sql">true</prop>
 				<!-- <prop key="hibernate.hbm2ddl.auto">update</prop> -->
-				<prop key="hibernate.connection.release_model">after_statement</prop>
+				<prop key="hibernate.connection.release_model">after_transaction</prop>
 			</props>
 		</property>
 		<!-- 加载hibernate中的映射文件 -->
@@ -123,6 +123,9 @@
 	<bean id="ReasonnumAction" class="com.pluskynet.action.ReasonnumAction">
 		<property name="reasonnumService" ref="reasonnumService" />
 	</bean>
+	<bean id="BatchStatisticalAction" class="com.pluskynet.action.BatchStatisticalAction">
+		<property name="batchStatisticalService" ref="batchStatisticalService" />
+	</bean>
 	<bean id="LatitudenumAction" class="com.pluskynet.action.LatitudenumAction">
 		<property name="latitudenumService" ref="latitudenumService" />
 	</bean>
@@ -172,6 +175,9 @@
 		<property name="synonymService" ref="synonymService" />
 	</bean>
 	<!-- 配置业务层的类 Service -->
+	<bean id="batchStatisticalService" class="com.pluskynet.service.impl.BatchStatisticalServiceImpl">
+		<property name="batchStatisticalDao" ref="batchStatisticalDao"/>
+	</bean>
 	<bean id="reasonnumService" class="com.pluskynet.service.impl.ReasonnumServiceImpl">
 		<property name="reasonnumDao" ref="reasonnumDao" />
 	</bean>
@@ -219,7 +225,7 @@
 	<bean id="latitudeauditService" class="com.pluskynet.service.impl.LatitudeauditServiceImpl">
 		<property name="latitudeauditDao" ref="latitudeauditDao" />
 		<property name="causeDao" ref="causeDao" />
-
+		<property name="latitudeDao" ref="latitudeDao" />
 	</bean>
 	<bean id="sampleService" class="com.pluskynet.service.impl.SampleServiceImpl">
 		<property name="causeDao" ref="causeDao" />
@@ -230,6 +236,9 @@
 		<property name="synonymDao" ref="synonymDao" />
 	</bean>
 	<!-- 配置DAO的类 Dao -->
+	<bean id="batchStatisticalDao" class="com.pluskynet.dao.impl.BatchStatisticalDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
 	<bean id="reasonnumDao" class="com.pluskynet.dao.impl.ReasonnumDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>

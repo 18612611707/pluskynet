@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.DocidAndDoc;
+import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.otherdomain.CauseAndName;
 @SuppressWarnings("all")
@@ -19,9 +20,9 @@ public interface LatitudeauditDao {
 
 	String updateState(String latitudeids);
 
-	List<Latitudeaudit> getLatitude(String batchstats,int latitudetype);
+	List<Latitudeaudit> getLatitude(int latitudetype);
 
-	void updatebatchestats(Latitudeaudit latitudeaudit);
+	void updatebatchestats(List<Latitudeaudit> latitudeaudit);
 
 	List<DocidAndDoc> getDocList(String cause, int latitudetype, int num, int rows, int page,int ruleid);
 
@@ -29,6 +30,5 @@ public interface LatitudeauditDao {
 
 	String getDoc(String cause, int latitudetype, String docid);
 
-	
-
+	void wwupdate(Latitudeaudit latitudeaudit);
 }

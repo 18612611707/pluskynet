@@ -18,6 +18,9 @@ public class LatitudenumServiceImpl implements LatitudenumService {
 	@Override
 	public List<Latitudenum> countlat(int type) {
 		List<Latitudenum> list = latitudenumDao.countlat(type);
+		if (list.size()>0) {
+			latitudenumDao.updateonline(list);
+		}
 		return list;
 	}
 

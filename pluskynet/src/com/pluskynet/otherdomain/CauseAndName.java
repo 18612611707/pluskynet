@@ -11,6 +11,7 @@ public class CauseAndName {
 	private int ncornum;//不符合数
 	private String rulestats;
 	private String batchstat;
+	private String fcasename;
 	
 	public int getId() {
 		return id;
@@ -71,6 +72,12 @@ public class CauseAndName {
 	}
 	public void setCausename(String causename) {
 		this.causename = causename;
+	}
+	public String getFcasename() {
+		return fcasename;
+	}
+	public void setFcasename(String fcasename) {
+		this.fcasename = fcasename;
 	}
 	
 

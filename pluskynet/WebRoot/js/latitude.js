@@ -1,7 +1,42 @@
 $(function() {
 	//页面加载完成之后执行
 	pageInit();
+//	docnum();
+	lanum();
 });
+function docnum() {
+	$.ajax({
+		type : "post",
+		url : '../BatchStatisticalAction!docStatistical.action',
+		dataType : "json",
+		async : false,
+		success : function(data) {
+			if (data) {
+				if (data.msg == "成功") {
+					$("#docnum").attr("value", data.data[0]);
+					$("#docnums").attr("value", data.data[1]);
+				}
+			}
+		}
+	});
+	
+}
+function lanum() {
+	$.ajax({
+		type : "post",
+		url : '../BatchStatisticalAction!laStatistical.action',
+		dataType : "json",
+		async : true,
+		success : function(data) {
+			if (data) {
+				if (data.msg == "成功") {
+					$("#lanum").attr("value", data.data[0]);
+					$("#lanums").attr("value", data.data[1]);
+				}
+			}
+		}
+	});
+}
 function pageInit() {
 	var lastsel;
 	//创建jqGrid组件
@@ -9,7 +44,7 @@ function pageInit() {
 		{
 			url : '../LatitudeauditAction!getLatitudeList.action', //组件创建完成之后请求数据的url
 			datatype : "json", //请求数据返回的类型。可选json,xml,txt
-			colNames : [ 'id', '规则id', '规则类型', '规则名称', '总数', '符合数', '不符合数', '跑批状态' ], //jqGrid的列显示名字
+			colNames : [ 'id', '规则id', '规则类型', '规则名称', '审核状态' ], //jqGrid的列显示名字
 			colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				{
 					name : 'id',
@@ -35,7 +70,7 @@ function pageInit() {
 					width : 100,
 					sortable : false
 				},
-				{
+				/*{
 					name : 'sunnum',
 					index : 'sunnum',
 					width : 100,
@@ -52,13 +87,13 @@ function pageInit() {
 					index : 'ncornum',
 					width : 100,
 					sortable : false
-				},
+				},*/
 				{
 					name : 'rulestats',
 					index : 'rulestats',
 					width : 100,
-					sortable : false /*,
-					editable : true 行编辑*/
+					sortable : false,
+					editable : true //行编辑
 				}
 			],
 			/*rowNum : 10,//一页显示多少条
@@ -112,15 +147,15 @@ function pageInit() {
 		add : false,
 		del : false
 	});
-	var s;
 	jQuery("#m1").click(function() {
+		var s;
 		s = jQuery("#list2").jqGrid('getGridParam', 'selarrrow');
 		var latitudeids;
 		for (var int = 0; int < s.length; int++) {
-			if(latitudeids == "" || latitudeids == null || latitudeids == undefined){
+			if (latitudeids == "" || latitudeids == null || latitudeids == undefined) {
 				latitudeids = s[int];
-			}else{
-				latitudeids = latitudeids+","+s[int];
+			} else {
+				latitudeids = latitudeids + "," + s[int];
 			}
 		}
 		$.ajax({
@@ -128,15 +163,72 @@ function pageInit() {
 			url : '../LatitudeauditAction!updateStats.action',
 			dataType : "json",
 			async : false,
-			data:{
-				latitudeids:latitudeids
+			data : {
+				latitudeids : latitudeids
 			},
 			success : function(data) {
 				if (data) {
-					datas = data;
+					alert(data.msg);
+					if (data.msg == "成功") {
+						$("#m2").attr("disabled", false);
+						$("#m3").attr("disabled", false);
+						$("#m4").attr("disabled", false);
+						$("#m5").attr("disabled", false);
+					}
 				}
 			}
 		});
-		pageInit();
+	});
+	jQuery("#m2").click(function() {
+		$.ajax({
+			type : "post",
+			url : '../DocRuleAction!Docrun.action',
+			dataType : "json",
+			async : false,
+			success : function(data) {
+				if (data) {
+					alert(data.msg);
+				}
+			}
+		});
+	});
+	jQuery("#m3").click(function() {
+		$.ajax({
+			type : "post",
+			url : '../LatitudeauditAction!latitudeRun.action',
+			dataType : "json",
+			async : false,
+			success : function(data) {
+				if (data) {
+					alert(data.msg);
+				}
+			}
+		});
+	});
+	jQuery("#m4").click(function() {
+		$.ajax({
+			type : "post",
+			url : '../LatitudeauditAction!newDocrun.action',
+			dataType : "json",
+			async : false,
+			success : function(data) {
+				if (data) {
+					alert(data.msg);
+				}
+			}
+		});
+	});
+	jQuery("#m5").click(function() {
+		$.ajax({
+			type : "post",
+			url : '../LatitudeauditAction!newlatitudeRun.action',
+			dataType : "json",
+			async : false,
+			success : function(data) {
+				if (data) {
+					alert(data.msg);
+				}
+			}
+		});
 	});
 }
