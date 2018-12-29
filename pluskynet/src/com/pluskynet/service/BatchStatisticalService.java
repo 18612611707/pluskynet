@@ -2,10 +2,12 @@ package com.pluskynet.service;
 
 import java.util.List;
 
+import com.pluskynet.domain.Statisticalnum;
+
 public interface BatchStatisticalService {
 
-	List<Integer> docStatistical();
+	List<Statisticalnum> docStatistical();
 
-	List<Integer> laStatistical();
+	List<Statisticalnum> laStatistical();
 
 }

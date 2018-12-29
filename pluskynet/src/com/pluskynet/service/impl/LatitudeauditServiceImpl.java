@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jsoup.helper.StringUtil;
+
 import com.pluskynet.dao.CauseDao;
 import com.pluskynet.dao.LatitudeDao;
 import com.pluskynet.dao.LatitudeauditDao;
@@ -14,6 +16,7 @@ import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.otherdomain.CauseAndName;
 import com.pluskynet.service.LatitudeauditService;
+
 @SuppressWarnings("all")
 public class LatitudeauditServiceImpl implements LatitudeauditService {
 	private LatitudeauditDao latitudeauditDao;
@@ -21,33 +24,61 @@ public class LatitudeauditServiceImpl implements LatitudeauditService {
 	public void setLatitudeauditDao(LatitudeauditDao latitudeauditDao) {
 		this.latitudeauditDao = latitudeauditDao;
 	}
+
 	private CauseDao causeDao;
-	
+
 	public void setCauseDao(CauseDao causeDao) {
 		this.causeDao = causeDao;
 	}
+
 	private LatitudeDao latitudeDao;
 
 	public void setLatitudeDao(LatitudeDao latitudeDao) {
 		this.latitudeDao = latitudeDao;
 	}
-	List<Latitude> lalist ;
+
+	List<Latitude> lalist;
+
 	@Override
 	public List<CauseAndName> getLatitudeList(int page, int rows) {
 		List<CauseAndName> map = null;
 		try {
-			map = latitudeauditDao.getLatitudeauditList(page,rows);
+			map = latitudeauditDao.getLatitudeauditList(page, rows);
 			lalist = latitudeDao.getLatitudeList();
+			/*for (int i = 0; i < map.size(); i++) {
+				String latitudeid = map.get(i).getLatitudeid();
+				for (int j = 0; j < lalist.size(); j++) {
+					if (lalist.get(j).getLatitudeid().toString().equals(latitudeid)) {
+						String latitudefid = lalist.get(j).getLatitudefid().toString();
+						do {
+							for (int k = 0; k < lalist.size(); k++) {
+								if (lalist.get(k).getLatitudeid().toString().equals(latitudefid)) {
+									if (StringUtil.isBlank(map.get(i).getFcasename())) {
+										map.get(i).setFcasename(lalist.get(k).getLatitudename());
+									} else {
+										map.get(i).setFcasename(
+												map.get(i).getFcasename() + "-" + lalist.get(k).getLatitudename());
+									}
+									latitudefid = lalist.get(k).getLatitudefid().toString();
+									break;
+								}
+							}
+						} while (!latitudefid.equals("0"));
+						break;
+					}
+				}
+			}*/
 		} catch (SQLException e) {
 			System.out.println("出错了");
 			e.printStackTrace();
 		}
 		return map;
 	}
+
 	public List<String> fcause(int latitudeid) {
 		List<String> lists = new ArrayList<String>();
 		for (int i = 0; i < lalist.size(); i++) {
-			if (lalist.get(i).getLatitudeid()==latitudeid) {
+			if (lalist.get(i).getLatitudeid() == latitudeid) {
 				for (int a = 0; a < lalist.size(); a++) {
 					if (lalist.get(a).getLatitudeid().equals(lalist.get(i).getLatitudefid())) {
 						lists.add(0, lalist.get(a).getLatitudename());
@@ -59,6 +90,7 @@ public class LatitudeauditServiceImpl implements LatitudeauditService {
 		}
 		return null;
 	}
+
 	@Override
 	public int getCountBy() {
 		int totalSize = latitudeauditDao.getCountBy();
@@ -80,40 +112,40 @@ public class LatitudeauditServiceImpl implements LatitudeauditService {
 	@Override
 	public void updatebatchestats(List<Latitudeaudit> latitudeaudit) {
 		latitudeauditDao.updatebatchestats(latitudeaudit);
-		
+
 	}
 
 	@Override
-	public List<DocidAndDoc> getDocList(String causename, int latitudetype, int num,int rows,int page,int ruleid) {
-//		List<DocidAndDoc> list = null;
-//		Cause cause = new Cause();
-//		if (causename!=null) {
-//			cause.setCausename(causename);
-//			cause = causeDao.selectCause(cause);
-//		}
-//		if (causename!=null) {
-		List<DocidAndDoc> list = latitudeauditDao.getDocList(causename,latitudetype,num,rows,page,ruleid);
-//		}
+	public List<DocidAndDoc> getDocList(String causename, int latitudetype, int num, int rows, int page, int ruleid) {
+		// List<DocidAndDoc> list = null;
+		// Cause cause = new Cause();
+		// if (causename!=null) {
+		// cause.setCausename(causename);
+		// cause = causeDao.selectCause(cause);
+		// }
+		// if (causename!=null) {
+		List<DocidAndDoc> list = latitudeauditDao.getDocList(causename, latitudetype, num, rows, page, ruleid);
+		// }
 		return list;
 	}
 
 	@Override
 	public int getDocby(String causename, int latitudetype, int num, int ruleid) {
 		int list = 0;
-//		Cause cause = new Cause();
-//		if (causename!=null) {
-//			cause.setCausename(causename);
-//			cause = causeDao.selectCause(cause);
-//		}
-//		if (causename!=null) {
-			 list = latitudeauditDao.getDocby(causename,latitudetype,num,ruleid);
-//		}
+		// Cause cause = new Cause();
+		// if (causename!=null) {
+		// cause.setCausename(causename);
+		// cause = causeDao.selectCause(cause);
+		// }
+		// if (causename!=null) {
+		list = latitudeauditDao.getDocby(causename, latitudetype, num, ruleid);
+		// }
 		return list;
 	}
 
 	@Override
-	public String getDoc(String causename, int latitudetype,String docid) {
-		String htmlString = latitudeauditDao.getDoc(causename,latitudetype,docid);
+	public String getDoc(String causename, int latitudetype, String docid) {
+		String htmlString = latitudeauditDao.getDoc(causename, latitudetype, docid);
 		return htmlString;
 	}
 

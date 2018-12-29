@@ -53,7 +53,7 @@ public class Bigdatatest extends Thread {
 	static BatchdataDao batchdataDao;
 	static LatitudenumDao latitudenumDao;
 	// 创建一个静态钥匙
-	static Object ob = "aa";// 值是任意的
+	Object ob = "aa";// 值是任意的
 	volatile private int a = 0;
 	static ThreadPoolExecutor executor = null;
 
@@ -65,9 +65,6 @@ public class Bigdatatest extends Thread {
 	}
 
 	public void main(int batchstats) {
-		executor = new ThreadPoolExecutor(100, Integer.MAX_VALUE, 200, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<Runnable>());
-		System.gc();
 		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		latitudenumDao = (LatitudenumDao) resource.getBean("latitudenumDao");
@@ -76,17 +73,6 @@ public class Bigdatatest extends Thread {
 			allorre = Integer.valueOf(Lalist.get(0).getBatchstats());
 		}else{
 			allorre = 0;
-		}
-		for (int i = 0; i < 40; i++) {
-			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
-			bigdatatest.start();
-			try {
-				// 休息一分钟
-				sleep(6000);
-				// System.out.println("休息一分钟");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 		}
 	}
 

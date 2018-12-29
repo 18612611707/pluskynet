@@ -59,17 +59,6 @@ public class OtherRule extends Thread {
 		}else{
 			state = 0;
 		}
-		for (int i = 0; i < 60; i++) {
-			OtherRule otherrule = new OtherRule("线程名称：" + i);
-			otherrule.start();
-			try {
-				// 休息一分钟
-				sleep(6000);
-				// System.out.println("休息一分钟");
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 
 	public void run() {

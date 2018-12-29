@@ -152,18 +152,22 @@ public class LatitudeauditAction extends BaseAction {
 	 * 循环跑批控制
 	 */
 	public void latitudeRun(){
-		OtherRule otherRule = new OtherRule("runs");
-		otherRule.main(-1);
+		for (int i = 0; i < 60; i++) {
+			OtherRule otherrule = new OtherRule("线程名称：" + i);
+			otherrule.main(-1);
+			otherrule.start();
+		}		
 		outJsonByMsg("成功");
 	}
 	/*
 	 * 增量跑批控制
 	 */
 	public void newlatitudeRun(){
-		OtherRule otherRule = new OtherRule("runs");
-		otherRule.main(0);
+		for (int i = 0; i < 60; i++) {
+			OtherRule otherrule = new OtherRule("线程名称：" + i);
+			otherrule.main(0);
+			otherrule.start();
+		}		
 		outJsonByMsg("成功");
 	}
-	
-
 }

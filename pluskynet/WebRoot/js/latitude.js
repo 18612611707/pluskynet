@@ -1,7 +1,7 @@
 $(function() {
 	//页面加载完成之后执行
 	pageInit();
-//	docnum();
+	docnum();
 	lanum();
 });
 function docnum() {
@@ -13,13 +13,22 @@ function docnum() {
 		success : function(data) {
 			if (data) {
 				if (data.msg == "成功") {
-					$("#docnum").attr("value", data.data[0]);
-					$("#docnums").attr("value", data.data[1]);
+					var s = data.data;
+					for (var int = 0; int < s.length; int++) {
+						console.info(s[int]);
+						console.info(s[int].name);
+						console.info(s[int].nums);
+						if (s[int].name == "docnum") {
+							$("#docnum").attr("value", s[int].nums);
+						} else {
+							$("#docnums").attr("value", s[int].nums);
+						}
+					}
 				}
 			}
 		}
 	});
-	
+
 }
 function lanum() {
 	$.ajax({
@@ -30,8 +39,17 @@ function lanum() {
 		success : function(data) {
 			if (data) {
 				if (data.msg == "成功") {
-					$("#lanum").attr("value", data.data[0]);
-					$("#lanums").attr("value", data.data[1]);
+					var s = data.data;
+					for (var int = 0; int < s.length; int++) {
+						console.info(s[int]);
+						console.info(s[int].name);
+						console.info(s[int].nums);
+						if (s[int].name == "lanum") {
+							$("#lanum").attr("value", s[int].nums);
+						} else {
+							$("#lanums").attr("value", s[int].nums);
+						}
+					}
 				}
 			}
 		}
@@ -44,7 +62,7 @@ function pageInit() {
 		{
 			url : '../LatitudeauditAction!getLatitudeList.action', //组件创建完成之后请求数据的url
 			datatype : "json", //请求数据返回的类型。可选json,xml,txt
-			colNames : [ 'id', '规则id', '规则类型', '规则名称', '审核状态' ], //jqGrid的列显示名字
+			colNames : [ 'id', '规则id', '规则类型', '规则名称', '审核状态','父规则名称' ], //jqGrid的列显示名字
 			colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				{
 					name : 'id',
@@ -94,6 +112,12 @@ function pageInit() {
 					width : 100,
 					sortable : false,
 					editable : true //行编辑
+				},
+				{
+					name : 'fcasename',
+					index : 'fcasename',
+					width : 100,
+					sortable : false
 				}
 			],
 			/*rowNum : 10,//一页显示多少条

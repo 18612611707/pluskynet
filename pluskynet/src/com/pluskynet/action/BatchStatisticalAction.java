@@ -2,6 +2,7 @@ package com.pluskynet.action;
 
 import java.util.List;
 
+import com.pluskynet.domain.Statisticalnum;
 import com.pluskynet.service.BatchStatisticalService;
 import com.pluskynet.util.BaseAction;
 
@@ -13,12 +14,12 @@ public class BatchStatisticalAction extends BaseAction {
 	}
 
 	public void docStatistical() {
-		List<Integer> list = batchStatisticalService.docStatistical();
+		List<Statisticalnum> list = batchStatisticalService.docStatistical();
 		outJsonByMsg(list, "成功");
 	}
 
 	public void laStatistical() {
-		List<Integer> list = batchStatisticalService.laStatistical();
+		List<Statisticalnum> list = batchStatisticalService.laStatistical();
 		outJsonByMsg(list, "成功");
 	}
 

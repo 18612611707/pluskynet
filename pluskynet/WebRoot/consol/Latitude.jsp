@@ -37,8 +37,8 @@
 	<table id="list2"></table>
 	<div id="pager2"></div>
 	<br>
-	<label >分段已跑批数 ：</label><input id="docnum" type="text" value="" readonly/><label >文书总数 ：</label><input id="docnums" type="text" value="" readonly/>
+	<label >分段已跑批数 ：</label><input id="docnum" type="text" value="0" readonly/><label >文书总数 ：</label><input id="docnums" type="text" value="" readonly/>
 	<br>
-	<label >维度已跑批数 ：</label><input id="lanum" type="text" value="" readonly/><label >段落总数 ：</label><input id="lanums" type="text" value="" readonly/>
+	<label >维度已跑批数 ：</label><input id="lanum" type="text" value="0" readonly/><label >段落总数 ：</label><input id="lanums" type="text" value="" readonly/>
 </body>
 </html>

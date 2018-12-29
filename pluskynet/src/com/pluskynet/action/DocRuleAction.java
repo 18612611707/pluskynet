@@ -166,7 +166,7 @@ public class DocRuleAction extends BaseAction {
 		} else {
 			map = docRuleService.save(docrule);
 		}
-		outJsonByMsg(map,"成功");
+		outJsonByMsg(map, "成功");
 	}
 
 	/*
@@ -208,6 +208,7 @@ public class DocRuleAction extends BaseAction {
 		}
 		outJsonByMsg(msg);
 	}
+
 	/*
 	 * 修改名称
 	 */
@@ -233,11 +234,11 @@ public class DocRuleAction extends BaseAction {
 	 * 查询规则段落列表
 	 */
 	public void getDocSectionList() {
-//		User user = isLogined();
-//		if (user == null) {
-//			outJsonByMsg("未登录");
-//			return;
-//		}
+		// User user = isLogined();
+		// if (user == null) {
+		// outJsonByMsg("未登录");
+		// return;
+		// }
 		List<TreeDocrule> list = docRuleService.getDcoSectionList();
 		outJsonByMsg(list, "成功");
 	}
@@ -300,20 +301,28 @@ public class DocRuleAction extends BaseAction {
 			outJsonByMsg(list.get(0), msg);
 		}
 	}
+
 	/*
 	 * 循环跑批开始
 	 */
-	public void Docrun(){
-		Bigdatatest bigdatatest = new Bigdatatest("runs");
-		bigdatatest.main(-1);
+	public void Docrun() {
+		for (int i = 0; i < 40; i++) {
+			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
+			bigdatatest.main(-1);
+			bigdatatest.start();
+		}
 		outJsonByMsg("成功");
 	}
+
 	/*
 	 * 增量跑批开始
 	 */
-	public void newDocrun(){
-		Bigdatatest bigdatatest = new Bigdatatest("runs");
-		bigdatatest.main(-1);
+	public void newDocrun() {
+		for (int i = 0; i < 1; i++) {
+			Bigdatatest bigdatatest = new Bigdatatest("线程名称：" + i);
+			bigdatatest.main(0);
+			bigdatatest.start();
+		}
 		outJsonByMsg("成功");
 	}
 }

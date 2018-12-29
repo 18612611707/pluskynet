@@ -71,14 +71,11 @@ public class LatitudenumDaoImpl extends HibernateDaoSupport implements Latituden
 				this.getHibernateTemplate().save(list.get(i));
 			}
 		}
+		DatabaseContextHolder.setCustomerType("dataSourcenw");
 	}
 
 	@Transactional
 	private boolean updatelat(List<Latitudenum> list) {
-		//清除原数据源
-        DatabaseContextHolder.clearCustomerType();
-        //设置新数据源
-		DatabaseContextHolder.setCustomerType("dataSourcenw");
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sql = "";
 		for (int i = 0; i < list.size(); i++) {

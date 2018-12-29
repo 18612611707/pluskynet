@@ -403,5 +403,6 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 			latitudeaudit.setSubtime(Timestamp.valueOf(df.format(new Date())));
 			this.getHibernateTemplate().save(latitudeaudit);
 		}
+		DatabaseContextHolder.setCustomerType("dataSourcenw"); // 多数据源手动切换
 	}
 }

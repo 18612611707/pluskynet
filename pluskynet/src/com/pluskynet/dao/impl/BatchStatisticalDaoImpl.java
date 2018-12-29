@@ -15,14 +15,15 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.pluskynet.dao.BatchStatisticalDao;
+import com.pluskynet.domain.Statisticalnum;
 
 public class BatchStatisticalDaoImpl extends HibernateDaoSupport implements BatchStatisticalDao {
 
 	@Override
 	@Transactional
-	public List<Integer> docStatistical() {
+	public List<Statisticalnum> docStatistical() {
 		List<Map> maplist = new ArrayList<Map>();
-		List<Integer> list = new ArrayList<Integer>();
+		List<Statisticalnum> list = new ArrayList<Statisticalnum>();
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sumdoc = "select states,SUM(nums) as docsum from (select states,count(1) as nums from article11 group by states union all select states,count(1) as nums from article12 group by states union all select states,count(1) as nums from article13 group by states union all select states,count(1) as nums from article14 group by states union all select states,count(1) as nums from article15 group by states union all select states,count(1) as nums from article16 group by states union all select states,count(1) as nums from article17 group by states union all select states,count(1) as nums from article18 group by states union all select states,count(1) as nums from article19 group by states union all select states,count(1) as nums from article20 group by states) a group by states ";
 		Connection conn = session.connection();
@@ -47,17 +48,38 @@ public class BatchStatisticalDaoImpl extends HibernateDaoSupport implements Batc
 					Integer key = iter.next();
 					int value = (int) maplist.get(i).get(key);
 					if (!key.equals(batchstats)) {
-						if (list.size()>0) {
-							list.add(0, list.get(0)+value);
-						}else{
-							list.add(0, value);
+						Statisticalnum statisticalnum = new Statisticalnum();
+						statisticalnum.setName("docnum");
+						if (list.size() > 0) {
+							for (int j = 0; j < list.size(); j++) {
+								if (list.get(i).getName().equals("docnum")) {
+									list.get(i).setNums(list.get(i).getNums() + value);
+								}else{
+									statisticalnum.setNums(value);
+									list.add(statisticalnum);
+								}
+							}
+						} else {
+							statisticalnum.setNums(value);
+							list.add(statisticalnum);
 						}
 					}
-					if (list.size()>1) {
-						list.add(1, list.get(1)+value);
-					}else{
-						list.add(1, value);
+					Statisticalnum statisticalnum = new Statisticalnum();
+					statisticalnum.setName("docnums");
+					if (list.size() > 0) {
+						for (int j = 0; j < list.size(); j++) {
+							if (list.get(i).getName().equals("docnums")) {
+								list.get(i).setNums(list.get(i).getNums() + value);
+							}else{
+								statisticalnum.setNums(value);
+								list.add(statisticalnum);
+							}
+						}
+					} else {
+						statisticalnum.setNums(value);
+						list.add(statisticalnum);
 					}
+					
 				}
 			}
 		} catch (SQLException e) {
@@ -69,9 +91,9 @@ public class BatchStatisticalDaoImpl extends HibernateDaoSupport implements Batc
 
 	@Override
 	@Transactional
-	public List<Integer> laStatistical() {
+	public List<Statisticalnum> laStatistical() {
 		List<Map> maplist = new ArrayList<Map>();
-		List<Integer> list = new ArrayList<Integer>();
+		List<Statisticalnum> list = new ArrayList<Statisticalnum>();
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sumdoc = "select state,SUM(nums)as lasum from (select state,count(1) as nums from Docsectionandrule11 GROUP BY state union all select state,count(1) as nums from Docsectionandrule12 GROUP BY state union all select state,count(1) as nums from Docsectionandrule13 GROUP BY state union all select state,count(1) as nums from Docsectionandrule14 GROUP BY state union all select state,count(1) as nums from Docsectionandrule15 GROUP BY state union all select state,count(1) as nums from Docsectionandrule16 GROUP BY state union all select state,count(1) as nums from Docsectionandrule17 GROUP BY state union all select state,count(1) as nums from Docsectionandrule18 GROUP BY state union all select state,count(1) as nums from Docsectionandrule19 GROUP BY state union all select state,count(1) as nums from Docsectionandrule20 GROUP BY state) a GROUP BY state";
 		Connection conn = session.connection();
@@ -96,17 +118,33 @@ public class BatchStatisticalDaoImpl extends HibernateDaoSupport implements Batc
 					Integer key = iter.next();
 					int value = (int) maplist.get(i).get(key);
 					if (!key.equals(batchstats)) {
-						if (list.size()>0) {
-							list.add(0, list.get(0)+value);
-						}else{
-							list.add(0, value);
+						Statisticalnum statisticalnum = new Statisticalnum();
+						statisticalnum.setName("lanum");
+						if (list.size() > 0) {
+							for (int j = 0; j < list.size(); j++) {
+								if (list.get(i).getName().equals("lanum")) {
+									list.get(i).setNums(list.get(i).getNums() + value);
+								}
+							}
+						} else {
+							statisticalnum.setNums(value);
 						}
+						list.add(statisticalnum);
 					}
-					if (list.size()>1) {
-						list.set(1, list.get(1)+value);
-					}else{
-						list.set(1, value);
+					Statisticalnum statisticalnum = new Statisticalnum();
+					statisticalnum.setName("lanums");
+					if (list.size() > 0) {
+						for (int j = 0; j < list.size(); j++) {
+							if (list.get(i).getName().equals("lanums")) {
+								list.get(i).setNums(list.get(i).getNums() + value);
+							}else{
+								statisticalnum.setNums(value);
+							}
+						}
+					} else {
+						statisticalnum.setNums(value);
 					}
+					list.add(statisticalnum);
 				}
 			}
 		} catch (SQLException e) {
