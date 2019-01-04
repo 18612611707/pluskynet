@@ -186,25 +186,6 @@ public class DocRuleAction extends BaseAction {
 				docrule.setSectionname(sectionName);
 			}
 			msg = docRuleService.update(docrule);
-			/*
-			 * if (msg == "成功") { Preview preview = new Preview();
-			 * preview.setRule(docrule.getRule()); String sectionname =
-			 * docrule.getSectionname(); List<StatsDoc> list =
-			 * previewService.getDocList(preview); int a = 0; for (int i = 0; i
-			 * < list.size(); i++) { if (list.get(i).getStats().equals("符合")) {
-			 * Docsectionandrule docsectionandrule = new Docsectionandrule();
-			 * docsectionandrule.setRuleid(docrule.getRuleid());
-			 * docsectionandrule.setTitle(list.get(i).getDocidAndDoc().getTitle(
-			 * ));
-			 * docsectionandrule.setDocumentsid(list.get(i).getDocidAndDoc().
-			 * getDocid()); docsectionandrule.setSectionname(sectionname);
-			 * docsectionandrule.setSectiontext(list.get(i).getDocidAndDoc().
-			 * getDoc()); docsectionandrule.setBelonguser(user.getUsername());
-			 * docsectionandrule.setBelongid(user.getUserid()); if (a == 0) {
-			 * docRuleService.saveyldelete(sectionname,user);
-			 * docRuleService.saveyl(docsectionandrule); a++; } else {
-			 * docRuleService.saveyl(docsectionandrule); } } } }
-			 */
 		}
 		outJsonByMsg(msg);
 	}

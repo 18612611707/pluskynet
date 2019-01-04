@@ -1,5 +1,6 @@
 package com.pluskynet.service.impl;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,34 +11,64 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.struts2.components.Else;
+import org.jsoup.helper.StringUtil;
 
 import com.pluskynet.dao.DocSectionAndRuleDao;
 import com.pluskynet.dao.LatitudeDao;
 import com.pluskynet.dao.LatitudeauditDao;
 import com.pluskynet.dao.LatitudenumDao;
+import com.pluskynet.dao.PreviewhisDao;
+import com.pluskynet.dao.SampleDao;
 import com.pluskynet.domain.DocidAndDoc;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.domain.Latitudenum;
+import com.pluskynet.domain.Previewhis;
+import com.pluskynet.domain.Sample;
 import com.pluskynet.domain.StatsDoc;
 import com.pluskynet.domain.User;
 import com.pluskynet.otherdomain.OtherLatitude;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.otherdomain.Treelatitude;
 import com.pluskynet.service.LatitudeService;
+import com.pluskynet.util.HttpRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @SuppressWarnings("all")
 public class LatitudeServiceImpl implements LatitudeService {
+	/*
+	 * 保存预览历史
+	 */
+	private PreviewhisDao previewhisDao;
+
+	public void setPreviewhisDao(PreviewhisDao previewhisDao) {
+		this.previewhisDao = previewhisDao;
+	}
+
+	/*
+	 * 获取选择样本的规则
+	 */
+	private SampleDao sampleDao;
+
+	public void setSampleDao(SampleDao sampleDao) {
+		this.sampleDao = sampleDao;
+	}
+
+	/*
+	 * 获取各个维度的文书数量
+	 */
 	private LatitudenumDao latitudenumDao;
-	
+
 	public void setLatitudenumDao(LatitudenumDao latitudenumDao) {
 		this.latitudenumDao = latitudenumDao;
 	}
 
+	/*
+	 * 获取样本文书
+	 */
 	private DocSectionAndRuleDao docSectionAndRuleDao;
 
 	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
@@ -55,8 +86,9 @@ public class LatitudeServiceImpl implements LatitudeService {
 	public void setLatitudeauditDao(LatitudeauditDao latitudeauditDao) {
 		LatitudeauditDao = latitudeauditDao;
 	}
-	
+
 	private List<Latitudenum> numlist = null;
+
 	@Override
 	public Map save(Latitude latitude, User user) {
 		Map msg = latitudeDao.save(latitude, user);
@@ -67,6 +99,16 @@ public class LatitudeServiceImpl implements LatitudeService {
 	public String update(Latitude latitude, User user) {
 		String msg = latitudeDao.update(latitude, user);
 		if (msg.equals("成功")) {
+			HttpRequest httpRequest = new HttpRequest();
+			/*
+			 * 用于同步线上规则到线下数据库
+			 */
+			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeAction!update.action",
+					"&latitudeid=" + latitude.getLatitudeid() + "&latitudefid=" + latitude.getLatitudefid()
+							+ "&latitudename=" + latitude.getLatitudename() + "&ruletype=" + latitude.getRuletype()
+							+ "&rule=" + latitude.getRule() + "&reserved=" + latitude.getReserved() + "&userid="
+							+ user.getUserid() + "&username=" + user.getUsername() + "&name=" + user.getName()
+							+ "&rolecode=" + user.getRolecode());
 			latitude = latitudeDao.getLatitude(latitude);
 			Latitudeaudit latitudeaudit = new Latitudeaudit();
 			latitudeaudit.setLatitudeid(latitude.getLatitudeid());
@@ -75,6 +117,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 			latitudeaudit.setSubuserid(user.getUserid().toString());
 			latitudeaudit.setRule(latitude.getRule());
 			LatitudeauditDao.update(latitudeaudit);
+			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
+					latitudeaudit.toString());
 		}
 		return msg;
 	}
@@ -91,10 +135,10 @@ public class LatitudeServiceImpl implements LatitudeService {
 			Map<String, Object> treeMap = new HashMap<String, Object>();
 			treeMap.put("latitudeid", lists.get(i).getLatitudeid());
 			treeMap.put("latitudefid", lists.get(i).getLatitudefid());
-			treeMap.put("latitudename", lists.get(i).getLatitudename()+","+0);
+			treeMap.put("latitudename", lists.get(i).getLatitudename() + "," + 0);
 			for (int j = 0; j < numlist.size(); j++) {
-				if (numlist.get(j).getLatitudeid().intValue()==lists.get(i).getLatitudeid().intValue()) {
-					treeMap.put("latitudename", lists.get(i).getLatitudename()+","+numlist.get(j).getNums());
+				if (numlist.get(j).getLatitudeid().intValue() == lists.get(i).getLatitudeid().intValue()) {
+					treeMap.put("latitudename", lists.get(i).getLatitudename() + "," + numlist.get(j).getNums());
 					break;
 				}
 			}
@@ -131,11 +175,11 @@ public class LatitudeServiceImpl implements LatitudeService {
 				treeMap.setLatitudeid(lists.get(i).getLatitudeid());
 				treeMap.setLatitudefid(lists.get(i).getLatitudefid());
 				for (int j = 0; j < numlist.size(); j++) {
-					if (numlist.get(j).getLatitudeid().intValue()==lists.get(i).getLatitudeid().intValue()) {
-						treeMap.setLatitudename(lists.get(i).getLatitudename()+","+numlist.get(j).getNums());
+					if (numlist.get(j).getLatitudeid().intValue() == lists.get(i).getLatitudeid().intValue()) {
+						treeMap.setLatitudename(lists.get(i).getLatitudename() + "," + numlist.get(j).getNums());
 						break;
-					}else if(j==numlist.size()-1){
-						treeMap.setLatitudename(lists.get(i).getLatitudename()+","+0);
+					} else if (j == numlist.size() - 1) {
+						treeMap.setLatitudename(lists.get(i).getLatitudename() + "," + 0);
 					}
 				}
 				treeMap.setCreator(lists.get(i).getCreateruser());
@@ -199,6 +243,9 @@ public class LatitudeServiceImpl implements LatitudeService {
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				StatsDoc statsDoc = new StatsDoc();
 				oldsectiontext = list.get(j).getSectiontext();
+				if (StringUtil.isBlank(oldsectiontext)) {
+					continue;
+				}
 				look: for (int i = 0; i < jsonArray.size(); i++) {
 					JSONObject jsonObject = JSONObject.fromObject(jsonArray.get(i));
 					// if (!jsonObject.get("state").equals("新录")) {
@@ -421,6 +468,20 @@ public class LatitudeServiceImpl implements LatitudeService {
 				}
 			}
 		}
+		int accord = 0;
+		int noaccord = 0;
+		for (int i = 0; i < listsDocs.size(); i++) {
+			if (listsDocs.get(i).getStats().equals("符合")) {
+				accord = accord + 1;
+			} else {
+				noaccord = noaccord + 1;
+			}
+		}
+		Sample samObject = sampleDao.select(user);
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Previewhis previewhis = new Previewhis(samObject.getRule(), Timestamp.valueOf(df.format(new Date())),
+				listsDocs.size(), accord, noaccord, user.getUserid().toString(), user.getUsername());
+		previewhisDao.save(previewhis);
 		return listsDocs;
 	}
 
@@ -453,7 +514,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 				if (reg_charset == null) {
 					reg_charset = start[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})" + start[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})"
+							+ start[j];
 				}
 			}
 		} else {
@@ -486,7 +548,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 				if (reg_charset == null) {
 					reg_charset = end[j];
 				} else {
-					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})" + end[j];
+					reg_charset = reg_charset + "([\u4e00-\u9fa5_×Ｘa-zA-Z0-9_|\\pP，。？：；‘’！“”—……、]{0," + wordnum + "})"
+							+ end[j];
 				}
 			} else {
 				reg_charset = end[j];

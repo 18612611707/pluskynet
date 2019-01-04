@@ -29,6 +29,4 @@ public interface LatitudeauditDao {
 	int getDocby(String cause, int latitudetype, int num, int ruleid);
 
 	String getDoc(String cause, int latitudetype, String docid);
-
-	void wwupdate(Latitudeaudit latitudeaudit);
 }

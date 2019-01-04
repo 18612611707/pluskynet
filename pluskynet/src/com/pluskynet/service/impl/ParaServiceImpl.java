@@ -53,28 +53,20 @@ public class ParaServiceImpl implements ParaService {
 		}
 		if (js.getString("pc_id").equals("")) {
 			map = paraDao.save(tParaCri);
-			paraDao.delete((Integer) map.get("pc_id"));
-			JSONArray jsonArray = JSONArray.fromObject(jsonObject.getString("list"));
-			for (int i = 0; i < jsonArray.size(); i++) {
-				String criGrpjsonObject = jsonArray.get(i).toString();
-				TParaCriGrp criGrp = new TParaCriGrp();
-				criGrp.setPcgOrder(i);
-				criGrp.setPcId((Integer) map.get("pc_id"));
-				criGrp.setPgId(Integer.valueOf(criGrpjsonObject));
-				int pcg_id = paraDao.saveCri(criGrp);
-			}
 		} else {
 			map = paraDao.update(tParaCri);
-			paraDao.delete((Integer) map.get("pc_id"));
-			JSONArray jsonArray = JSONArray.fromObject(jsonObject.getString("list"));
-			for (int i = 0; i < jsonArray.size(); i++) {
-				JSONObject jsonObject2 = JSONObject.fromObject(jsonArray.get(i));
-				TParaCriGrp criGrp = new TParaCriGrp();
-				criGrp.setPcgOrder(i);
-				criGrp.setPcId((Integer) map.get("pc_id"));
-				criGrp.setPgId(Integer.valueOf(jsonObject2.getString("pg_id")));
-				int pcg_id = paraDao.saveCri(criGrp);
-			}
+		}
+		paraDao.delete((Integer) map.get("pc_id"));
+		String list = jsonObject.getString("list");
+		list = list.substring(1);
+		list = list.substring(0,list.length()-1);
+		String[] jsonArray = list.split(",");
+		for (int i = 0; i < jsonArray.length; i++) {
+			TParaCriGrp criGrp = new TParaCriGrp();
+			criGrp.setPcgOrder(i);
+			criGrp.setPcId((Integer) map.get("pc_id"));
+			criGrp.setPgId(Integer.valueOf(jsonArray[i]));
+			int pcg_id = paraDao.saveCri(criGrp);
 		}
 		return map;
 	}

@@ -19,6 +19,7 @@ import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.otherdomain.TreeDocrule;
 import com.pluskynet.otherdomain.Treelatitude;
 import com.pluskynet.service.DocRuleService;
+import com.pluskynet.util.HttpRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -58,6 +59,8 @@ public class DocRuleServiceImpl implements DocRuleService {
 	public String update(Docrule docrule) {
 		String msg = docRuleDao.update(docrule);
 		if (msg.equals("成功")) {
+			HttpRequest httpRequest = new HttpRequest();
+			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/DocRuleAction!update.action", docrule.toString());
 			Map<?, ?> map = docRuleDao.getDcoSection(docrule);
 			String sectionname = map.get("sectionname").toString();
 			docrule.setSectionname(sectionname);
@@ -68,7 +71,8 @@ public class DocRuleServiceImpl implements DocRuleService {
 			latitudeaudit.setLatitudetype(0);
 			latitudeaudit.setReserved(docrule.getReserved());
 			latitudeauditDao.update(latitudeaudit);
-			latitudeauditDao.wwupdate(latitudeaudit);
+			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action", latitudeaudit.toString());
+//			latitudeauditDao.wwupdate(latitudeaudit);
 		}
 		return msg;
 	}
@@ -89,7 +93,6 @@ public class DocRuleServiceImpl implements DocRuleService {
 				}
 			}
 			treeDocrule.setRuleid(friList.get(i).getRuleid());
-			
 			lists.add(treeDocrule);
 		}
 		 List<TreeDocrule> list = new ArrayList<TreeDocrule>(); 

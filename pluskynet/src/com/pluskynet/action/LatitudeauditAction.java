@@ -46,6 +46,13 @@ public class LatitudeauditAction extends BaseAction {
 		outJsonByPage(map, totalSize, "成功", "yyyy-MM-dd HH:mm:ss");
 		// outJsonByMsg(map,"成功");
 	}
+	/*
+	 * 修改审核表规则
+	 */
+	public void update(){
+		latitudeauditService.update(latitudeaudit);
+		outJsonByMsg("成功");
+	}
 
 	private String latitudeids;
 

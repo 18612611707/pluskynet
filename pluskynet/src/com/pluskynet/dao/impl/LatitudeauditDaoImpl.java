@@ -20,8 +20,6 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.pluskynet.core.DatabaseContextHolder;
 import com.pluskynet.dao.LatitudeauditDao;
 import com.pluskynet.domain.Cause;
 import com.pluskynet.domain.DocidAndDoc;
@@ -371,38 +369,5 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		JSONObject jsonObject2 = JSONObject.fromObject(jsonObject.getString("htmlData"));
 		html = jsonObject2.getString("Html");
 		return html;
-	}
-
-	@Override
-	public void wwupdate(Latitudeaudit latitudeaudit) {
-		DatabaseContextHolder.setCustomerType("dataSourceww"); // 多数据源手动切换
-		if (latitudeaudit.getRule().contains("刑事")) {
-			latitudeaudit.setCasetype(1);
-		} else {
-			latitudeaudit.setCasetype(0);
-		}
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		String hql = "from Latitudeaudit where latitudeid = ? and latitudetype = ?";
-		List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql, latitudeaudit.getLatitudeid(),
-				latitudeaudit.getLatitudetype());
-		if (latitudeaudits.size() > 0) {
-			hql = "update Latitudeaudit set latitudeid = ? ,latitudetype = ?, latitudename = ? ,rule = ? ,stats = '0',subtime = ?,subuserid = ?,casetype = ? where id = ?";
-			this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.getLatitudeid(), latitudeaudit.getLatitudetype(),
-					latitudeaudit.getLatitudename(), latitudeaudit.getRule(), Timestamp.valueOf(df.format(new Date())),
-					latitudeaudit.getSubuserid(), latitudeaudit.getCasetype(), latitudeaudits.get(0).getId());
-		} else {
-			String sql = "from Latitudeaudit where latitudetype = ? and casetype = ?";
-			List<Latitudeaudit> list = this.getHibernateTemplate().find(sql, latitudeaudit.getLatitudetype(),
-					latitudeaudit.getCasetype());
-			if (list.size() > 0) {
-				latitudeaudit.setBatchstats(list.get(0).getBatchstats());
-			} else {
-				latitudeaudit.setBatchstats("0");
-			}
-			latitudeaudit.setStats("0");
-			latitudeaudit.setSubtime(Timestamp.valueOf(df.format(new Date())));
-			this.getHibernateTemplate().save(latitudeaudit);
-		}
-		DatabaseContextHolder.setCustomerType("dataSourcenw"); // 多数据源手动切换
 	}
 }

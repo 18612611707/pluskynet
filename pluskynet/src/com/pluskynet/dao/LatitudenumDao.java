@@ -10,6 +10,4 @@ public interface LatitudenumDao {
 	
 	List<Latitudenum> getnums(int type);//获取0：段落 ，1：维度数量
 
-	void updateonline(List<Latitudenum> list);
-
 }

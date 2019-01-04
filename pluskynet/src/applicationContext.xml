@@ -14,7 +14,7 @@
 	<context:property-placeholder location="classpath:jdbc.properties"
 		ignore-unresolvable="true" />
 	<!-- 配置连接池 -->
-	<bean id="dataSourcenw" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="${jdbc.driverClass}"></property>
 		<property name="jdbcUrl" value="${jdbc.url}"></property>
@@ -27,35 +27,12 @@
 		<!-- 最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
 		<property name="maxIdleTime" value="1800" />
 	</bean>
-	<bean id="dataSourceww" class="com.mchange.v2.c3p0.ComboPooledDataSource"
-		destroy-method="close">
-		<property name="driverClass" value="${jdbc.driverClass2}"></property>
-		<property name="jdbcUrl" value="${jdbc.url2}"></property>
-		<property name="user" value="${jdbc.username2}"></property>
-		<property name="password" value="${jdbc.password2}"></property>
-		<!--连接池中保留的最小连接数。 -->
-		<property name="minPoolSize" value="2" />
-		<!--连接池中保留的最大连接数。Default: 15 -->
-		<property name="maxPoolSize" value="5000" />
-		<!--最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
-		<property name="maxIdleTime" value="1800" />
-	</bean>
-	<!--动态切换配置 -->
-	<bean id="dynamicDataSource" class="com.pluskynet.core.DynamicDataSource">
-		<property name="targetDataSources">
-			<map key-type="java.lang.String">
-				<entry value-ref="dataSourcenw" key="dataSourcenw"></entry>
-				<entry value-ref="dataSourceww" key="dataSourceww"></entry>
-			</map>
-		</property>
-		<property name="defaultTargetDataSource" ref="dataSourcenw"></property>
-	</bean>
 	<!-- 配置Hibernate相关属性 -->
 	<bean id="sessionFactory"
 		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
 		<!-- 注入连接池 -->
 		<property name="dataSource">
-			<ref bean="dynamicDataSource" />
+			<ref bean="dataSource" />
 		</property>
 		<!--配置hibernate属性 -->
 		<property name="hibernateProperties">
@@ -120,6 +97,18 @@
 		</property>
 	</bean>
 	<!-- 配置Action类 -->
+	<bean id="PreviewhisAction" class="com.pluskynet.action.PreviewhisAction">
+		<property name="previewhisService" ref="previewhisService" />
+	</bean>
+	<bean id="DocidandruleAction" class="com.pluskynet.action.DocidandruleidAction">
+		<property name="docidandruleService" ref="docidandruleService" />
+	</bean>
+	<bean id="BatchdataAction" class="com.pluskynet.action.BatchdataAction">
+		<property name="batchdataService" ref="batchdataService" />
+	</bean>
+	<bean id="LatitudeauditAction" class="com.pluskynet.action.LatitudeauditAction">
+		<property name="latitudeauditService" ref="latitudeauditService" />
+	</bean>
 	<bean id="ReasonnumAction" class="com.pluskynet.action.ReasonnumAction">
 		<property name="reasonnumService" ref="reasonnumService" />
 	</bean>
@@ -144,7 +133,6 @@
 	<bean id="latitudeAction" class="com.pluskynet.action.LatitudeAction">
 		<property name="latitudeService" ref="latitudeService" />
 	</bean>
-
 	<bean id="docsectionandruleAction" class="com.pluskynet.action.DocsectionandruleAction"
 		scope="prototype">
 		<property name="docSectionAndRuleService" ref="docSectionAndRuleService" />
@@ -175,6 +163,15 @@
 		<property name="synonymService" ref="synonymService" />
 	</bean>
 	<!-- 配置业务层的类 Service -->
+	<bean id="previewhisService" class="com.pluskynet.service.impl.PreviewhisServiceImpl">
+		<property name="previewhisDao" ref="previewhisDao"/>
+	</bean>
+	<bean id="docidandruleService" class="com.pluskynet.service.impl.DocidandruleServiceImpl">
+		<property name="docidandruleidDao" ref="docidandruleidDao"/>
+	</bean>
+	<bean id="batchdataService" class="com.pluskynet.service.impl.BatchdataServiceImpl">
+		<property name="batchdataDao" ref="batchdataDao"/>
+	</bean>
 	<bean id="batchStatisticalService" class="com.pluskynet.service.impl.BatchStatisticalServiceImpl">
 		<property name="batchStatisticalDao" ref="batchStatisticalDao"/>
 	</bean>
@@ -202,6 +199,8 @@
 		<property name="docSectionAndRuleDao" ref="docSectionAndRuleDao" />
 		<property name="latitudeauditDao" ref="latitudeauditDao" />
 		<property name="latitudenumDao" ref="latitudenumDao" />
+		<property name="previewhisDao" ref="previewhisDao" />
+		<property name="sampleDao" ref="sampleDao"/>
 	</bean>
 	<bean id="articleService" class="com.pluskynet.service.impl.ArticleServiceImpl">
 		<property name="articleDao" ref="articleDao" />
@@ -236,6 +235,9 @@
 		<property name="synonymDao" ref="synonymDao" />
 	</bean>
 	<!-- 配置DAO的类 Dao -->
+	<bean id="previewhisDao" class="com.pluskynet.dao.impl.PreviewhisDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
 	<bean id="batchStatisticalDao" class="com.pluskynet.dao.impl.BatchStatisticalDaoImpl">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>

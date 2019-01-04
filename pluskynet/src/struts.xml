@@ -13,7 +13,7 @@
 		namespace="/">
 		<!-- 段落纬度规则的添加、修改、查询 -->
 		<action name="DocRuleAction" class="com.pluskynet.action.DocRuleAction">
-			<result name="success" type="json">
+			<!-- <result name="success" type="json">
 				<param name="root">queryresult</param>
 			</result>
 			<result name="section" type="json">
@@ -24,13 +24,13 @@
 			</result>
 			<result name="update" type="json">
 				<param name="root">queryresult</param>
-			</result>
+			</result> -->
 		</action>
 		<!-- 段落规则预览 -->
 		<action name="PreviewAction" class="com.pluskynet.action.PreviewAction">
-			<result name="sucess" type="json">
+			<!-- <result name="sucess" type="json">
 				<param name="root">doclist</param>
-			</result>
+			</result> -->
 		</action>
 		<!-- 登录、退出 -->
 		<action name="LoginAction" class="com.pluskynet.action.LoginAction"
@@ -41,14 +41,14 @@
 		<!-- 获取符合规则段落和内容 -->
 		<action name="DocsectionandruleAction" class="com.pluskynet.action.DocsectionandruleAction"
 			method="{1}">
-			<result name="sucess" type="json">
+			<!-- <result name="sucess" type="json">
 				<param name="docsection">doclist</param>
-			</result>
+			</result> -->
 		</action>
 		<!-- 其他纬度维护 -->
 		<action name="LatitudeAction" class="com.pluskynet.action.LatitudeAction"
 			method="{1}">
-			<result name="sucess" type="json">
+			<!-- <result name="sucess" type="json">
 				<param name="latitude">latitudeList</param>
 			</result>
 			<result name="save" type="json">
@@ -59,7 +59,7 @@
 			</result>
 			<result name="getlatitude" type="json">
 				<param name="latitude">latitu</param>
-			</result>
+			</result> -->
 		</action>
 		<!-- 获取待审批队列 -->
 		<action name="LatitudeauditAction" class="com.pluskynet.action.LatitudeauditAction">
@@ -77,25 +77,42 @@
 		<action name="SynonymAction" class="com.pluskynet.action.SynonymAction"
 			method="{1}">
 		</action>
+		<!--字典维护  -->
 		<action name="DictionaryAction" class="com.pluskynet.action.DictionaryAction"
 			method="{1}">
 		</action>
+		<!-- 前端配置 -->
 		<action name="ParaAction" class="com.pluskynet.action.ParaAction"
 			method="{1}">
 		</action>
+		<!--统计各个维度的数量  -->
 		<action name="LatitudenumAction" class="com.pluskynet.action.LatitudenumAction"
 			method="{1}">
-			<result name="sucess" type="json">
+			<!-- <result name="sucess" type="json">
 				<param name="reason">jsonObject</param>
-			</result>
+			</result> -->
 		</action>
+		<!--统计各个案由的数量  -->
 		<action name="ReasonnumAction" class="com.pluskynet.action.ReasonnumAction"
 			method="{1}">
 			<!-- <result name="sucess" type="json">
 				<param name="reason">jsonObject</param>
 			</result> -->
 		</action>
+		<!--统计段落和维度的跑批数  -->
 		<action name="BatchStatisticalAction" class="com.pluskynet.action.BatchStatisticalAction"
+			method="{1}">
+		</action>
+		<!--记录跑批结果匹配词语和维度  -->
+		<action name="BatchdataAction" class="com.pluskynet.action.BatchdataAction"
+			method="{1}">
+		</action>
+		<!--记录文书和对应规则id  -->
+		<action name="DocidandruleidAction" class="com.pluskynet.action.DocidandruleidAction"
+			method="{1}">
+		</action>
+		<!-- 预览历史 -->
+		<action name="PreviewhisAction" class="com.pluskynet.action.PreviewhisAction"
 			method="{1}">
 		</action>
 	</package>

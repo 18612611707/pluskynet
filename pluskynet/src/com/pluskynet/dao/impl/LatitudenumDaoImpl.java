@@ -1,7 +1,6 @@
 package com.pluskynet.dao.impl;
 
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -9,11 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.pluskynet.core.DatabaseContextHolder;
 import com.pluskynet.dao.LatitudenumDao;
 import com.pluskynet.domain.Latitudenum;
 
@@ -51,27 +47,6 @@ public class LatitudenumDaoImpl extends HibernateDaoSupport implements Latituden
 			return list;
 		}
 		return null;
-	}
-
-	@Override
-	public void updateonline(List<Latitudenum> list) {
-		//清除原数据源
-        DatabaseContextHolder.clearCustomerType();
-        //设置新数据源
-		DatabaseContextHolder.setCustomerType("dataSourceww");
-		String sql = "";
-		for (int i = 0; i < list.size(); i++) {
-			String hql = "from Latitudenum where latitudeid = " + list.get(i).getLatitudeid() + " and type = "
-					+ list.get(i).getType() + "";
-			List<Latitudenum> latlist = this.getHibernateTemplate().find(hql);
-			if (latlist.size() > 0) {
-				list.get(i).setId(latlist.get(0).getId());
-				this.getHibernateTemplate().update(list.get(i));
-			} else {
-				this.getHibernateTemplate().save(list.get(i));
-			}
-		}
-		DatabaseContextHolder.setCustomerType("dataSourcenw");
 	}
 
 	@Transactional

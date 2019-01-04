@@ -149,4 +149,9 @@ public class LatitudeauditServiceImpl implements LatitudeauditService {
 		return htmlString;
 	}
 
+	@Override
+	public void update(Latitudeaudit latitudeaudit) {
+		latitudeauditDao.update(latitudeaudit);
+	}
+
 }

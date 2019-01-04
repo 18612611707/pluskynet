@@ -54,7 +54,6 @@ public class SampleDaoImpl extends HibernateDaoSupport implements SampleDao {
 			try {
 				PreparedStatement stmt = conn.prepareStatement(sql);
 				stmt.setString(1, list.get(i).getDecodeData());
-				System.out.println(sql);
 				stmt.addBatch();
 				stmt.executeBatch();
 				if (i % 100 == 0 || i == list.size() - 1) {

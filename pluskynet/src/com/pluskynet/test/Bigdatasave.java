@@ -20,6 +20,7 @@ import com.pluskynet.domain.Docidandruleid;
 import com.pluskynet.domain.Docsectionandrule;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.rule.DocRule;
+import com.pluskynet.util.HttpRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -62,11 +63,11 @@ public class Bigdatasave extends Thread {
 			intlist.add(0, "-1");
 			intlist.add(1, "-1");
 			DocRule docRule = new DocRule();
-			docRule.doclist(docold, intlist, lists,spcx,doctype);
+			docRule.doclist(docold, intlist, lists, spcx, doctype);
 			int start = Integer.valueOf(intlist.get(0));
 			int end = Integer.valueOf(intlist.get(1));
 			String Startword = intlist.get(2);// 匹配到的开始词语
-			String Endword  = intlist.get(3); // 匹配到的结束词语
+			String Endword = intlist.get(3); // 匹配到的结束词语
 			String docnew = null;
 			Docsectionandrule docsectionandrule = new Docsectionandrule();
 			Batchdata batchdata = new Batchdata();
@@ -95,25 +96,42 @@ public class Bigdatasave extends Thread {
 					} catch (Exception e) {
 						System.out.println("文书编号：" + docid + ",规则id：" + ruleid);
 					}
-					/*docsectionandrule.setRuleid(ruleid);
-					docsectionandrule.setSectionname(latitudename);
-					docsectionandrule.setSectiontext(docnew);
-					docsectionandrule.setDocumentsid(docList.get(i1).getDocId());
-					docsectionandrule.setTitle(docList.get(i1).getTitle());
-					batchdata.setCause(causename);
-					batchdata.setDocumentid(docList.get(i1).getDocId());
-					batchdata.setEndword(Endword);
-					batchdata.setRuleid(ruleid);
-					batchdata.setStartword(Startword);*/
+					/*
+					 * docsectionandrule.setRuleid(ruleid);
+					 * docsectionandrule.setSectionname(latitudename);
+					 * docsectionandrule.setSectiontext(docnew);
+					 * docsectionandrule.setDocumentsid(docList.get(i1).getDocId
+					 * ());
+					 * docsectionandrule.setTitle(docList.get(i1).getTitle());
+					 * batchdata.setCause(causename);
+					 * batchdata.setDocumentid(docList.get(i1).getDocId());
+					 * batchdata.setEndword(Endword);
+					 * batchdata.setRuleid(ruleid);
+					 * batchdata.setStartword(Startword);
+					 */
 					batchdataDao.save(batchdata);
 					docruleaction.save(docsectionandrule, doctable);
 					docidandruleidDao.save(docidandruleid);
+					/*HttpRequest httpRequest = new HttpRequest();
+					httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/BatchdataAction!save.action",
+							batchdata.toString());
+					httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/DocsectionandruleAction!save.action",
+							docsectionandrule.toString()+"&"+doctable);
+					httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/DocidandruleidAction!save.action",
+							docsectionandrule.toString());*/
 					continue;
 				}
-			}else{
+			} else {
 				batchdataDao.delete(batchdata);
 				docruleaction.delete(docsectionandrule, doctable);
 				docidandruleidDao.delete(docidandruleid);
+				/*HttpRequest httpRequest = new HttpRequest();
+				httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/BatchdataAction!delete.action",
+						batchdata.toString());
+				httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/DocsectionandruleAction!delete.action",
+						docsectionandrule.toString()+"&"+doctable);
+				httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/DocidandruleidAction!delete.action",
+						docsectionandrule.toString());*/
 			}
 		}
 	}

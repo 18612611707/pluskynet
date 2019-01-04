@@ -10,8 +10,6 @@ import java.util.Map;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.pluskynet.core.DatabaseContextHolder;
 import com.pluskynet.dao.DocRuleDao;
 import com.pluskynet.domain.Docrule;
 import com.pluskynet.domain.Latitude;
