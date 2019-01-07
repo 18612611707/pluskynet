@@ -93,6 +93,7 @@
 				<value>com/pluskynet/domain/TParaVector.hbm.xml</value>
 				<value>com/pluskynet/domain/Latitudenum.hbm.xml</value>
 				<value>com/pluskynet/domain/Reasonnum.hbm.xml</value>
+				<value>com/pluskynet/domain/Previewhis.hbm.xml</value>
 			</list>
 		</property>
 	</bean>

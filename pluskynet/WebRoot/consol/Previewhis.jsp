@@ -20,25 +20,16 @@
 <!-- jqGrid插件的多语言包-非必要 -->
 <!-- 在jqgrid/js/i18n下还有其他的多语言包，可以尝试更换看效果 -->
 <script type="text/javascript" src="../jqgrid/js/i18n/grid.locale-cn.js"></script>
-<title>跑批总览</title>
+<title>预览历史</title>
 
 <!-- 本页面初始化用到的js包，创建jqGrid的代码就在里面 -->
-<script type="text/javascript" src="../js/latitude.js"></script>
+<script type="text/javascript" src="../js/Previewhis.js"></script>
 </head>
 <body>
-<button id="m1" class="layui-btn" type="button">审核</button>&nbsp;&nbsp;
-<button id="m4" class="layui-btn" type="button" disabled="true">段落增量跑批</button>&nbsp;&nbsp;
-<button id="m2" class="layui-btn" type="button" disabled="true">段落跑批</button>&nbsp;&nbsp;
-<button id="m5" class="layui-btn" type="button" disabled="true">维度增量跑批</button>&nbsp;&nbsp;
-<button id="m3" class="layui-btn" type="button" disabled="true">维度跑批</button>&nbsp;&nbsp;
-	<!-- <form action="LoginAction!login.action" method="post">
-		<input type="submit" value="段落跑批">
-	</form> -->
+	<form action="LoginAction!login.action" method="post">
+		<input type="submit" value="查询">
+	</form>
 	<table id="list2"></table>
 	<div id="pager2"></div>
-	<br>
-	<label >分段已跑批数 ：</label><input id="docnum" type="text" value="0" readonly/><label >文书总数 ：</label><input id="docnums" type="text" value="" readonly/>
-	<br>
-	<label >维度已跑批数 ：</label><input id="lanum" type="text" value="0" readonly/><label >段落总数 ：</label><input id="lanums" type="text" value="" readonly/>
 </body>
 </html>

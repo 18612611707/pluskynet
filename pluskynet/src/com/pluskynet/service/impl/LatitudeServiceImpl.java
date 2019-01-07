@@ -237,9 +237,6 @@ public class LatitudeServiceImpl implements LatitudeService {
 			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
 			for (int j = 0; j < list.size(); j++) {
 				boolean a = false;
-				if (list.get(j).getDocumentsid().equals("084e5a3e-3936-498f-9ebf-a881017afc63")) {
-					System.out.println("11111");
-				}
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				StatsDoc statsDoc = new StatsDoc();
 				oldsectiontext = list.get(j).getSectiontext();
@@ -479,7 +476,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 		}
 		Sample samObject = sampleDao.select(user);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Previewhis previewhis = new Previewhis(samObject.getRule(), Timestamp.valueOf(df.format(new Date())),
+		Previewhis previewhis = new Previewhis(samObject.getRule(), df.format(new Date()),
 				listsDocs.size(), accord, noaccord, user.getUserid().toString(), user.getUsername());
 		previewhisDao.save(previewhis);
 		HttpRequest httpRequest = new HttpRequest();

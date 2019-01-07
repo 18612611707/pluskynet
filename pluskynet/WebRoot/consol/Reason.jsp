@@ -20,7 +20,7 @@
 		<!-- jqGrid插件的多语言包-非必要 -->
 		<!-- 在jqgrid/js/i18n下还有其他的多语言包，可以尝试更换看效果 -->
 		<script type="text/javascript" src="../jqgrid/js/i18n/grid.locale-cn.js"></script>
-		<title>http://blog.mn886.net/jqGrid</title>
+		<title>案由数据统计</title>
 		
 		<!-- 本页面初始化用到的js包，创建jqGrid的代码就在里面 -->
 		<script type="text/javascript" src="../js/reason.js"></script>

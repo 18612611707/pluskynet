@@ -1,9 +1,7 @@
 package com.pluskynet.domain;
 
-import java.sql.Timestamp;
-
 /**
- * 预览结果历史表
+ * Previewhis entity. @author MyEclipse Persistence Tools
  */
 
 public class Previewhis implements java.io.Serializable {
@@ -12,7 +10,7 @@ public class Previewhis implements java.io.Serializable {
 
 	private Integer id;
 	private String sample;
-	private Timestamp createtime;
+	private String createtime;
 	private Integer sum;
 	private Integer accord;
 	private Integer noaccord;
@@ -26,7 +24,7 @@ public class Previewhis implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Previewhis(String sample, Timestamp createtime, Integer sum, Integer accord, Integer noaccord,
+	public Previewhis(String sample, String createtime, Integer sum, Integer accord, Integer noaccord,
 			String createuser, String createname) {
 		this.sample = sample;
 		this.createtime = createtime;
@@ -55,11 +53,11 @@ public class Previewhis implements java.io.Serializable {
 		this.sample = sample;
 	}
 
-	public Timestamp getCreatetime() {
+	public String getCreatetime() {
 		return this.createtime;
 	}
 
-	public void setCreatetime(Timestamp createtime) {
+	public void setCreatetime(String createtime) {
 		this.createtime = createtime;
 	}
 

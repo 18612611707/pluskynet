@@ -14,7 +14,12 @@ public class PreviewhisDaoImpl extends HibernateDaoSupport implements Previewhis
 	@Transactional
 	public List<Previewhis> select(String starttime,String endtime) {
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
-		String sql = "select * from previewhis where createtime between '"+starttime+"' and '"+endtime+"'";
+		String sql = null;
+		if (starttime==null) {
+			sql = "select * from previewhis ";
+		}else{
+			sql = "select * from previewhis where createtime between '"+starttime+"' and '"+endtime+"'";
+		}
 		List<Previewhis> list = session.createSQLQuery(sql).addEntity(Previewhis.class).list();
 		return list;
 	}
