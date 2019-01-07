@@ -8,4 +8,6 @@ public interface PreviewhisService {
 
 	List<Previewhis> select(String starttime,String endtime);
 
+	void save(Previewhis previewhis);
+
 }

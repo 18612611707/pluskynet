@@ -46,10 +46,11 @@ public class LatitudeauditAction extends BaseAction {
 		outJsonByPage(map, totalSize, "成功", "yyyy-MM-dd HH:mm:ss");
 		// outJsonByMsg(map,"成功");
 	}
+
 	/*
 	 * 修改审核表规则
 	 */
-	public void update(){
+	public void update() {
 		latitudeauditService.update(latitudeaudit);
 		outJsonByMsg("成功");
 	}
@@ -76,8 +77,6 @@ public class LatitudeauditAction extends BaseAction {
 		latitudeauditService.updatebatchestats(latitudeaudit);
 		// outJsonByMsg("成功");
 	}
-
-	
 
 	/*
 	 * 获取已审批规则
@@ -155,26 +154,32 @@ public class LatitudeauditAction extends BaseAction {
 		map.put("data", htmlString);
 		outJsonByMsg(map, "成功");
 	}
+
 	/*
 	 * 循环跑批控制
 	 */
-	public void latitudeRun(){
-		for (int i = 0; i < 60; i++) {
+	public void latitudeRun() {
+		for (int i = 0; i < 50; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
-			otherrule.main(-1);
-			otherrule.start();
-		}		
+			String msg = otherrule.main(-1);
+			if (msg==null) {
+				otherrule.start();
+			}
+		}
 		outJsonByMsg("成功");
 	}
+
 	/*
 	 * 增量跑批控制
 	 */
-	public void newlatitudeRun(){
-		for (int i = 0; i < 60; i++) {
+	public void newlatitudeRun() {
+		for (int i = 0; i < 50; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
-			otherrule.main(0);
-			otherrule.start();
-		}		
+			String msg = otherrule.main(0);
+			if (msg==null) {
+				otherrule.start();
+			}
+		}
 		outJsonByMsg("成功");
 	}
 }

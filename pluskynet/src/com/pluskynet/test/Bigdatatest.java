@@ -38,6 +38,7 @@ import com.pluskynet.domain.Latitudeaudit;
 import com.pluskynet.domain.Latitudenum;
 import com.pluskynet.otherdomain.Otherdocrule;
 import com.pluskynet.rule.DocRule;
+import com.pluskynet.util.HttpRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -154,6 +155,8 @@ public class Bigdatatest extends Thread {
 				}
 			}
 			latitudeauditAction.updatebatchestats(Lalist);
+			HttpRequest httpRequest = new HttpRequest();
+			httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudeauditAction!updatebatchestats.action", Lalist.toString());
 		} else {
 			System.out.println("无规则");
 		}

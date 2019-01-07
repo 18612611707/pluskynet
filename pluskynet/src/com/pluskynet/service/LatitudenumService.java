@@ -8,5 +8,7 @@ public interface LatitudenumService {
 
 	List<Latitudenum> countlat(int type);
 
+	void updatelat(List<Latitudenum> list);
+
 
 }

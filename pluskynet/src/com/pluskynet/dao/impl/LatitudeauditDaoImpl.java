@@ -180,19 +180,21 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 	}
 
 	@Override
+	@Transactional
 	public void updatebatchestats(List<Latitudeaudit> latitudeaudit) {
+		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		for (int i = 0; i < latitudeaudit.size(); i++) {
 			String hql = "from Latitudeaudit where latitudeid = ? and latitudetype = ? and casetype = 1";
 			List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql,
 					latitudeaudit.get(i).getLatitudeid(), latitudeaudit.get(i).getLatitudetype());
 			if (latitudeaudits.size() > 0) {
-				hql = "update Latitudeaudit set batchstats = ?,stats=? where id = ?";
-				this.getHibernateTemplate().bulkUpdate(hql, latitudeaudit.get(i).getBatchstats(),
-						latitudeaudits.get(0).getStats(), latitudeaudits.get(0).getId());
+				hql = "update latitudeaudit set batchstats = '"+latitudeaudit.get(i).getBatchstats()+"',stats='"+latitudeaudit.get(i).getStats()+"' where id = '"+latitudeaudits.get(0).getId()+"'";
+				session.createSQLQuery(hql).executeUpdate();
 			}
 		}
-		String sql = "update Latitudeaudit set batchstats = ? where casetype = 1";
-		this.getHibernateTemplate().bulkUpdate(sql, latitudeaudit.get(0).getBatchstats());
+		System.out.println(latitudeaudit.get(0).getBatchstats());
+		String sql = "update latitudeaudit set batchstats = '"+latitudeaudit.get(0).getBatchstats()+"' where casetype = 1";
+		session.createSQLQuery(sql).executeUpdate();
 	}
 
 	@Override

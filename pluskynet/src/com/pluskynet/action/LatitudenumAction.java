@@ -37,8 +37,13 @@ public class LatitudenumAction extends BaseAction{
 	public void countlat(){
 		List<Latitudenum> list= latitudenumService.countlat(latitudenum.getType());
 		HttpRequest httpRequest = new HttpRequest();
-		httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudenumAction!countlat.action",latitudenum.toString());
+		httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudenumAction!updatelat.action",list.toString());
 		outJsonByMsg(list,list.size(),"成功","");
 	}
-
+	/*
+	 * 同步统计结果
+	 */
+	public void updatelat(List<Latitudenum> list){
+		latitudenumService.updatelat(list);
+	}
 }

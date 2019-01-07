@@ -42,5 +42,12 @@ public class PreviewhisAction extends BaseAction{
 	 */
 	public void select(){
 		List<Previewhis> list = previewhisService.select(starttime,endtime);
+		outJsonByMsg(list, "成功");
+	}
+	/*
+	 * 保存预览历史
+	 */
+	public void save(){
+		previewhisService.save(previewhis);
 	}
 }

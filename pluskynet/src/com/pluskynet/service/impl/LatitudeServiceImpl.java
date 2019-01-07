@@ -129,7 +129,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 		numlist = latitudenumDao.getnums(1);
 		List<Map> list = new ArrayList<Map>();
 		for (int i = 0; i < lists.size(); i++) {
-			if (lists.get(i).getLatitudefid() != 0) {
+			if (lists.get(i).getLatitudefid().intValue() != 0) {
 				continue;
 			}
 			Map<String, Object> treeMap = new HashMap<String, Object>();
@@ -482,6 +482,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 		Previewhis previewhis = new Previewhis(samObject.getRule(), Timestamp.valueOf(df.format(new Date())),
 				listsDocs.size(), accord, noaccord, user.getUserid().toString(), user.getUsername());
 		previewhisDao.save(previewhis);
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/PreviewhisAction!update.action", previewhis.toString());
 		return listsDocs;
 	}
 

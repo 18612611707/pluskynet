@@ -48,9 +48,9 @@ public class LatitudenumDaoImpl extends HibernateDaoSupport implements Latituden
 		}
 		return null;
 	}
-
+	@Override
 	@Transactional
-	private boolean updatelat(List<Latitudenum> list) {
+	public boolean updatelat(List<Latitudenum> list) {
 		Session session = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String sql = "";
 		for (int i = 0; i < list.size(); i++) {

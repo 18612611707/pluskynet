@@ -28,6 +28,7 @@ import com.pluskynet.domain.LatitudedocKey;
 import com.pluskynet.domain.LatitudedocTime;
 import com.pluskynet.domain.LatitudedocWord;
 import com.pluskynet.otherdomain.Otherrule;
+import com.pluskynet.util.HttpRequest;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -40,25 +41,27 @@ public class OtherRule extends Thread {
 	static ThreadPoolExecutor executor = null;
 	static List<Latitudeaudit> Lalist = null;
 	static LatitudeauditAction latitudeauditAction = null;
-	int state = -1;//0 增量跑批， -1 循环跑批
+	int state = -1;// 0 增量跑批， -1 循环跑批
+
 	public OtherRule(String name) {
 		super(name);// 给线程起名字
 	}
 
-	public void main(int batchstats) {
-		System.gc();
+	public String main(int batchstats) {
+		// System.gc();
 		resource = new ClassPathXmlApplicationContext("applicationContext.xml");
 		latitudeauditAction = (LatitudeauditAction) resource.getBean("latitudeauditAction");
 		Lalist = latitudeauditAction.getLatitude(1);// 获取已审批过的规则
-		if(Lalist.size()==0){
+		if (Lalist.size() == 0) {
 			System.out.println("无规则");
-			return;
+			return "无规则";
 		}
-		if (batchstats == -1 ) {
+		if (batchstats == -1) {
 			state = Integer.valueOf(Lalist.get(0).getBatchstats());
-		}else{
+		} else {
 			state = 0;
 		}
+		return null;
 	}
 
 	public void run() {
@@ -73,16 +76,16 @@ public class OtherRule extends Thread {
 		LatitudenumDao latitudenumDao = (LatitudenumDao) resource.getBean("latitudenumDao");
 		List<Cause> Causelists = causeDao.getArticleList(1);// 获取表名,0:民事 1:刑事
 		List<Docsectionandrule01> docsectionandrulelist = null;
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 设置日期格式
 		for (int i = 0; i < Causelists.size(); i++) {
 			do {
 				int rows = 2000;
 				synchronized (ob) {
-					System.out.println("线程名称：" + getName()+"开始取数据;"+df.format(new Date())+"");
-					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows,state);
-					System.out.println("线程名称：" + getName()+"结束取数据;"+df.format(new Date())+"");
+					System.out.println("线程名称：" + getName() + "开始取数据;" + df.format(new Date()) + "");
+					docsectionandrulelist = docSectionAndRuleDao.listdoc(Causelists.get(i).getDoctable(), rows, state);
+					System.out.println("线程名称：" + getName() + "结束取数据;" + df.format(new Date()) + "");
 				}
-				if (docsectionandrulelist.size()==0) {
+				if (docsectionandrulelist.size() == 0) {
 					System.out.println(Causelists.get(i).getDoctable() + "表无数据！！！");
 					continue;
 				}
@@ -94,17 +97,9 @@ public class OtherRule extends Thread {
 					otherRuleSave[j] = new OtherRuleSave();
 					otherRuleSave[j].save(list, docsectionandrulelist, latitude, Lalist.get(j).getLatitudename(),
 							Lalist.get(j).getLatitudeid(), latitudeKeyDao, batchdataDao, docidandruleidDao);
-					otherRuleSave[j].setName("线程名称:"+getName()+","+"规则线程：" + i + j);
+					otherRuleSave[j].setName("线程名称:" + getName() + "," + "规则线程：" + i + j);
 					System.out.println(otherRuleSave[j].getName());
 					otherRuleSave[j].start();
-					if (i == Causelists.size() - 1) {
-						if (state==3) {
-							Lalist.get(j).setBatchstats("5");
-						}else{
-							Lalist.get(j).setBatchstats("3");
-						}
-						Lalist.get(j).setStats("3");
-					}
 				}
 				for (int j1 = 0; j1 < otherRuleSave.length; j1++) {
 					try {
@@ -115,10 +110,24 @@ public class OtherRule extends Thread {
 						e.printStackTrace();
 					}
 				}
-				latitudeauditAction.updatebatchestats(Lalist);
 			} while (docsectionandrulelist.size() > 0);
+
+			if (i == Causelists.size() - 1) {
+				for (int j = 0; j < Lalist.size(); j++) {
+					if (state == 3) {
+						Lalist.get(j).setBatchstats("5");
+					} else {
+						Lalist.get(j).setBatchstats("3");
+					}
+					Lalist.get(j).setStats("3");
+				}
+			}
 		}
+		latitudeauditAction.updatebatchestats(Lalist);
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudeauditAction!updatebatchestats.action", Lalist.toString());
 		latitudenumDao.countlat(1);
+		return;
 	}
 
 	static List<Otherrule> ruleFormat(String rule, int ruletype) {

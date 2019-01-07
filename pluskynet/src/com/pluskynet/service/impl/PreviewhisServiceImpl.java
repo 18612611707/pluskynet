@@ -19,4 +19,9 @@ public class PreviewhisServiceImpl implements PreviewhisService {
 		return list;
 	}
 
+	@Override
+	public void save(Previewhis previewhis) {
+		previewhisDao.save(previewhis);
+	}
+
 }

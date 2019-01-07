@@ -26,4 +26,10 @@ public class LatitudenumServiceImpl implements LatitudenumService {
 		return list;
 	}
 
+	@Override
+	public void updatelat(List<Latitudenum> list) {
+		latitudenumDao.updatelat(list);
+		
+	}
+
 }
