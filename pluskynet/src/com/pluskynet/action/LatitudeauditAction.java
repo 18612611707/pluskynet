@@ -73,6 +73,15 @@ public class LatitudeauditAction extends BaseAction {
 	/*
 	 * 跑批修改状态
 	 */
+	private String list;
+	public String getList() {
+		return list;
+	}
+
+	public void setList(String list) {
+		this.list = list;
+	}
+
 	public void updatebatchestats(List<Latitudeaudit> latitudeaudit) {
 		latitudeauditService.updatebatchestats(latitudeaudit);
 		// outJsonByMsg("成功");

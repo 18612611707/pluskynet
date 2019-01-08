@@ -2,6 +2,7 @@ package com.pluskynet.action;
 
 import java.util.List;
 
+import com.pluskynet.domain.Latitudestatistical;
 import com.pluskynet.domain.Previewhis;
 import com.pluskynet.service.PreviewhisService;
 import com.pluskynet.util.BaseAction;
@@ -49,5 +50,12 @@ public class PreviewhisAction extends BaseAction{
 	 */
 	public void save(){
 		previewhisService.save(previewhis);
+	}
+	/*
+	 * 结果数据展示
+	 */
+	public void latitudestatistical(){
+		List<Latitudestatistical> list = previewhisService.latitudestatistical();
+		outJsonByMsg(list, "成功");
 	}
 }

@@ -43,6 +43,7 @@ public class DocRuleServiceImpl implements DocRuleService {
 	public void setDocSectionAndRuleDao(DocSectionAndRuleDao docSectionAndRuleDao) {
 		this.docSectionAndRuleDao = docSectionAndRuleDao;
 	}
+
 	private LatitudenumDao latitudenumDao;
 
 	public void setLatitudenumDao(LatitudenumDao latitudenumDao) {
@@ -60,7 +61,9 @@ public class DocRuleServiceImpl implements DocRuleService {
 		String msg = docRuleDao.update(docrule);
 		if (msg.equals("成功")) {
 			HttpRequest httpRequest = new HttpRequest();
-			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/DocRuleAction!update.action", docrule.toString());
+			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/DocRuleAction!update.action",
+					"ruleid=" + docrule.getRuleid() + "&sectionname=" + docrule.getSectionname() + "&rule="
+							+ docrule.getRule() + "&fid=" + docrule.getFid() + "&reserved=" + docrule.getReserved());
 			Map<?, ?> map = docRuleDao.getDcoSection(docrule);
 			String sectionname = map.get("sectionname").toString();
 			docrule.setSectionname(sectionname);
@@ -71,8 +74,10 @@ public class DocRuleServiceImpl implements DocRuleService {
 			latitudeaudit.setLatitudetype(0);
 			latitudeaudit.setReserved(docrule.getReserved());
 			latitudeauditDao.update(latitudeaudit);
-			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action", latitudeaudit.toString());
-//			latitudeauditDao.wwupdate(latitudeaudit);
+			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
+					"rule=" + docrule.getRule() + "&latitudename=" + sectionname + "&latitudeid=" + docrule.getRuleid()
+							+ "&latitudetype=0" + "&reserved=" + docrule.getReserved());
+			// latitudeauditDao.wwupdate(latitudeaudit);
 		}
 		return msg;
 	}
@@ -85,33 +90,33 @@ public class DocRuleServiceImpl implements DocRuleService {
 		for (int i = 0; i < friList.size(); i++) {
 			TreeDocrule treeDocrule = new TreeDocrule();
 			treeDocrule.setFid(friList.get(i).getFid());
-			treeDocrule.setSectionname(friList.get(i).getSectionname()+","+0);
+			treeDocrule.setSectionname(friList.get(i).getSectionname() + "," + 0);
 			for (int j = 0; j < doclist.size(); j++) {
-				if (doclist.get(j).getLatitudeid()==friList.get(i).getRuleid()) {
-					treeDocrule.setSectionname(friList.get(i).getSectionname()+","+doclist.get(j).getNums());
+				if (doclist.get(j).getLatitudeid() == friList.get(i).getRuleid()) {
+					treeDocrule.setSectionname(friList.get(i).getSectionname() + "," + doclist.get(j).getNums());
 					break;
 				}
 			}
 			treeDocrule.setRuleid(friList.get(i).getRuleid());
 			lists.add(treeDocrule);
 		}
-		 List<TreeDocrule> list = new ArrayList<TreeDocrule>(); 
-	        for (TreeDocrule tree : lists) { 
-	            if(tree.getFid() == 0){ 
-	            	list.add(tree); 
-	            } 
-	            for (TreeDocrule t : lists) { 
-	                if(t.getFid() == tree.getRuleid()){ 
-	                    if(tree.getChildren() == null){ 
-	                        List<TreeDocrule> myChildrens = new ArrayList<TreeDocrule>(); 
-	                        myChildrens.add(t); 
-	                        tree.setChildren(myChildrens); 
-	                    }else{ 
-	                        tree.getChildren().add(t); 
-	                    } 
-	                } 
-	            } 
-	        } 
+		List<TreeDocrule> list = new ArrayList<TreeDocrule>();
+		for (TreeDocrule tree : lists) {
+			if (tree.getFid() == 0) {
+				list.add(tree);
+			}
+			for (TreeDocrule t : lists) {
+				if (t.getFid() == tree.getRuleid()) {
+					if (tree.getChildren() == null) {
+						List<TreeDocrule> myChildrens = new ArrayList<TreeDocrule>();
+						myChildrens.add(t);
+						tree.setChildren(myChildrens);
+					} else {
+						tree.getChildren().add(t);
+					}
+				}
+			}
+		}
 		return list;
 	}
 

@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.components.Else;
 import org.jsoup.helper.StringUtil;
 
@@ -39,6 +41,7 @@ import net.sf.json.JSONObject;
 
 @SuppressWarnings("all")
 public class LatitudeServiceImpl implements LatitudeService {
+	protected final Log logger = LogFactory.getLog(getClass()); 
 	/*
 	 * 保存预览历史
 	 */
@@ -116,9 +119,12 @@ public class LatitudeServiceImpl implements LatitudeService {
 			latitudeaudit.setLatitudetype(1);
 			latitudeaudit.setSubuserid(user.getUserid().toString());
 			latitudeaudit.setRule(latitude.getRule());
+			latitudeaudit.setReserved(latitude.getReserved());
 			LatitudeauditDao.update(latitudeaudit);
 			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
-					latitudeaudit.toString());
+					"rule=" + latitude.getRule() + "&latitudename=" + latitude.getLatitudename() + "&latitudeid="
+							+ latitude.getLatitudeid() + "&latitudetype=1" + "&reserved=" + latitude.getReserved()
+							+ "&subuserid=" + user.getUserid().toString());
 		}
 		return msg;
 	}
@@ -236,6 +242,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 			String newsectiontext = null;
 			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
 			for (int j = 0; j < list.size(); j++) {
+				logger.info("userid"+user.getUserid()+":"+"文书编号:"+list.get(j).getRuleid());
 				boolean a = false;
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				StatsDoc statsDoc = new StatsDoc();
@@ -476,11 +483,14 @@ public class LatitudeServiceImpl implements LatitudeService {
 		}
 		Sample samObject = sampleDao.select(user);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Previewhis previewhis = new Previewhis(samObject.getRule(), df.format(new Date()),
-				listsDocs.size(), accord, noaccord, user.getUserid().toString(), user.getUsername());
+		Previewhis previewhis = new Previewhis(samObject.getRule().toString(), df.format(new Date()), listsDocs.size(), accord,
+				noaccord, user.getUserid().toString(), user.getUsername());
 		previewhisDao.save(previewhis);
 		HttpRequest httpRequest = new HttpRequest();
-		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/PreviewhisAction!update.action", previewhis.toString());
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/PreviewhisAction!update.action",
+				"sample=" + samObject.getRule() + "&createtime=" + df.format(new Date()) + "&sum=" + listsDocs.size()
+						+ "&accord=" + accord + "&noaccord=" + noaccord + "&createuser=" + user.getUserid().toString()
+						+ "&createname=" + user.getUsername());
 		return listsDocs;
 	}
 

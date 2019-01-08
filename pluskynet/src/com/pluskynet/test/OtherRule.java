@@ -125,7 +125,7 @@ public class OtherRule extends Thread {
 		}
 		latitudeauditAction.updatebatchestats(Lalist);
 		HttpRequest httpRequest = new HttpRequest();
-		httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudeauditAction!updatebatchestats.action", Lalist.toString());
+		httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudeauditAction!updatebatchestats.action", "latitudeaudit="+Lalist);
 		latitudenumDao.countlat(1);
 		return;
 	}
