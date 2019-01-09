@@ -265,6 +265,9 @@ public class LatitudeServiceImpl implements LatitudeService {
 							Matcher matcher = containp.matcher(oldsectiontext);
 							if (matcher.find()) {
 								String beginIndex = matcher.group();
+								if (beginIndex.contains("*")) {
+									beginIndex.replaceAll("\\*", "\\\\*");
+								}
 								newsectiontext = oldsectiontext.replaceAll(beginIndex,
 										"<span style=\"color:red\">" + beginIndex + "</span>");
 								a = true;
@@ -487,7 +490,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 				noaccord, user.getUserid().toString(), user.getUsername());
 		previewhisDao.save(previewhis);
 		HttpRequest httpRequest = new HttpRequest();
-		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/PreviewhisAction!update.action",
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/PreviewhisAction!save.action",
 				"sample=" + samObject.getRule() + "&createtime=" + df.format(new Date()) + "&sum=" + listsDocs.size()
 						+ "&accord=" + accord + "&noaccord=" + noaccord + "&createuser=" + user.getUserid().toString()
 						+ "&createname=" + user.getUsername());
