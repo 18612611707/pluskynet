@@ -41,7 +41,7 @@ import net.sf.json.JSONObject;
 
 @SuppressWarnings("all")
 public class LatitudeServiceImpl implements LatitudeService {
-	protected final Log logger = LogFactory.getLog(getClass()); 
+	protected final Log logger = LogFactory.getLog(getClass());
 	/*
 	 * 保存预览历史
 	 */
@@ -107,7 +107,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 			 * 用于同步线上规则到线下数据库
 			 */
 			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeAction!update.action",
-					"&latitudeid=" + latitude.getLatitudeid() + "&latitudefid=" + latitude.getLatitudefid()
+					"latitudeid=" + latitude.getLatitudeid() + "&latitudefid=" + latitude.getLatitudefid()
 							+ "&latitudename=" + latitude.getLatitudename() + "&ruletype=" + latitude.getRuletype()
 							+ "&rule=" + latitude.getRule() + "&reserved=" + latitude.getReserved() + "&userid="
 							+ user.getUserid() + "&username=" + user.getUsername() + "&name=" + user.getName()
@@ -242,7 +242,7 @@ public class LatitudeServiceImpl implements LatitudeService {
 			String newsectiontext = null;
 			List<Docsectionandrule> list = docSectionAndRuleDao.getDocLists(user);
 			for (int j = 0; j < list.size(); j++) {
-				logger.info("userid"+user.getUserid()+":"+"文书编号:"+list.get(j).getRuleid());
+				logger.info("userid" + user.getUserid() + ":" + "文书编号:" + list.get(j).getRuleid());
 				boolean a = false;
 				DocidAndDoc docidAndDoc = new DocidAndDoc();
 				StatsDoc statsDoc = new StatsDoc();
@@ -265,10 +265,19 @@ public class LatitudeServiceImpl implements LatitudeService {
 							Matcher matcher = containp.matcher(oldsectiontext);
 							if (matcher.find()) {
 								String beginIndex = matcher.group();
-								if (beginIndex.contains("*")) {
-									beginIndex.replaceAll("\\*", "\\\\*");
+								String newbeginIndex = null;
+								for (int k = 0; k < beginIndex.length(); k++) {
+									String text = beginIndex.substring(k, k + 1);
+									if (text.equals("*")) {
+										text = text.replaceAll("\\*", "\\\\*");
+									}
+									if (k == 0) {
+										newbeginIndex = text;
+									} else {
+										newbeginIndex = newbeginIndex + text;
+									}
 								}
-								newsectiontext = oldsectiontext.replaceAll(beginIndex,
+								newsectiontext = oldsectiontext.replaceAll(newbeginIndex,
 										"<span style=\"color:red\">" + beginIndex + "</span>");
 								a = true;
 							}
@@ -486,8 +495,8 @@ public class LatitudeServiceImpl implements LatitudeService {
 		}
 		Sample samObject = sampleDao.select(user);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Previewhis previewhis = new Previewhis(samObject.getRule().toString(), df.format(new Date()), listsDocs.size(), accord,
-				noaccord, user.getUserid().toString(), user.getUsername());
+		Previewhis previewhis = new Previewhis(samObject.getRule().toString(), df.format(new Date()), listsDocs.size(),
+				accord, noaccord, user.getUserid().toString(), user.getUsername());
 		previewhisDao.save(previewhis);
 		HttpRequest httpRequest = new HttpRequest();
 		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/PreviewhisAction!save.action",
