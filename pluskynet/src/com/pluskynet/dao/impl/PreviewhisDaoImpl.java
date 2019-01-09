@@ -55,11 +55,13 @@ public class PreviewhisDaoImpl extends HibernateDaoSupport implements Previewhis
 			Latitudestatistical latitudestatistical = new Latitudestatistical();
 			int latitudeid = list.get(i).getLatitudeid();
 			String latitudefname = null;
+			String rule = null;
 			latitudestatistical.setId(list.get(i).getId());
 			latitudestatistical.setLatitudeid(latitudeid);
 			latitudestatistical.setLatitudenums(list.get(i).getNums());
 			for (int j = 0; j < latitudelist.size(); j++) {
 				if (latitudeid == latitudelist.get(j).getLatitudeid()) {
+					rule = latitudelist.get(j).getRule();
 					int latitudefid = latitudelist.get(j).getLatitudefid();
 					while (latitudefid > 0) {
 						for (int k = 0; k < latitudelist.size(); k++) {
@@ -74,6 +76,19 @@ public class PreviewhisDaoImpl extends HibernateDaoSupport implements Previewhis
 						}
 					}
 					break;
+				}
+			}
+			if (rule != null) {
+				JSONArray jsonarray = JSONArray.fromObject(rule);
+				JSONObject jsonObject = JSONObject.fromObject(jsonarray.get(0));
+				for (int j = 0; j < list.size(); j++) {
+					if (list.get(j).getType() == 0) {
+						if (jsonObject.getString("sectionname").equals(list.get(j).getLatitudeid().toString())) {
+							latitudestatistical.setSectionname(list.get(j).getLatitudename());
+							latitudestatistical.setSectionnums(list.get(j).getNums().toString());
+							break;
+						}
+					}
 				}
 			}
 			latitudestatistical.setLatitudename(list.get(i).getLatitudename());

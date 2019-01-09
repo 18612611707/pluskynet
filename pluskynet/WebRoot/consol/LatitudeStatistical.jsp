@@ -23,7 +23,7 @@
 <title>预览历史</title>
 
 <!-- 本页面初始化用到的js包，创建jqGrid的代码就在里面 -->
-<script type="text/javascript" src="../js/Previewhis.js"></script>
+<script type="text/javascript" src="../js/LatitudeStatistical.js"></script>
 </head>
 <body>
 	<!-- <form action="PreviewhisAction!select.action" method="post">

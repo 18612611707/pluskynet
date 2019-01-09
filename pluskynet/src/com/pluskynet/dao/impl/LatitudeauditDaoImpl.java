@@ -87,6 +87,32 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 			causeAndName.setBatchstat(resultSet.getString("batchstats"));
 			list.add(causeAndName);
 		}
+		String hql = "select * from latitude";
+		List<Latitude> latitudelist = session.createSQLQuery(hql).addEntity(Latitude.class).list();
+		for (int i = 0; i < list.size(); i++) {
+			String latitudeid = list.get(i).getLatitudeid();
+			String latitudefname = null;
+			for (int j = 0; j < latitudelist.size(); j++) {
+				if (latitudelist.get(j).getLatitudeid().toString().equals(latitudeid)) {
+					String latitudefid = latitudelist.get(j).getLatitudefid().toString();
+					while (!latitudefid.equals("0")) {
+						for (int k = 0; k < latitudelist.size(); k++) {
+							if (latitudefid == latitudelist.get(k).getLatitudeid().toString()) {
+								if (latitudefname == null) {
+									latitudefname = latitudelist.get(k).getLatitudename();
+								} else {
+									latitudefname = latitudefname + "-" + latitudelist.get(k).getLatitudename();
+								}
+								latitudefid = latitudelist.get(k).getLatitudefid().toString();
+							}
+						}
+						
+					}
+					list.get(i).setFcasename(latitudefname);
+					break;
+				}
+			}
+		}
 		/*
 		 * String hql =
 		 * "select SUM(num) as num from (select COUNT(1) as num from article11 union all "
