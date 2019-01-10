@@ -121,10 +121,10 @@ public class LatitudeServiceImpl implements LatitudeService {
 			latitudeaudit.setRule(latitude.getRule());
 			latitudeaudit.setReserved(latitude.getReserved());
 			LatitudeauditDao.update(latitudeaudit);
-			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
+			/*httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
 					"rule=" + latitude.getRule() + "&latitudename=" + latitude.getLatitudename() + "&latitudeid="
 							+ latitude.getLatitudeid() + "&latitudetype=1" + "&reserved=" + latitude.getReserved()
-							+ "&subuserid=" + user.getUserid().toString());
+							+ "&subuserid=" + user.getUserid().toString());*/
 		}
 		return msg;
 	}
