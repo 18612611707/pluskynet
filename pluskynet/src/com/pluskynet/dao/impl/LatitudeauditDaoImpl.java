@@ -73,7 +73,7 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		ResultSet resultSet = null;
 		int toatl = 0;
 		toatl = (page - 1) * rows;
-		String sql = "select id,latitudeid,latitudename,latitudetype,stats,batchstats from latitudeaudit order by id asc";
+		String sql = "select id,latitudeid,latitudename,latitudetype,stats,batchstats,subtime from latitudeaudit order by id asc";
 		List<CauseAndName> list = new ArrayList<CauseAndName>();
 		statement = conn.prepareStatement(sql);
 		resultSet = statement.executeQuery();
@@ -85,10 +85,12 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 			causeAndName.setLatitudetype(resultSet.getInt("latitudetype"));
 			causeAndName.setRulestats(resultSet.getString("stats"));
 			causeAndName.setBatchstat(resultSet.getString("batchstats"));
+			causeAndName.setSubtime(resultSet.getString("subtime"));
 			list.add(causeAndName);
 		}
+		Session session1 = this.getHibernateTemplate().getSessionFactory().getCurrentSession();
 		String hql = "select * from latitude";
-		List<Latitude> latitudelist = session.createSQLQuery(hql).addEntity(Latitude.class).list();
+		List<Latitude> latitudelist = session1.createSQLQuery(hql).addEntity(Latitude.class).list();
 		for (int i = 0; i < list.size(); i++) {
 			String latitudeid = list.get(i).getLatitudeid();
 			String latitudefname = null;
@@ -97,16 +99,20 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 					String latitudefid = latitudelist.get(j).getLatitudefid().toString();
 					while (!latitudefid.equals("0")) {
 						for (int k = 0; k < latitudelist.size(); k++) {
-							if (latitudefid == latitudelist.get(k).getLatitudeid().toString()) {
+							if (latitudefid.equals(latitudelist.get(k).getLatitudeid().toString())) {
 								if (latitudefname == null) {
 									latitudefname = latitudelist.get(k).getLatitudename();
 								} else {
-									latitudefname = latitudefname + "-" + latitudelist.get(k).getLatitudename();
+									latitudefname = latitudelist.get(k).getLatitudename() + "-" + latitudefname;
 								}
 								latitudefid = latitudelist.get(k).getLatitudefid().toString();
+								break;
 							}
 						}
-						
+						if (latitudelist.get(j).getLatitudefid().toString().equals(latitudefid)) {
+							latitudefid = "0";
+						}
+
 					}
 					list.get(i).setFcasename(latitudefname);
 					break;
@@ -140,7 +146,8 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 		session.flush();
 		session.clear();
 		return list;
-	}	
+	}
+
 	@Override
 	@Transactional
 	public int getCountBy() {
@@ -214,12 +221,14 @@ public class LatitudeauditDaoImpl extends HibernateDaoSupport implements Latitud
 			List<Latitudeaudit> latitudeaudits = this.getHibernateTemplate().find(hql,
 					latitudeaudit.get(i).getLatitudeid(), latitudeaudit.get(i).getLatitudetype());
 			if (latitudeaudits.size() > 0) {
-				hql = "update latitudeaudit set batchstats = '"+latitudeaudit.get(i).getBatchstats()+"',stats='"+latitudeaudit.get(i).getStats()+"' where id = '"+latitudeaudits.get(0).getId()+"'";
+				hql = "update latitudeaudit set batchstats = '" + latitudeaudit.get(i).getBatchstats() + "',stats='"
+						+ latitudeaudit.get(i).getStats() + "' where id = '" + latitudeaudits.get(0).getId() + "'";
 				session.createSQLQuery(hql).executeUpdate();
 			}
 		}
 		System.out.println(latitudeaudit.get(0).getBatchstats());
-		String sql = "update latitudeaudit set batchstats = '"+latitudeaudit.get(0).getBatchstats()+"' where casetype = 1";
+		String sql = "update latitudeaudit set batchstats = '" + latitudeaudit.get(0).getBatchstats()
+				+ "' where casetype = 1";
 		session.createSQLQuery(sql).executeUpdate();
 	}
 

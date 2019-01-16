@@ -1,8 +1,8 @@
 $(function() {
 	//页面加载完成之后执行
 	pageInit();
-	docnum();
-	lanum();
+/*	docnum();
+	lanum();*/
 });
 function docnum() {
 	$.ajax({
@@ -62,7 +62,7 @@ function pageInit() {
 		{
 			url : '../LatitudeauditAction!getLatitudeList.action', //组件创建完成之后请求数据的url
 			datatype : "json", //请求数据返回的类型。可选json,xml,txt
-			colNames : [ 'id', '规则id', '规则类型', '规则名称', '审核状态','父规则名称' ], //jqGrid的列显示名字
+			colNames : [ 'id', '规则id', '规则类型','父规则名称', '规则名称','提交时间', '审核状态' ], //jqGrid的列显示名字
 			colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				{
 					name : 'id',
@@ -83,18 +83,24 @@ function pageInit() {
 					sortable : false
 				},
 				{
+					name : 'fcasename',
+					index : 'fcasename',
+					width : 100,
+					sortable : false
+				},
+				{
 					name : 'causename',
 					index : 'causename',
 					width : 100,
 					sortable : false
 				},
-				/*{
-					name : 'sunnum',
-					index : 'sunnum',
+				{
+					name : 'subtime',
+					index : 'subtime',
 					width : 100,
 					sortable : false
 				},
-				{
+				/*{
 					name : 'cornum',
 					index : 'cornum',
 					width : 100,
@@ -112,12 +118,6 @@ function pageInit() {
 					width : 100,
 					sortable : false,
 					editable : true //行编辑
-				},
-				{
-					name : 'fcasename',
-					index : 'fcasename',
-					width : 100,
-					sortable : false
 				}
 			],
 			/*rowNum : 10,//一页显示多少条

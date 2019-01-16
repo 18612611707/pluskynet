@@ -9,7 +9,7 @@ function pageInit() {
 		{
 			url : '../PreviewhisAction!latitudestatistical.action', //组件创建完成之后请求数据的url
 			datatype : "json", //请求数据返回的类型。可选json,xml,txt
-			colNames : [ 'id', '维度id', '纬度名称', '维度父级名称', '数量', '段落名称', '段落数量' ], //jqGrid的列显示名字
+			colNames : [ 'id', '维度id', '维度父级名称', '名称纬度', '数量', '段落名称', '段落数量' ], //jqGrid的列显示名字
 			colModel : [ //jqGrid每一列的配置信息。包括名字，索引，宽度,对齐方式.....
 				{
 					name : 'id',
@@ -24,14 +24,14 @@ function pageInit() {
 					sortable : false
 				},
 				{
-					name : 'latitudename',
-					index : 'latitudename',
+					name : 'latitudefname',
+					index : 'latitudefname',
 					width : 100,
 					sortable : false
 				},
 				{
-					name : 'latitudefname',
-					index : 'latitudefname',
+					name : 'latitudename',
+					index : 'latitudename',
 					width : 100,
 					sortable : false
 				},

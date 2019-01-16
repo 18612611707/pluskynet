@@ -53,6 +53,9 @@ public class DocRuleServiceImpl implements DocRuleService {
 	@Override
 	public Map save(Docrule docrule) {
 		Map map = docRuleDao.save(docrule);
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/DocRuleAction!save.action",
+				"sectionname=" + docrule.getSectionname() + "&fid=" + docrule.getFid());
 		return map;
 	}
 
@@ -74,9 +77,9 @@ public class DocRuleServiceImpl implements DocRuleService {
 			latitudeaudit.setLatitudetype(0);
 			latitudeaudit.setReserved(docrule.getReserved());
 			latitudeauditDao.update(latitudeaudit);
-			httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
+			/*httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeauditAction!update.action",
 					"rule=" + docrule.getRule() + "&latitudename=" + sectionname + "&latitudeid=" + docrule.getRuleid()
-							+ "&latitudetype=0" + "&reserved=" + docrule.getReserved());
+							+ "&latitudetype=0" + "&reserved=" + docrule.getReserved());*/
 			// latitudeauditDao.wwupdate(latitudeaudit);
 		}
 		return msg;
@@ -197,6 +200,9 @@ public class DocRuleServiceImpl implements DocRuleService {
 	@Override
 	public String updatesecname(Docrule docrule) {
 		String msg = docRuleDao.updatesecname(docrule);
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/DocRuleAction!updatesecname.action",
+				"sectionname=" + docrule.getSectionname() + "&fid=" + docrule.getFid()+ "&ruleid=" + docrule.getRuleid());
 		return msg;
 	}
 

@@ -168,7 +168,7 @@ public class LatitudeauditAction extends BaseAction {
 	 * 循环跑批控制
 	 */
 	public void latitudeRun() {
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 40; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
 			String msg = otherrule.main(-1);
 			if (msg==null) {
@@ -182,7 +182,7 @@ public class LatitudeauditAction extends BaseAction {
 	 * 增量跑批控制
 	 */
 	public void newlatitudeRun() {
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 40; i++) {
 			OtherRule otherrule = new OtherRule("线程名称：" + i);
 			String msg = otherrule.main(0);
 			if (msg==null) {

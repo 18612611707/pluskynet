@@ -69,7 +69,7 @@ public class PreviewhisDaoImpl extends HibernateDaoSupport implements Previewhis
 								if (latitudefname == null) {
 									latitudefname = latitudelist.get(k).getLatitudename();
 								} else {
-									latitudefname = latitudefname + "-" + latitudelist.get(k).getLatitudename();
+									latitudefname = latitudelist.get(k).getLatitudename()+ "-" + latitudefname;
 								}
 								latitudefid = latitudelist.get(k).getLatitudefid();
 							}

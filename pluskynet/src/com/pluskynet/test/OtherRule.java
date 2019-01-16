@@ -120,13 +120,15 @@ public class OtherRule extends Thread {
 						Lalist.get(j).setBatchstats("3");
 					}
 					Lalist.get(j).setStats("3");
+					if (j==Lalist.size()-1) {
+						latitudeauditAction.updatebatchestats(Lalist);
+						HttpRequest httpRequest = new HttpRequest();
+						httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudeauditAction!updatebatchestats.action", "latitudeaudit="+Lalist);
+						latitudenumDao.countlat(1);
+					}
 				}
 			}
 		}
-		latitudeauditAction.updatebatchestats(Lalist);
-		HttpRequest httpRequest = new HttpRequest();
-		httpRequest.sendPost("http://39.104.183.189:8081/pluskynet/LatitudeauditAction!updatebatchestats.action", "latitudeaudit="+Lalist);
-		latitudenumDao.countlat(1);
 		return;
 	}
 

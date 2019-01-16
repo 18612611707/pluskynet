@@ -95,6 +95,11 @@ public class LatitudeServiceImpl implements LatitudeService {
 	@Override
 	public Map save(Latitude latitude, User user) {
 		Map msg = latitudeDao.save(latitude, user);
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeAction!save.action",
+				"latitudefid=" + latitude.getLatitudefid() +"&latitudename=" + latitude.getLatitudename()+ "&userid="
+						+ user.getUserid() + "&username=" + user.getUsername() + "&name=" + user.getName()
+						+ "&rolecode=" + user.getRolecode());
 		return msg;
 	}
 
@@ -270,6 +275,10 @@ public class LatitudeServiceImpl implements LatitudeService {
 									String text = beginIndex.substring(k, k + 1);
 									if (text.equals("*")) {
 										text = text.replaceAll("\\*", "\\\\*");
+									}else if(text.equals("(")){
+										text = text.replaceAll("\\(", "\\\\(");
+									}else if(text.equals(")")){
+										text = text.replaceAll("\\)", "\\\\)");
 									}
 									if (k == 0) {
 										newbeginIndex = text;
@@ -604,6 +613,11 @@ public class LatitudeServiceImpl implements LatitudeService {
 	@Override
 	public String updateName(Latitude latitude, User user) {
 		String msg = latitudeDao.updateName(latitude, user);
+		HttpRequest httpRequest = new HttpRequest();
+		httpRequest.sendPost("http://114.242.17.135:8081/pluskynet/LatitudeAction!updateName.action",
+				"latitudefid=" + latitude.getLatitudefid() +"&latitudename=" + latitude.getLatitudename()+ "&userid="
+						+ user.getUserid() + "&username=" + user.getUsername() + "&name=" + user.getName()
+						+ "&rolecode=" + user.getRolecode()+"&latitudeid=" + latitude.getLatitudeid());
 		return msg;
 	}
 

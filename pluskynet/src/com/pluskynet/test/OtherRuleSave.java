@@ -15,6 +15,7 @@ import com.pluskynet.domain.Docsectionandrule01;
 import com.pluskynet.domain.Latitude;
 import com.pluskynet.domain.LatitudedocKey;
 import com.pluskynet.otherdomain.Otherrule;
+import com.pluskynet.util.HttpRequest;
 import com.sun.star.lib.uno.environments.remote.IReceiver;
 
 import javassist.expr.NewArray;
@@ -45,6 +46,7 @@ public class OtherRuleSave extends Thread {
 	}
 
 	public void run() {
+		HttpRequest httpRequest = new HttpRequest();
 		for (int i = 0; i < docsectionandrulelist.size(); i++) {
 			boolean a = false;
 			String documentid = docsectionandrulelist.get(i).getDocumentsid(); //文书id
@@ -138,11 +140,18 @@ public class OtherRuleSave extends Thread {
 							latitudeKeyDao.save(latitudedocKey);
 							batchdataDao.save(batchdata);
 							docidandruleidDao.save(docidandruleid);
-							break look;
+							/*httpRequest.sendPost("http://39.104.183.189:8080/pluskynet/latitudeKeyAction!save.action", "latitudedockey="+latitudedocKey);
+							httpRequest.sendPost("http://39.104.183.189:8080/pluskynet/BatchdataAction!save.action", "batchdata="+batchdata);
+							httpRequest.sendPost("http://39.104.183.189:8080/pluskynet/DocidandruleidAction!save.action", "docidandruleid="+docidandruleid);
+							*/break look;
 						}else {
 							latitudeKeyDao.delete(latitudedocKey);
 							batchdataDao.delete(batchdata);
 							docidandruleidDao.delete(docidandruleid);
+							/*httpRequest.sendPost("http://39.104.183.189:8080/pluskynet/latitudeKeyAction!delete.action", "latitudedockey="+latitudedocKey);
+							httpRequest.sendPost("http://39.104.183.189:8080/pluskynet/BatchdataAction!delete.action", "batchdata="+batchdata);
+							httpRequest.sendPost("http://39.104.183.189:8080/pluskynet/DocidandruleidAction!delete.action", "docidandruleid="+docidandruleid);
+				*/
 							break look;
 						}
 					}

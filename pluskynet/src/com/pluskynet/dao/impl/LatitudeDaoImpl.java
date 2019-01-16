@@ -63,14 +63,14 @@ public class LatitudeDaoImpl extends HibernateDaoSupport implements LatitudeDao 
 				this.getHibernateTemplate().flush();
 				return "成功";
 			} else if (latitude.getRule() == null || latitude.getRule().equals("")) {
-				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ?,reserved =?,creatertime = ?  where latitudeid = ?";
-				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudename(), latitude.getLatitudefid(),
+				String queryStr = "update Latitude set latitudefid = ?,reserved =?,creatertime = ?  where latitudeid = ?";
+				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudefid(),
 						latitude.getReserved(),Timestamp.valueOf(df.format(new Date())), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";
 			} else {
-				String queryStr = "update Latitude set latitudename = ? ,latitudefid = ? ,rule = ?,ruletype=? ,reserved =?,creatertime = ? where latitudeid = ?";
-				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudename(), latitude.getLatitudefid(),
+				String queryStr = "update Latitude set latitudefid = ? ,rule = ?,ruletype=? ,reserved =?,creatertime = ? where latitudeid = ?";
+				this.getHibernateTemplate().bulkUpdate(queryStr, latitude.getLatitudefid(),
 						latitude.getRule(), latitude.getRuletype(), latitude.getReserved(),Timestamp.valueOf(df.format(new Date())), latitude.getLatitudeid());
 				this.getHibernateTemplate().flush();
 				return "成功";

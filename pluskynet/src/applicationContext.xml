@@ -26,6 +26,8 @@
 		<property name="maxPoolSize" value="5000" />
 		<!-- 最大空闲时间,1800秒内未使用则连接被丢弃。若为0则永不丢弃。Default: 0 -->
 		<property name="maxIdleTime" value="1800" />
+		<property name="preferredTestQuery" value="select *  from user;"/>
+		<property name="idleConnectionTestPeriod" value="28000"/>
 	</bean>
 	<!-- 配置Hibernate相关属性 -->
 	<bean id="sessionFactory"
@@ -163,6 +165,10 @@
 		scope="prototype">
 		<property name="synonymService" ref="synonymService" />
 	</bean>
+	<bean id="latitudeDocKeyAction" class="com.pluskynet.action.LatitudeDocKeyAction"
+		scope="prototype">
+		<property name="latitudeKeyService" ref="latitudeKeyService" />
+	</bean>
 	<!-- 配置业务层的类 Service -->
 	<bean id="previewhisService" class="com.pluskynet.service.impl.PreviewhisServiceImpl">
 		<property name="previewhisDao" ref="previewhisDao"/>
@@ -234,6 +240,9 @@
 	</bean>
 	<bean id="synonymService" class="com.pluskynet.service.impl.SynonymServiceImpl">
 		<property name="synonymDao" ref="synonymDao" />
+	</bean>
+	<bean id="latitudeKeyService" class="com.pluskynet.service.impl.LatitudeDocKeyServiceImpl">
+		<property name="latitudeKeyDao" ref="latitudeKeyDao"/>
 	</bean>
 	<!-- 配置DAO的类 Dao -->
 	<bean id="previewhisDao" class="com.pluskynet.dao.impl.PreviewhisDaoImpl">

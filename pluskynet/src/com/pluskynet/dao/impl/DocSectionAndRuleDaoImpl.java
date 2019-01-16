@@ -212,7 +212,7 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 		// session.createSQLQuery(hql).addEntity(Article01.class).list();
 		String sql = null;
 		if (latitudename == -1) {
-			sql = "select * from " + doctable.getDoctable() + " a right join ( SELECT doc_id FROM "
+			/*sql = "select * from " + doctable.getDoctable() + " a right join ( SELECT doc_id FROM "
 					+ doctable.getCausetable() + " WHERE id >= ((SELECT MAX(id) FROM " + doctable.getCausetable()
 					+ " t1 WHERE  t1.spcx='" + trialRound + "' and t1.doctype='" + doctype + "' and t1.date = '" + year
 					+ "')-(SELECT MIN(id) FROM " + doctable.getCausetable() + " t1 WHERE  t1.spcx='" + trialRound
@@ -220,7 +220,13 @@ public class DocSectionAndRuleDaoImpl extends HibernateDaoSupport implements Doc
 					+ "')) * RAND() + (SELECT MIN(id) FROM " + doctable.getCausetable() + " t1 WHERE  t1.spcx='"
 					+ trialRound + "' and t1.doctype='" + doctype + "' and t1.date = '" + year + "') and  spcx='"
 					+ trialRound + "' and doctype='" + doctype + "' and date = '" + year + "' LIMIT " + count
-					+ ") b on a.documentsid = b.doc_id where ruleid = " + sectionname + "";
+					+ ") b on a.documentsid = b.doc_id where ruleid = " + sectionname + "";*/
+			sql = "SELECT t2.* FROM " + doctable.getCausetable() + " t1 RIGHT JOIN " + doctable.getDoctable()
+					+ " t2 on t1.`doc_id` = t2.`documentsid` WHERE t2.id >= ((SELECT MAX(t2.id) FROM " + doctable.getDoctable()
+					+ " t2 WHERE t2.`ruleid` = '" + sectionname	+ "' )-(SELECT MIN(t2.id) FROM "+ doctable.getDoctable() + " "
+					+ "t2 WHERE t2.`ruleid` = " + sectionname + " )) * RAND()+(SELECT MIN(t2.id) FROM "+ doctable.getDoctable() + 
+					" t2 WHERE t2.`ruleid` = " + sectionname + " ) and  t1.spcx='" + trialRound + "' and t1.doctype='" + doctype
+					+ "' and t1.date = '" + year + "' and t2.`ruleid` = " + sectionname + " LIMIT " + count + ";";
 		} else {
 			sql = "select * from " + doctable.getDoctable() + " a right join ( SELECT doc_id FROM "
 					+ doctable.getCausetable()

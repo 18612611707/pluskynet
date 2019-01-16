@@ -12,7 +12,14 @@ public class CauseAndName {
 	private String rulestats;
 	private String batchstat;
 	private String fcasename;
+	private String subtime;
 	
+	public String getSubtime() {
+		return subtime;
+	}
+	public void setSubtime(String subtime) {
+		this.subtime = subtime;
+	}
 	public int getId() {
 		return id;
 	}
