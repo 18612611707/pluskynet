@@ -92,6 +92,16 @@ public class LatitudeAction extends BaseAction {
 	public void save() {
 		User user = isLogined();
 		if (user == null) {
+			if (userid != null) {
+				User getusers = new User();
+				getusers.setUsername(username);
+				getusers.setUserid(Integer.valueOf(userid));
+				getusers.setName(name);
+				getusers.setRolecode(rolecode);
+				Map msg = latitudeService.save(latitude, getusers);
+				outJsonByMsg(msg, "成功");
+				return;
+			}
 			outJsonByMsg("未登录");
 			return;
 		}
@@ -278,6 +288,16 @@ public class LatitudeAction extends BaseAction {
 	public void updateName() {
 		User user = isLogined();
 		if (user == null) {
+			if (userid != null) {
+				User getusers = new User();
+				getusers.setUsername(username);
+				getusers.setUserid(Integer.valueOf(userid));
+				getusers.setName(name);
+				getusers.setRolecode(rolecode);
+				String msg = latitudeService.updateName(latitude, getusers);
+				outJsonByMsg(msg);
+				return;
+			}
 			outJsonByMsg("未登录");
 			return;
 		}
